@@ -1,79 +1,75 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../features/themeSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHouse,
+  faGear,
+  faBook,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
+import { TbCardsFilled } from "react-icons/tb";
 
 const Navbar = () => {
-  const dispatch = useDispatch();
   const activeTheme = useSelector(selectActiveTheme);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  // const navigationItems = [
-  //   {
-  //     id: "dashboard",
-  //     label: "Dashboard",
-  //     icon: Home,
-  //     badge: null,
-  //   },
-  //   {
-  //     id: "decks",
-  //     label: "Decks",
-  //     icon: BookOpen,
-  //     badge: null,
-  //   },
-  //   {
-  //     id: "study",
-  //     label: "Study",
-  //     icon: Brain,
-  //     badge: isStudyActive ? "Active" : null,
-  //     disabled: !isStudyActive,
-  //   },
-  // ];
+  const navigationItems = [
+    {
+      id: "dashboard",
+      label: "Dashboard",
+      icon: <FontAwesomeIcon icon={faHouse} />,
+    },
+    {
+      id: "decks",
+      label: "Decks",
+      icon: <TbCardsFilled />,
+    },
+    {
+      id: "study",
+      label: "Study",
+      icon: <FontAwesomeIcon icon={faBook} />,
+    },
+    {
+      id: "settings",
+      label: "Settings",
+      icon: <FontAwesomeIcon icon={faGear} />,
+    },
+    {
+      id: "menu",
+      label: "Menu",
+      icon: <FontAwesomeIcon icon={faBars} />,
+    },
+  ];
 
-  // const NavItem = ({ item, isMobile = false }) => {
-  //   const Icon = item.icon;
-  //   const isActive = currentView === item.id;
+  const NavItem = ({ item, isMobile = false }) => {
+    const Icon = item.icon;
+    const isActive = currentView === item.id;
 
-  //   return (
-  //     <Button
-  //       variant={isActive ? "default" : "ghost"}
-  //       size={isMobile ? "lg" : "sm"}
-  //       onClick={() => {
-  //         if (!item.disabled) {
-  //           onNavigate(item.id);
-  //           if (isMobile) setIsMobileMenuOpen(false);
-  //         }
-  //       }}
-  //       disabled={item.disabled}
-  //       className={`flex items-center gap-2 ${
-  //         isMobile ? "w-full justify-start" : ""
-  //       }
-  //         ${isActive ? "bg-primary text-primary-foreground" : ""}
-  //         ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
-  //         transition-all duration-200 hover:scale-105`}
-  //     >
-  //       <Icon className="w-4 h-4" />
-  //       {isMobile && (
-  //         <>
-  //           {item.label}
-  //           {item.badge && (
-  //             <Badge variant="secondary" className="ml-auto">
-  //               {item.badge}
-  //             </Badge>
-  //           )}
-  //         </>
-  //       )}
-  //       {!isMobile && item.badge && (
-  //         <Badge variant="secondary" className="text-xs">
-  //           {item.badge}
-  //         </Badge>
-  //       )}
-  //     </Button>
-  //   );
-  // };
+    return (
+      <Button
+        variant={isActive ? "default" : "ghost"}
+        size={isMobile ? "lg" : "sm"}
+        onClick={() => {
+          if (!item.disabled) {
+            onNavigate(item.id);
+            if (isMobile) setIsMobileMenuOpen(false);
+          }
+        }}
+        disabled={item.disabled}
+        className={`flex items-center gap-2 ${
+          isMobile ? "w-full justify-start" : ""
+        }
+          ${isActive ? "bg-primary text-primary-foreground" : ""}
+          ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
+          transition-all duration-200 hover:scale-105`}
+      >
+        <Icon className="w-4 h-4" />
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -89,6 +85,10 @@ const Navbar = () => {
             </h1>
           </div>
           <FontAwesomeIcon icon={faHouse} />
+          <TbCardsFilled />
+          <FontAwesomeIcon icon={faGear} />
+          <FontAwesomeIcon icon={faBook} />
+          <FontAwesomeIcon icon={faBars} />
           {/* <div className="flex items-center space-x-2">
             {navigationItems.map((item) => (
               <NavItem key={item.id} item={item} />

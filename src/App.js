@@ -7,7 +7,7 @@ function App() {
 
   return (
     <div className={`${activeTheme.bgColor} ${activeTheme.textColor} min-h-screen`}>
-      {/* <Navbar /> */}
+      <Navbar />
       {/* <Routes>... */}
     </div>
   );
