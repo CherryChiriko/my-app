@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
-import themeReducer from "../features/themeSlice";
-import navigationReducer from "../features/navigationSlice";
+import themeReducer from "../slices/themeSlice";
+import navigationReducer from "../slices/navigationSlice";
 
 export const store = configureStore({
   reducer: {

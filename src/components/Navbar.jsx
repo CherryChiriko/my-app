@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { selectActiveTheme } from "../features/themeSlice";
-import { selectCurrentView, setCurrentView } from "../features/navigationSlice";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectActiveTheme } from "../slices/themeSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -11,77 +10,65 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { TbCardsFilled } from "react-icons/tb";
-import RevuLogo from "../assets/Revu_logo.png"; // Original logo with solid background
+import RevuLogo from "../assets/Revu_logo.png";
+
+const navigationItems = [
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: <FontAwesomeIcon icon={faHouse} />,
+    path: "/",
+  },
+  {
+    id: "decks",
+    label: "Decks",
+    icon: <TbCardsFilled />,
+    path: "/decks",
+  },
+  {
+    id: "study",
+    label: "Study",
+    icon: <FontAwesomeIcon icon={faBook} />,
+    path: "/study",
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: <FontAwesomeIcon icon={faGear} />,
+    path: "/settings",
+  },
+];
 
 const Navbar = () => {
   const activeTheme = useSelector(selectActiveTheme);
-  const currentView = useSelector(selectCurrentView);
-  const dispatch = useDispatch();
-
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navigationItems = [
-    {
-      id: "dashboard",
-      label: "Dashboard",
-      icon: <FontAwesomeIcon icon={faHouse} />,
-      path: "/",
-    },
-    {
-      id: "decks",
-      label: "Decks",
-      icon: <TbCardsFilled />,
-      path: "/decks",
-    },
-    {
-      id: "study",
-      label: "Study",
-      icon: <FontAwesomeIcon icon={faBook} />,
-      path: "/study",
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: <FontAwesomeIcon icon={faGear} />,
-      path: "/settings",
-    },
-  ];
-
   const NavItem = ({ item, isMobile = false }) => {
-    const isActive = currentView === item.id;
+    const isActive = location.pathname === item.path;
 
-    // Base styles for the button-like appearance
-    const baseButtonClasses = `inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium
-                               ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2
-                               ${
-                                 activeTheme.buttonRing || "focus:ring-ring"
-                               } disabled:pointer-events-none disabled:opacity-50`;
+    const baseButtonClasses = `inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 ${
+      activeTheme.ring.focus || "focus:ring-ring"
+    } disabled:pointer-events-none disabled:opacity-50`;
 
-    // Size variations
     const sizeClasses = isMobile
       ? "h-10 px-4 py-2 text-base"
       : "h-9 rounded-md px-3";
 
-    // Variant variations (active and ghost)
     const variantClasses = isActive
-      ? `bg-gradient-to-r ${activeTheme.gradientFrom} ${activeTheme.gradientTo} ${activeTheme.activeButtonTextColor}` // Active state uses theme gradient
-      : `hover:bg-gray-700 hover:${activeTheme.textColor}`; // Inactive (ghost) button hover, using theme text color
+      ? `bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`
+      : `hover:bg-gray-700 hover:${activeTheme.text.primary}`;
 
     return (
       <Link
         to={item.path}
-        onClick={() => {
-          if (isMobile) setIsMenuOpen(false);
-          dispatch(setCurrentView(item.id)); // Dispatch action to change currentView
-        }}
+        onClick={() => isMobile && setIsMenuOpen(false)}
         className={`${baseButtonClasses} ${sizeClasses} ${variantClasses}
-                   flex items-center gap-2 ${
-                     isMobile ? "w-full justify-start" : ""
-                   }
-                   ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
-                   transition-all duration-200 hover:scale-105 no-underline ${
-                     isActive ? "" : activeTheme.textColor
-                   }`} // Added no-underline
+          flex items-center gap-2 ${isMobile ? "w-full justify-start" : ""}
+          ${item.disabled ? "opacity-50 cursor-not-allowed" : ""}
+          transition-all duration-200 hover:scale-105 no-underline ${
+            isActive ? "" : activeTheme.text.primary
+          }`}
       >
         {React.cloneElement(item.icon, {
           className: `${item.icon.props.className || ""} w-4 h-4`,
@@ -93,27 +80,19 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Desktop Navigation */}
+      {/* Desktop Navbar */}
       <nav
-        className={`hidden md:flex items-center justify-between p-4 border-b ${activeTheme.bgColor} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full`}
+        className={`hidden md:flex items-center justify-between p-4 border-b ${activeTheme.background.navbar} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full ${activeTheme.border.bottom}`}
       >
-        {/* Logo Section */}
-        <Link
-          to="/"
-          className="flex items-center space-x-2"
-          onClick={() => {
-            dispatch(setCurrentView("dashboard"));
-          }}
-        >
-          {/* Logo container with gradient background and scaled image */}
+        <Link to="/" className="flex items-center space-x-2">
           <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden`} // Base size, overflow hidden
+            className="w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden"
             style={{
-              backgroundImage: `linear-gradient(to right, ${activeTheme.gradientFrom.replace(
+              backgroundImage: `linear-gradient(to right, ${activeTheme.gradients.from.replace(
                 "from-",
                 ""
-              )}, ${activeTheme.gradientTo.replace("to-", "")})`, // Gradient
-              transform: "scale(1.5)", // Visually enlarge the logo
+              )}, ${activeTheme.gradients.to.replace("to-", "")})`,
+              transform: "scale(1.5)",
               transformOrigin: "center center",
               zIndex: 1,
             }}
@@ -122,44 +101,29 @@ const Navbar = () => {
               src={RevuLogo}
               alt="Revu Logo"
               className="w-full h-full object-contain"
-            />{" "}
-            {/* Display the image */}
+            />
           </div>
         </Link>
 
-        {/* Navigation Items - Moved directly under nav and given ml-auto */}
         <div className="flex items-center space-x-2 ml-auto">
-          {" "}
-          {/* ml-auto pushes these items to the right */}
           {navigationItems.map((item) => (
             <NavItem key={item.id} item={item} />
           ))}
         </div>
-
-        {/* Settings button placeholder - Remains on the right */}
-        <div className="flex items-center space-x-2">
-          {/* Settings button placeholder */}
-        </div>
       </nav>
 
-      {/* Mobile Navigation (Hamburger menu) */}
+      {/* Mobile Navbar */}
       <div
-        className={`md:hidden flex items-center justify-between p-4 border-b ${activeTheme.bgColor} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full`}
+        className={`md:hidden flex items-center justify-between p-4 border-b ${activeTheme.background.navbar} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full ${activeTheme.border.bottom}`}
       >
-        <Link
-          to="/"
-          className="flex items-center space-x-2"
-          onClick={() => {
-            dispatch(setCurrentView("dashboard"));
-          }}
-        >
+        <Link to="/" className="flex items-center space-x-2">
           <div
-            className={`w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden`}
+            className="w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden"
             style={{
-              backgroundImage: `linear-gradient(to right, ${activeTheme.gradientFrom.replace(
+              backgroundImage: `linear-gradient(to right, ${activeTheme.gradients.from.replace(
                 "from-",
                 ""
-              )}, ${activeTheme.gradientTo.replace("to-", "")})`,
+              )}, ${activeTheme.gradients.to.replace("to-", "")})`,
               transform: "scale(1.5)",
               transformOrigin: "center center",
               zIndex: 1,
@@ -173,7 +137,7 @@ const Navbar = () => {
           </div>
         </Link>
         <button
-          className={`${activeTheme.textColor} hover:text-white transition-colors duration-200`}
+          className={`${activeTheme.text.primary} hover:text-white transition-colors duration-200`}
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <FontAwesomeIcon icon={faBars} className="h-6 w-6" />
@@ -182,10 +146,10 @@ const Navbar = () => {
 
       {isMenuOpen && (
         <div
-          className={`md:hidden flex flex-col p-4 space-y-2 ${activeTheme.bgColor} ${activeTheme.textColor} border-b`}
+          className={`md:hidden flex flex-col p-4 space-y-2 ${activeTheme.background.navbar} ${activeTheme.text.primary} border-b ${activeTheme.border.bottom}`}
         >
           {navigationItems.map((item) => (
-            <NavItem key={item.id} item={item} isMobile={true} />
+            <NavItem key={item.id} item={item} isMobile />
           ))}
         </div>
       )}

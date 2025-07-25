@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "./features/themeSlice";
+import { selectActiveTheme } from "./slices/themeSlice";
 import Navbar from "./components/Navbar";
 import DeckManager from "./components/DeckManager";
 import StudySession from "./components/StudySession";
@@ -22,7 +22,7 @@ function App() {
     <div style={appContainerStyles}>
       <Navbar />
       {/* Render different views based on currentView state */}
-      <main className="container mt-3"> {/* Use a container for page content */}
+      <main className=""> {/* Use a container for page content */}
         <Routes> {/* Define your routes here */}
           <Route path="/" element={<Dashboard />} />
           <Route path="/decks" element={<DeckManager />} />

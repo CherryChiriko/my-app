@@ -8,7 +8,7 @@ const decks = [
       due: 12,
       tags: ["hiragana", "beginner"],
       cardsCount: 46,
-      language: "japanese",
+      language: "Japanese",
       lastStudied: "20/01/2025",
     },
     {
@@ -20,7 +20,7 @@ const decks = [
       due: 5,
       tags: ["french", "intermediate"],
       cardsCount: 28,
-      language: "french",
+      language: "French",
       lastStudied: "15/02/2025",
     },
     {
@@ -32,7 +32,7 @@ const decks = [
       due: 8,
       tags: ["history", "advanced"],
       cardsCount: 48,
-      language: "english",
+      language: "English",
       lastStudied: "01/03/2025",
     },
   ];
