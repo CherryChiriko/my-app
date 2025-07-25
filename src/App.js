@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div style={appContainerStyles}>
-      {/* <Navbar /> */}
+      <Navbar />
       {/* Render different views based on currentView state */}
       <main className="container mt-3"> {/* Use a container for page content */}
         <Routes> {/* Define your routes here */}

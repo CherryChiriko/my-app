@@ -1,0 +1,40 @@
+const decks = [
+    {
+      id: 1,
+      name: "Japanese Hiragana Basics",
+      description: "Learn basic hiragana characters",
+      mastered: 20,
+      learning: 14,
+      due: 12,
+      tags: ["hiragana", "beginner"],
+      cardsCount: 46,
+      language: "japanese",
+      lastStudied: "20/01/2025",
+    },
+    {
+      id: 2,
+      name: "French Verbs",
+      description: "Conjugate common French verbs",
+      mastered: 15,
+      learning: 8,
+      due: 5,
+      tags: ["french", "intermediate"],
+      cardsCount: 28,
+      language: "french",
+      lastStudied: "15/02/2025",
+    },
+    {
+      id: 3,
+      name: "US History: Civil War",
+      description: "Key figures and events of the Civil War",
+      mastered: 30,
+      learning: 10,
+      due: 8,
+      tags: ["history", "advanced"],
+      cardsCount: 48,
+      language: "english",
+      lastStudied: "01/03/2025",
+    },
+  ];
+
+export default decks;
