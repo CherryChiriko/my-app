@@ -5,10 +5,16 @@ import Navbar from "./components/Navbar";
 function App() {
   const activeTheme = useSelector(selectActiveTheme);
 
+  // Apply dynamic background and text color directly as inline styles
+  const appContainerStyles = {
+    backgroundColor: activeTheme.bgColor,
+    color: activeTheme.textColor, 
+    minHeight: '100vh', 
+  };
+
   return (
-    <div className={`${activeTheme.bgColor} ${activeTheme.textColor} min-h-screen`}>
+    <div style={appContainerStyles}>
       <Navbar />
-      {/* <Routes>... */}
     </div>
   );
 }
