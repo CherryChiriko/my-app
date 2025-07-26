@@ -30,6 +30,22 @@ const DeckDetails = () => {
       <div className="background-gradient-to-r from-blue-500 to-purple-500 text-white p-4 rounded-lg shadow-lg">
         Hello, this is the Deck Details component!
       </div>
+      <div
+        className={`rounded-lg p-6 shadow-xl transform hover:scale-105 transition-all duration-300
+                  bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} text-white`}
+      >
+        <div className="pb-2">
+          <h3 className="text-sm font-medium flex items-center gap-2">
+            Current Streak
+          </h3>
+        </div>
+        <div>
+          <div className="text-3xl font-bold">7</div>
+          <p className={`text-sm ${activeTheme.text.activeButton}`}>
+            days in a row
+          </p>
+        </div>
+      </div>
     </h1>
   );
 };

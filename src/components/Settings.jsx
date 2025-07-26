@@ -1,11 +1,15 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectActiveTheme, setTheme } from "../slices/themeSlice"; // Assuming setTheme action exists
-import themes from "../assets/themes"; // Import the themes object
+import {
+  selectActiveTheme,
+  selectAllThemes,
+  setTheme,
+} from "../slices/themeSlice"; // Assuming setTheme action exists
 import Header from "../components/Header"; // Reusing the Header component
 
 const Settings = () => {
   const activeTheme = useSelector(selectActiveTheme);
+  const allThemes = useSelector(selectAllThemes);
   const dispatch = useDispatch();
 
   // Mock user settings data
@@ -46,10 +50,49 @@ const Settings = () => {
                 Choose your preferred visual theme for the application.
               </p>
               {/* TEST */}
+              allThemes.map((theme) => (
+              <React.Fragment key={theme.name}>
+                <div
+                  className={`rounded-lg p-6 shadow-xl transform hover:scale-105 transition-all duration-300
+        bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} text-white`}
+                >
+                  <div className="pb-2">
+                    <h3 className="text-sm font-medium flex items-center gap-2">
+                      Current Streak
+                    </h3>
+                  </div>
+                  <div>
+                    <div className="text-3xl font-bold">7</div>
+                    <p className={`text-sm ${activeTheme.text.activeButton}`}>
+                      days in a row
+                    </p>
+                  </div>
+                </div>
+
+                <div
+                  className={`bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
+                />
+              </React.Fragment>
+              ));
+              <div
+                className={`rounded-lg p-6 shadow-xl transform hover:scale-105 transition-all duration-300
+                  bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} text-white`}
+              >
+                <div className="pb-2">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    Current Streak
+                  </h3>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold">7</div>
+                  <p className={`text-sm ${activeTheme.text.activeButton}`}>
+                    days in a row
+                  </p>
+                </div>
+              </div>
               <div
                 className={`bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
               />
-
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center relative overflow-hidden"
                 style={{
@@ -63,45 +106,6 @@ const Settings = () => {
                 }}
               ></div>
               {/* TEST */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {Object.keys(themes).map((themeName) => {
-                  const theme = themes[themeName];
-                  // Extract background colors for the circle preview
-                  const circleBgGradient =
-                    theme.gradients.from.replace("from-", "from-") +
-                    " " +
-                    theme.gradients.to.replace("to-", "to-");
-
-                  return (
-                    <div
-                      key={themeName}
-                      className={`p-4 rounded-lg border-2 ${
-                        activeTheme.name === theme.name
-                          ? `border-[var(--primary)] ring-2 ring-[var(--primary)]` // Highlight active theme
-                          : `border-gray-200 dark:border-gray-700`
-                      } cursor-pointer transition-all duration-200 hover:shadow-md flex items-center space-x-4`}
-                      onClick={() => handleThemeChange(themeName)}
-                    >
-                      <div
-                        className="w-10 h-10 rounded-full shadow-md flex-shrink-0"
-                        style={{
-                          background: circleBgGradient.includes("gradient")
-                            ? `linear-gradient(to right, ${theme.gradients.from.replace(
-                                "from-",
-                                ""
-                              )}, ${theme.gradients.to.replace("to-", "")})`
-                            : theme.background.app.replace("bg-", "#"),
-                        }}
-                      ></div>
-                      <div>
-                        <p className={`font-semibold ${activeTheme.card.text}`}>
-                          {theme.name}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </section>
 
             {/* User Settings Section */}
