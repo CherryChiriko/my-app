@@ -2,42 +2,12 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../slices/themeSlice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHouse,
-  faGear,
-  faBook,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import { TbCardsFilled } from "react-icons/tb";
-import RevuLogo from "../assets/Revu_logo.png";
 
-const navigationItems = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: <FontAwesomeIcon icon={faHouse} />,
-    path: "/",
-  },
-  {
-    id: "decks",
-    label: "Decks",
-    icon: <TbCardsFilled />,
-    path: "/decks",
-  },
-  {
-    id: "study",
-    label: "Study",
-    icon: <FontAwesomeIcon icon={faBook} />,
-    path: "/study",
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: <FontAwesomeIcon icon={faGear} />,
-    path: "/settings",
-  },
-];
+import RevuLogo from "../assets/Revu_logo.png";
+import navigationItems from "../data/navigationItems";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const activeTheme = useSelector(selectActiveTheme);

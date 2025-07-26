@@ -1,11 +1,12 @@
 // src/components/DeckManager.jsx
 import React from "react";
-import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice";
+import { useNavigate } from "react-router-dom";
 
-const DeckCard = ({ deck }) => {
-  const activeTheme = useSelector(selectActiveTheme);
+const DeckCard = ({ deck, activeTheme }) => {
+  const navigate = useNavigate(); // Initialize useNavigate inside DeckCard
+
   const {
+    id, // Get the deck ID for navigation
     name,
     description,
     mastered,
@@ -17,15 +18,19 @@ const DeckCard = ({ deck }) => {
     lastStudied,
   } = deck;
 
-  // Calculate percentages for the progress bar
   const totalCards = mastered + learning + due;
   const masteredPercentage = totalCards > 0 ? (mastered / totalCards) * 100 : 0;
   const learningPercentage = totalCards > 0 ? (learning / totalCards) * 100 : 0;
   const duePercentage = totalCards > 0 ? (due / totalCards) * 100 : 0;
 
+  const handleCardClick = () => {
+    navigate(`${id}`); // Navigate to /decks/:deckId
+  };
+
   return (
     <div
-      className={`${activeTheme.card.bg} rounded-lg p-6 shadow-xl hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-1`}
+      className={`${activeTheme.card.bg} rounded-lg p-6 shadow-xl hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-1 cursor-pointer`} // Added cursor-pointer
+      onClick={handleCardClick} // Added onClick handler
     >
       <h3 className={`text-2xl font-bold ${activeTheme.card.text} mb-2`}>
         {name}

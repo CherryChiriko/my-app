@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../features/themeSlice"; // Adjust path as needed
+import { selectActiveTheme } from "../slices/themeSlice"; // Adjust path as needed
 
 const Import = ({ isOpen, onClose, onImport }) => {
   const activeTheme = useSelector(selectActiveTheme);

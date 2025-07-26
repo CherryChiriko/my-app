@@ -2,9 +2,15 @@ import { useSelector } from "react-redux";
 import { selectActiveTheme } from "./slices/themeSlice";
 import Navbar from "./components/Navbar";
 import DeckManager from "./components/DeckManager";
+import DeckListView from "./components/DeckListView";
+import DeckDetails from "./components/DeckDetails";
+import Import from "./components/Import";
+
 import StudySession from "./components/StudySession";
-import SettingsPage from "./components/SettingsPage";
+import Settings from "./components/Settings";
 import Dashboard from "./components/Dashboard";
+
+
 import Fourzerofour from "./components/404";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -21,13 +27,21 @@ function App() {
   return (
     <div style={appContainerStyles}>
       <Navbar />
-      {/* Render different views based on currentView state */}
-      <main className=""> {/* Use a container for page content */}
+      <main > 
         <Routes> {/* Define your routes here */}
           <Route path="/" element={<Dashboard />} />
-          <Route path="/decks" element={<DeckManager />} />
+
+          <Route path="/decks" element={<DeckManager />}>
+            {/* Index route for /decks - shows the main deck list */}
+            <Route index element={<DeckListView />} />
+            {/* Nested route for /decks/import - shows the import page */}
+            <Route path="import" element={<Import />} />
+            {/* Nested route for viewing a specific deck */}
+            <Route path=":deckId" element={<DeckDetails />} />
+          </Route>
+          
           <Route path="/study" element={<StudySession />} />
-          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Fourzerofour />} />
         </Routes>
       </main>
