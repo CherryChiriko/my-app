@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice";
+import { selectActiveTheme } from "../../slices/themeSlice";
 import RevuLogo from "../assets/Revu_logo.png";
 
 const DeckDetails = () => {

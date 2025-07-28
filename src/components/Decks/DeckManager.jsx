@@ -1,8 +1,8 @@
 import { React } from "react";
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice";
+import { selectActiveTheme } from "../../slices/themeSlice";
 
-import Header from "./Header";
+import Header from "../Header";
 
 import { Outlet } from "react-router-dom";
 
