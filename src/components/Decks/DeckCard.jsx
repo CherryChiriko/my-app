@@ -1,4 +1,4 @@
-// src/components/DeckManager.jsx
+// src/components/Decks/DeckManager.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 

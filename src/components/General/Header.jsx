@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice"; // Adjust path as needed
+import { selectActiveTheme } from "../../slices/themeSlice";
 
 const Header = ({ title, description }) => {
   const activeTheme = useSelector(selectActiveTheme);

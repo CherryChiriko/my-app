@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "./slices/themeSlice";
-import Navbar from "./components/Navbar";
-import DeckManager from "./components/DeckManager";
-import DeckListView from "./components/DeckListView";
-import DeckDetails from "./components/DeckDetails";
+import Navbar from "./components/Navbar/Navbar";
+import DeckManager from "./components/Decks/DeckManager";
+import DeckListView from "./components/Decks/DeckListView";
+import DeckDetails from "./components/Decks/DeckDetails";
 import Import from "./components/Import";
 
 import StudySession from "./components/StudySession";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice";
+import { selectActiveTheme } from "../../slices/themeSlice";
 
 import { useLocation } from "react-router-dom";
 

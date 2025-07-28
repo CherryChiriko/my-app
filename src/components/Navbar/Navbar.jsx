@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
 
-import RevuLogo from "../assets/Revu_logo.png";
+import RevuLogo from "../../assets/Revu_logo.png";
 import navigationItems from "../../data/navigationItems";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import NavItem from "../NavItem";
+import NavItem from "./NavItem";
 
 const Navbar = () => {
   const activeTheme = useSelector(selectActiveTheme);

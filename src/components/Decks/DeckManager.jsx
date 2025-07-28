@@ -2,7 +2,7 @@ import { React } from "react";
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
 
-import Header from "../Header";
+import Header from "../General/Header";
 
 import { Outlet } from "react-router-dom";
 

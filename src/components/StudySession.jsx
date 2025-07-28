@@ -13,7 +13,7 @@ import {
   faFaceFrown,
   faFaceTired,
 } from "@fortawesome/free-solid-svg-icons";
-import Header from "./Header";
+import Header from "./General/Header";
 import cards from "../data/cards";
 
 const StudySession = () => {

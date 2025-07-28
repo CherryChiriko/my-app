@@ -1,11 +1,10 @@
-// src/components/DeckListView.jsx
+// src/components/Decks/DeckListView.jsx
 import { React, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faUpload, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import Header from "../Header";
 import DeckCard from "./DeckCard";
 import decks from "../../data/decks";
 import { useNavigate } from "react-router-dom";

@@ -5,7 +5,7 @@ import {
   selectAllThemes,
   setTheme,
 } from "../slices/themeSlice"; // Assuming setTheme action exists
-import Header from "../components/Header"; // Reusing the Header component
+import Header from "../components/General/Header"; // Reusing the Header component
 
 const Settings = () => {
   const activeTheme = useSelector(selectActiveTheme);
