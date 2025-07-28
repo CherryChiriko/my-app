@@ -52,7 +52,12 @@ const Navbar = () => {
     <>
       {/* Desktop Navbar */}
       <nav
-        className={`hidden md:flex items-center justify-between p-4 border-b ${activeTheme.background.navbar} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full ${activeTheme.border.bottom}`}
+        className={`hidden md:flex items-center justify-between p-4 border-b
+           ${activeTheme.background.navbar} backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full
+            ${activeTheme.border.bottom} shadow-md`}
+        style={{
+          boxShadow: `0 4px 6px ${activeTheme.shadow}`,
+        }}
       >
         <Link to="/" className="flex items-center space-x-2">
           <div

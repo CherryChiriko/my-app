@@ -5,7 +5,7 @@ const themes = {
     // General App Colors
     background: {
       app: "bg-gray-900", // Main app background (darker than card)
-      navbar: "bg-gray-900", // Navbar background
+      navbar: "bg-gray-800", // Navbar background
       importPage: "bg-gradient-to-br from-gray-900 to-gray-800", // Gradient for ImportPage background
     },
     text: {
@@ -29,6 +29,7 @@ const themes = {
       bottom: "border-gray-700", // Navbar bottom border
       dashed: "border-gray-600", // Dashed border for file upload
     },
+    shadow: "rgba(255, 255, 255, 0.06)",
 
     // Component Specific Colors (DeckManager)
     card: {
@@ -108,6 +109,7 @@ const themes = {
       bottom: "border-pink-200",
       dashed: "border-pink-300",
     },
+    shadow: "rgba(255, 255, 255, 0.06)",
     card: {
       bg: "bg-pink-100",
       text: "text-gray-800",
@@ -184,6 +186,7 @@ const themes = {
       bottom: "border-teal-200",
       dashed: "border-teal-300",
     },
+    shadow: "rgba(255, 255, 255, 0.06)",
     card: {
       bg: "bg-teal-100",
       text: "text-gray-800",
@@ -260,6 +263,7 @@ const themes = {
       bottom: "border-purple-200",
       dashed: "border-purple-300",
     },
+    shadow: "rgba(255, 255, 255, 0.06)",
     card: {
       bg: "bg-purple-100",
       text: "text-gray-800",

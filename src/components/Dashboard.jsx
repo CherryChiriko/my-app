@@ -5,19 +5,15 @@ import { selectActiveTheme } from "../slices/themeSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFire, // For streak
-  faCalendarDay, // For cards due
-  faHistory, // For recent activity (not directly used but kept for context)
-  faPlus, // For add new card
-  faBookOpen, // For study now / random study / Your Decks icon
-  faLayerGroup, // For browse all decks
-  faBrain, // For Start Studying button
-  faClock, // For Study Time
-  faBullseye, // For Cards Due (Target)
-  faTrophy, // For Mastered / Best Streak / Total XP
-  faChartLine, // For Accuracy Rate (TrendingUp)
-  faCalendarAlt, // For Best Streak (Calendar)
-  faExclamationCircle, // For AlertCircle
+  faFire,
+  faBookOpen,
+  faBrain,
+  faClock,
+  faBullseye,
+  faTrophy,
+  faChartLine,
+  faCalendarAlt,
+  faExclamationCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Dashboard = ({ onStartStudy, onViewDeck }) => {
