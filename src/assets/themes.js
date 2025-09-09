@@ -1,10 +1,3 @@
-// src/assets/themes.js
-
-/**
- * Tailwind-safe theme generator using class name maps.
- * Includes gradients, text, card, alert, input, and button styles.
- */
-
 const colorShades = {
   gray: {
     bgDark: "bg-gray-900",
@@ -41,6 +34,60 @@ const colorShades = {
     shadowLight: "rgba(0,0,0,0.1)",
     iconDark: "text-pink-400",
     iconLight: "text-pink-600",
+  },
+  blue: {
+    bgDark: "bg-blue-900",
+    bgLight: "bg-blue-100",
+    navbarDark: "bg-blue-800",
+    navbarLight: "bg-blue-100",
+    cardDark: "bg-blue-800",
+    cardLight: "bg-blue-200",
+    textPrimaryDark: "text-white",
+    textPrimaryLight: "text-blue-800",
+    textMutedDark: "text-blue-500",
+    textMutedLight: "text-blue-700",
+    borderDark: "border-blue-700",
+    borderLight: "border-blue-300",
+    shadowDark: "rgba(255,255,255,0.06)",
+    shadowLight: "rgba(0,0,0,0.1)",
+    iconDark: "text-blue-400",
+    iconLight: "text-blue-600",
+  },
+  cyan: {
+    bgDark: "bg-cyan-900",
+    bgLight: "bg-cyan-100",
+    navbarDark: "bg-cyan-800",
+    navbarLight: "bg-cyan-100",
+    cardDark: "bg-cyan-800",
+    cardLight: "bg-cyan-200",
+    textPrimaryDark: "text-white",
+    textPrimaryLight: "text-cyan-800",
+    textMutedDark: "text-cyan-500",
+    textMutedLight: "text-cyan-700",
+    borderDark: "border-cyan-700",
+    borderLight: "border-cyan-300",
+    shadowDark: "rgba(255,255,255,0.06)",
+    shadowLight: "rgba(0,0,0,0.1)",
+    iconDark: "text-cyan-400",
+    iconLight: "text-cyan-600",
+  },
+  purple: {
+    bgDark: "bg-purple-900",
+    bgLight: "bg-purple-100",
+    navbarDark: "bg-purple-800",
+    navbarLight: "bg-purple-100",
+    cardDark: "bg-purple-800",
+    cardLight: "bg-purple-200",
+    textPrimaryDark: "text-white",
+    textPrimaryLight: "text-purple-800",
+    textMutedDark: "text-purple-500",
+    textMutedLight: "text-purple-700",
+    borderDark: "border-purple-700",
+    borderLight: "border-purple-300",
+    shadowDark: "rgba(255,255,255,0.06)",
+    shadowLight: "rgba(0,0,0,0.1)",
+    iconDark: "text-purple-400",
+    iconLight: "text-purple-600",
   },
   // Add more primaryColor maps here: teal, purple, etc.
 };
@@ -188,8 +235,10 @@ const themes = {
     name: "Classic Default",
     isDark: true,
     primaryColor: "gray",
-    accentColor1: "purple",
+    accentColor1: "blue",
     accentColor2: "cyan",
+    accentColor3: "pink",
+    accentColor4: "purple",
     successColor: "green",
     warningColor: "orange",
     dangerColor: "red",
@@ -198,9 +247,11 @@ const themes = {
   blushPastel: defineTheme({
     name: "Blush Pastel",
     isDark: false,
-    primaryColor: "pink",
+    primaryColor: "cyan",
     accentColor1: "pink",
     accentColor2: "blue",
+    accentColor3: "purple",
+    accentColor4: "cyan",
     successColor: "green",
     warningColor: "orange",
     dangerColor: "red",

@@ -8,7 +8,7 @@ import Import from "./components/Import";
 
 import StudySession from "./components/StudySession";
 import Settings from "./components/Settings";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 
 
 import Fourzerofour from "./components/404";

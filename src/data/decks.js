@@ -10,6 +10,7 @@ const decks = [
       cardsCount: 46,
       language: "Japanese",
       lastStudied: "20/01/2025",
+      studyMode: "A",
     },
     {
       id: 2,
@@ -22,6 +23,7 @@ const decks = [
       cardsCount: 28,
       language: "French",
       lastStudied: "15/02/2025",
+      studyMode: "A",
     },
     {
       id: 3,
@@ -34,6 +36,7 @@ const decks = [
       cardsCount: 48,
       language: "English",
       lastStudied: "01/03/2025",
+      studyMode: "A",
     },
   ];
 

@@ -1,7 +1,7 @@
 // src/pages/Dashboard.jsx
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { selectActiveTheme } from "../slices/themeSlice";
+import { selectActiveTheme } from "../../slices/themeSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,9 +15,9 @@ import {
   faCalendarAlt,
   faExclamationCircle, // Added back for error state
 } from "@fortawesome/free-solid-svg-icons";
-import decksData from "../data/decks"; // Renamed to avoid conflict with state variable
-import MiniDeckCard from "./Decks/MiniDeckCard";
-import RevuLogo from "../assets/Revu_logo.png";
+import decksData from "../../data/decks"; // Renamed to avoid conflict with state variable
+import MiniDeckCard from "../Decks/MiniDeckCard";
+import DashboardHero from "./DashboardHero";
 
 const Dashboard = ({ onStartStudy, onViewDeck }) => {
   const activeTheme = useSelector(selectActiveTheme);
@@ -189,124 +189,13 @@ const Dashboard = ({ onStartStudy, onViewDeck }) => {
       className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full py-10 px-4 md:px-8 lg:px-12 font-inter`}
     >
       <div className="max-w-screen-xl mx-auto space-y-12">
-        {/* Header */}
-        <div className="flex flex-col space-y-4">
-          {/* <h1
-            className={`text-6xl font-extrabold ${activeTheme.text.primary} tracking-tight`}
-          > */}
-          <img src={RevuLogo} alt="Revu Logo" className="w-32 object-contain" />
-          {/* </h1> */}
-          <p className={`text-xl ${activeTheme.text.muted} max-w-2xl mx-auto`}>
-            Study flashcards with intelligent spaced repetition to master any
-            subject.
-          </p>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Current Streak Card */}
-          <div
-            className={`rounded-2xl p-6 shadow-xl transform hover:scale-105 transition-all duration-300
-            bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`}
-          >
-            <div className="mb-3">
-              <h3 className="text-base font-medium flex items-center gap-3 opacity-90">
-                <FontAwesomeIcon icon={faFire} className="w-5 h-5" />
-                Current Streak
-              </h3>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">
-                {streaks.current_streak || 0}
-              </div>
-              <p className={`text-sm opacity-80`}>days in a row</p>
-            </div>
-          </div>
-
-          {/* Cards Due Card */}
-          <div
-            className={`rounded-2xl p-6 shadow-xl transform hover:scale-105 transition-all duration-300
-            bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`}
-          >
-            <div className="mb-3">
-              <h3 className="text-base font-medium flex items-center gap-3 opacity-90">
-                <FontAwesomeIcon icon={faBullseye} className="w-5 h-5" />
-                Cards Due
-              </h3>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">
-                {cards_due_today || 0}
-              </div>
-              <p className={`text-sm opacity-80`}>ready to review</p>
-            </div>
-          </div>
-
-          {/* Mastered Cards Card */}
-          <div
-            className={`rounded-2xl p-6 shadow-xl transform hover:scale-105 transition-all duration-300
-            bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`}
-          >
-            <div className="mb-3">
-              <h3 className="text-base font-medium flex items-center gap-3 opacity-90">
-                <FontAwesomeIcon icon={faTrophy} className="w-5 h-5" />
-                Mastered
-              </h3>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">
-                {mastered_cards || 0}
-              </div>
-              <p className={`text-sm opacity-80`}>cards learned</p>
-            </div>
-          </div>
-
-          {/* Study Time Card */}
-          <div
-            className={`rounded-2xl p-6 shadow-xl transform hover:scale-105 transition-all duration-300
-            bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`}
-          >
-            <div className="mb-3">
-              <h3 className="text-base font-medium flex items-center gap-3 opacity-90">
-                <FontAwesomeIcon icon={faClock} className="w-5 h-5" />
-                Study Time
-              </h3>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-1">
-                {today.study_time || 0}
-              </div>
-              <p className={`text-sm opacity-80`}>minutes today</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Action */}
-        <div className="text-center py-4">
-          {(cards_due_today || 0) > 0 ? (
-            <button
-              onClick={() => navigate("/study")}
-              className={`inline-flex items-center justify-center text-xl px-16 py-7 rounded-full shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300
-                bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}
-                ${activeTheme.gradients.buttonHoverFrom} ${activeTheme.gradients.buttonHoverTo}
-                font-semibold tracking-wide`}
-            >
-              <FontAwesomeIcon icon={faBook} className="w-7 h-7 mr-3" />
-              Start Studying ({cards_due_today} due)
-            </button>
-          ) : (
-            <div className="space-y-4 p-8 rounded-xl border border-dashed ${activeTheme.border.dashed} ${activeTheme.card.bg} shadow-lg">
-              <div
-                className={`text-3xl font-semibold ${activeTheme.text.primary}`}
-              >
-                🎉 All caught up!
-              </div>
-              <p className={`${activeTheme.text.muted} text-lg`}>
-                No cards are due for review right now. Keep up the great work!
-              </p>
-            </div>
-          )}
-        </div>
+        <DashboardHero
+          activeTheme={activeTheme}
+          streaks={streaks}
+          cards_due_today={cards_due_today}
+          mastered_cards={mastered_cards}
+          today={today}
+        />
 
         {/* Decks Overview */}
         <div className="space-y-6">

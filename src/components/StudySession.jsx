@@ -14,6 +14,9 @@ import {
   faFaceTired,
 } from "@fortawesome/free-solid-svg-icons";
 import Header from "./General/Header";
+import CardRenderer from "./CardRenderer";
+
+import { sm2, getReviewQueue } from "../helpers/sm2";
 import cards from "../data/cards";
 
 const StudySession = () => {
@@ -26,47 +29,65 @@ const StudySession = () => {
   const [accuracyScore, setAccuracyScore] = useState(90); // Mock accuracy
   const audioRef = useRef(null); // Ref for audio element
 
-  const currentCard = cards[currentCardIndex];
+  const [reviewQueue, setReviewQueue] = useState(getReviewQueue(cards));
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const currentCard = reviewQueue[currentIndex] || null;
   const totalCards = cards.length;
 
   // Effect to handle audio auto-play when a new card appears
   useEffect(() => {
-    if (currentCard && audioRef.current) {
-      // In a real app, you would set audioRef.current.src = currentCard.audioUrl;
-      // For now, just simulate playback
+    // Check if the card has an audioUrl before trying to play
+    if (currentCard && currentCard.audioUrl && audioRef.current) {
       console.log(
         `Playing audio for: ${currentCard.character} (${currentCard.audioUrl})`
       );
+      // In a real app, you would set audioRef.current.src = currentCard.audioUrl;
+      // For now, just simulate playback
       // audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
     }
-  }, [currentCardIndex, currentCard]); // Re-run when card changes
+  }, [currentCardIndex, currentCard]);
 
   const handleNextCard = () => {
-    if (currentCardIndex < totalCards - 1) {
-      setCurrentCardIndex((prevIndex) => prevIndex + 1);
-      setShowAnswer(false); // Reset for next card
-    } else {
-      // End of session
-      console.log("Study session complete!");
-      // You might navigate to a summary page here
-      navigate("/decks"); // Navigate back to decks for now
+    const newQueue = reviewQueue.filter((_, i) => i !== currentIndex);
+
+    setReviewQueue(newQueue);
+    setCurrentCardIndex((prev) => prev + 1);
+    setShowAnswer(false);
+    setReviewedCount((count) => count + 1);
+
+    // If no more cards, exit
+    if (newQueue.length === 0) {
+      navigate("/decks");
     }
   };
 
   const handleRating = (rating) => {
-    console.log(`Card "${currentCard.character}" rated as: ${rating}`);
-    setReviewedCount((prev) => prev + 1);
-    // Simulate accuracy change based on rating (very basic)
-    if (rating === "good" || rating === "easy") {
-      setAccuracyScore((prev) => Math.min(100, prev + 2));
-    } else if (rating === "again" || rating === "hard") {
-      setAccuracyScore((prev) => Math.max(0, prev - 5));
-    }
+    const card = reviewQueue[currentIndex];
+
+    // Map rating -> SM-2 quality
+    let quality = 0;
+    if (rating === "again") quality = 0;
+    if (rating === "hard") quality = 3;
+    if (rating === "good") quality = 4;
+    if (rating === "easy") quality = 5;
+
+    // Update scheduling
+    const updatedCard = sm2(card, quality);
+
+    // Persist updated card (localStorage/Redux/db)
+    // For now we just log:
+    console.log("Updated card:", updatedCard);
+  };
+
+  const handleClick = (rating) => {
+    handleRating(rating);
     handleNextCard();
   };
 
   const playAudio = () => {
-    if (currentCard) {
+    // Only play audio if the current card has an audioUrl
+    if (currentCard && currentCard.audioUrl) {
       console.log(
         `Replaying audio for: ${currentCard.character} (${currentCard.audioUrl})`
       );
@@ -99,29 +120,19 @@ const StudySession = () => {
             <FontAwesomeIcon icon={faArrowLeft} className="h-5 w-5 mr-2" />
             Exit Study
           </button>
-
-          {/* Central Progress Area */}
           <div className="flex flex-col items-center flex-grow mx-4">
-            {" "}
-            {/* flex-grow to take available space, mx-4 for spacing */}
             <p className={`${activeTheme.text.muted} text-sm mb-2`}>
-              {" "}
-              {/* Text above the bar */}
               {currentCardIndex + 1} of {totalCards}
             </p>
             <div
               className={`w-full max-w-2xl ${activeTheme.progress.track} rounded-full h-2.5 overflow-hidden`}
             >
-              {" "}
-              {/* Progress bar container */}
               <div
                 className={`h-2.5 rounded-full bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
           </div>
-
-          {/* Right-aligned stats */}
           <div className="text-right">
             <p className={`text-sm ${activeTheme.text.muted}`}>
               Accuracy:{" "}
@@ -136,98 +147,53 @@ const StudySession = () => {
           </div>
         </header>
 
-        {/* Main Card Area */}
+        {/* Main Card Area - Use a single container and conditionally render content */}
         <div
           className={`relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8`}
         >
           {" "}
-          {/* Added perspective and max-w-2xl, mx-auto */}
-          <div
-            className={`relative w-full h-full text-center transition-transform duration-700 preserve-3d rounded-lg shadow-2xl`}
-            style={{
-              transform: showAnswer ? "rotateY(180deg)" : "rotateY(0deg)",
-            }}
-          >
-            {/* Card Front */}
-            <div
-              className={`absolute w-full h-full backface-hidden rounded-lg ${activeTheme.card.bg} p-8 flex flex-col justify-center items-center`}
-            >
-              <span
-                className={`text-8xl font-bold ${activeTheme.text.primary} mb-4`}
-              >
-                {currentCard?.character}
-              </span>
-              <button
-                onClick={playAudio}
-                className={`p-3 rounded-full ${activeTheme.button.secondaryBg} ${activeTheme.button.secondaryHover} ${activeTheme.text.activeButton} transition-colors duration-200`}
-                aria-label="Replay audio"
-              >
-                <FontAwesomeIcon icon={faVolumeUp} className="h-6 w-6" />
-              </button>
-            </div>
-
-            {/* Card Back */}
-            <div
-              className={`absolute w-full h-full backface-hidden rounded-lg ${activeTheme.card.bg} p-8 flex flex-col justify-center items-center rotate-y-180`}
-            >
-              <p
-                className={`text-6xl font-bold ${activeTheme.text.primary} mb-4`}
-              >
-                {currentCard?.character}
-              </p>
-              <p className={`text-3xl ${activeTheme.text.secondary} mb-2`}>
-                [{currentCard?.reading}]
-              </p>
-              <p className={`text-2xl ${activeTheme.text.primary} mb-4`}>
-                {currentCard?.meaning}
-              </p>
-              <button
-                onClick={playAudio}
-                className={`p-3 rounded-full ${activeTheme.button.secondaryBg} ${activeTheme.button.secondaryHover} ${activeTheme.text.activeButton} transition-colors duration-200`}
-                aria-label="Replay audio"
-              >
-                <FontAwesomeIcon icon={faVolumeUp} className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
-          {/* Reveal Answer Button (visible only when answer is hidden) */}
+          <CardRenderer
+            card={currentCard}
+            studyMode={"A"} // later pull from deck settings
+            showAnswer={showAnswer}
+            activeTheme={activeTheme}
+          />
+          {/* Reveal Answer Button */}
           {!showAnswer && (
             <button
               onClick={revealAnswer}
-              className={`absolute bottom-8 left-1/2 transform -translate-x-1/2
-              px-6 py-3 rounded-full font-semibold ${activeTheme.button.primaryBg} ${activeTheme.button.primaryHover} ${activeTheme.text.activeButton}
-              transition-all duration-300 shadow-lg hover:shadow-xl`}
+              className={`absolute bottom-8 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-full font-semibold ${activeTheme.button.primaryBg} ${activeTheme.button.primaryHover} ${activeTheme.text.activeButton} transition-all duration-300 shadow-lg hover:shadow-xl`}
             >
               <FontAwesomeIcon icon={faEye} className="w-5 h-5 mr-2" />
               Reveal Answer
             </button>
           )}
-          {/* Rating Buttons (visible only when answer is shown) */}
+          {/* Rating Buttons */}
           {showAnswer && (
             <div className="absolute bottom-8 w-full flex justify-center space-x-4 px-8">
               <button
-                onClick={() => handleRating("again")}
+                onClick={() => handleClick("again")}
                 className={`flex-1 px-4 py-3 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white transition-colors duration-200 shadow-md`}
               >
                 <FontAwesomeIcon icon={faFaceTired} className="w-5 h-5 mr-2" />{" "}
                 Again
               </button>
               <button
-                onClick={() => handleRating("hard")}
+                onClick={() => handleClick("hard")}
                 className={`flex-1 px-4 py-3 rounded-lg font-semibold bg-orange-600 hover:bg-orange-700 text-white transition-colors duration-200 shadow-md`}
               >
                 <FontAwesomeIcon icon={faFaceFrown} className="w-5 h-5 mr-2" />{" "}
                 Hard
               </button>
               <button
-                onClick={() => handleRating("good")}
+                onClick={() => handleClick("good")}
                 className={`flex-1 px-4 py-3 rounded-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200 shadow-md`}
               >
                 <FontAwesomeIcon icon={faFaceSmile} className="w-5 h-5 mr-2" />{" "}
                 Good
               </button>
               <button
-                onClick={() => handleRating("easy")}
+                onClick={() => handleClick("easy")}
                 className={`flex-1 px-4 py-3 rounded-lg font-semibold bg-green-600 hover:bg-green-700 text-white transition-colors duration-200 shadow-md`}
               >
                 <FontAwesomeIcon
@@ -239,10 +205,10 @@ const StudySession = () => {
             </div>
           )}
         </div>
-
-        {/* Hidden audio element for playback */}
-        <audio ref={audioRef} preload="auto" />
       </div>
+
+      {/* Hidden audio element for playback */}
+      <audio ref={audioRef} preload="auto" />
     </div>
   );
 };
