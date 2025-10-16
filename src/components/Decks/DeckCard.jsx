@@ -1,9 +1,12 @@
 // src/components/Decks/DeckManager.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { selectDeck } from "../../slices/deckSlice";
 
 const DeckCard = ({ deck, activeTheme }) => {
   const navigate = useNavigate(); // Initialize useNavigate inside DeckCard
+  const dispatch = useDispatch();
 
   const {
     id, // Get the deck ID for navigation
@@ -25,6 +28,12 @@ const DeckCard = ({ deck, activeTheme }) => {
 
   const handleCardClick = () => {
     navigate(`${id}`); // Navigate to /decks/:deckId
+  };
+
+  const handleStudyNow = (e) => {
+    e.stopPropagation(); // Prevent triggering the card click
+    dispatch(selectDeck(deck)); // Dispatch the selected deck
+    navigate("/study");
   };
 
   return (
@@ -102,6 +111,7 @@ const DeckCard = ({ deck, activeTheme }) => {
 
       <button
         className={`mt-6 w-full ${activeTheme.button.studyBg} ${activeTheme.button.studyHover} ${activeTheme.card.tagText} font-semibold py-2 rounded-lg transition-colors duration-200`}
+        onClick={handleStudyNow}
       >
         Study Now
       </button>

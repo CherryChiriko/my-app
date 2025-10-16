@@ -26,10 +26,10 @@ function App() {
 
   return (
     <div style={appContainerStyles}>
-      <Navbar />
+      {/* <Navbar /> */}
       <main > 
         <Routes> {/* Define your routes here */}
-          <Route path="/" element={<Dashboard />} />
+          {/* <Route path="/" element={<Dashboard />} /> */}
 
           <Route path="/decks" element={<DeckManager />}>
             {/* Index route for /decks - shows the main deck list */}
@@ -40,7 +40,7 @@ function App() {
             <Route path=":deckId" element={<DeckDetails />} />
           </Route>
           
-          <Route path="/study" element={<StudySession />} />
+          <Route path="/study" element={<StudySession />} /> 
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Fourzerofour />} />
         </Routes>

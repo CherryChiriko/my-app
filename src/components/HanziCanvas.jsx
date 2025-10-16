@@ -6,7 +6,6 @@ export default function App() {
     totalMistakes: 0,
     strokesRemaining: 0,
     isQuizComplete: false,
-    message: "Draw the character!",
   };
   const [quizStatus, setQuizStatus] = useState(initialStatus);
   const hanziWriterRef = useRef(null);
@@ -32,7 +31,6 @@ export default function App() {
               ...prevStatus,
               totalMistakes: strokeData.totalMistakes,
               strokesRemaining: strokeData.strokesRemaining,
-              message: `Mistake on stroke ${strokeData.strokeNum}!`,
             }));
           },
           onCorrectStroke: (strokeData) => {
@@ -40,7 +38,6 @@ export default function App() {
               ...prevStatus,
               totalMistakes: strokeData.totalMistakes,
               strokesRemaining: strokeData.strokesRemaining,
-              message: `Correct! Strokes remaining: ${strokeData.strokesRemaining}`,
             }));
           },
           onComplete: (summaryData) => {
