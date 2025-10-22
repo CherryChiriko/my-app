@@ -1,57 +1,39 @@
 // src/slices/deckSlice.js
-import { createSlice } from '@reduxjs/toolkit';
-import decksData from '../data/decks';
-import allCards from '../data/cards'; // Import the complete list of cards
+import { createSlice } from "@reduxjs/toolkit";
+import decksData from "../data/decks";
 
-// Helper function to find the initial active deck with the most due cards
 const getInitialActiveDeck = (decks) => {
-    if (decks.length === 0) return null;
-    const sortedDeck = decks.sort((a, b) => b.due - a.due); // Sort decks by due count descending
-    if (sortedDeck[0].due > 0) {
-      return sortedDeck[0];
-    } else return null;
-};
-
-const getDeckCards = (deck) => {
-  const filteredCards = allCards.filter(card => card.deckId === deck.id)
-  return filteredCards;
+  if (decks.length === 0) return null;
+  const sortedDeck = decks.sort((a, b) => b.due - a.due); // Sort decks by due count descending
+  if (sortedDeck[0].due > 0) {
+    return sortedDeck[0];
+  } else return null;
 };
 
 const initialActiveDeck = getInitialActiveDeck(decksData);
-const initialCards = initialActiveDeck ? getDeckCards(initialActiveDeck) : [];
 
 const initialState = {
   decks: decksData,
-  activeDeck: initialActiveDeck,
-  allCards: initialCards, 
+  activeDeckId: initialActiveDeck.id,
 };
 
 export const deckSlice = createSlice({
-  name: 'decks',
+  name: "decks",
   initialState,
   reducers: {
     selectDeck: (state, action) => {
-      const selectedDeck = action.payload;
-      state.activeDeck = {
-          ...selectedDeck,
-          allCards: getDeckCards(selectedDeck), 
-      };
+      state.activeDeckId = action.payload.id;
     },
-    updateCard: (state, action) => {
-      const updatedCard = action.payload;
-      const cardIndex = state.allCards.findIndex(card => card.id === updatedCard.id);
-      if (cardIndex !== -1) {
-        state.allCards[cardIndex] = updatedCard;
-      }
-    },
-    // You can add more reducers here for creating decks, etc.
   },
 });
 
-export const { selectDeck, updateCard } = deckSlice.actions;
+export const { selectDeck } = deckSlice.actions;
 
 export const selectAllDecks = (state) => state.decks.decks;
-export const selectActiveDeck = (state) => state.decks.activeDeck;
-export const selectAllCards = (state) => state.decks.allCards;
+export const selectActiveDeckId = (state) => state.decks.activeDeckId;
+export const selectActiveDeck = (state) => {
+  const { decks, activeDeckId } = state.decks;
+  return decks.find((d) => d.id === activeDeckId) || null;
+};
 
 export default deckSlice.reducer;

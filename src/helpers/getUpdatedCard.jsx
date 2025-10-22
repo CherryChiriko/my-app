@@ -1,5 +1,4 @@
-// Helper function to update card properties based on SRS
-const getUpdatedCard = (card, rating) => {
+export const getUpdatedCard = (card, rating) => {
   let newInterval = 0;
   let newEase = card.ease;
   let newLapses = card.lapses;
@@ -7,7 +6,7 @@ const getUpdatedCard = (card, rating) => {
   switch (rating) {
     case "again":
       newInterval = 1;
-      newEase = Math.max(1.3, newEase - 0.2); // Ensure ease doesn't drop too low
+      newEase = Math.max(1.3, newEase - 0.2);
       newLapses = newLapses + 1;
       break;
     case "hard":
@@ -18,13 +17,12 @@ const getUpdatedCard = (card, rating) => {
       break;
     case "easy":
       newInterval = card.interval > 0 ? card.interval * newEase * 1.3 : 6;
-      newEase = Math.min(2.5, newEase + 0.15); // Cap ease at a reasonable max
+      newEase = Math.min(2.5, newEase + 0.15);
       break;
     default:
       newInterval = card.interval;
   }
 
-  // Calculate the new due date
   const now = new Date();
   const newDueDate = new Date(
     now.getTime() + newInterval * 24 * 60 * 60 * 1000
@@ -35,6 +33,6 @@ const getUpdatedCard = (card, rating) => {
     interval: newInterval,
     ease: newEase,
     lapses: newLapses,
-    due: newDueDate.toISOString(), // Store in a standardized format
+    due: newDueDate.toISOString(),
   };
 };
