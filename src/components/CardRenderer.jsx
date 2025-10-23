@@ -99,13 +99,15 @@ const CardRenderer = ({
             className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl ${cardBg} p-8 flex flex-col justify-between items-center shadow-2xl`}
           >
             {/* Card answer / meaning */}
-            <div className="flex flex-col justify-center items-center h-full pt-8">
-              <p
-                className={`text-4xl font-semibold ${primaryText} text-center mb-4`}
-              >
-                {card.back}
-              </p>
-            </div>
+            {showAnswer && (
+              <div className="flex flex-col justify-center items-center h-full pt-8">
+                <p
+                  className={`text-4xl font-semibold ${primaryText} text-center mb-4`}
+                >
+                  {card.back}
+                </p>
+              </div>
+            )}
 
             {/* Rating buttons — shown only when showAnswer is true (parent controls it) */}
             {showAnswer && (

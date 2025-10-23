@@ -1,73 +1,163 @@
-// src/components/StudySession.jsx
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
+import Header from "./General/Header";
+import CardRenderer from "./CardRenderer";
+import { getUpdatedCard } from "../helpers/getUpdatedCard";
+import {
+  fetchCardsByDeckId,
+  selectAllCards,
+  selectCardsStatus,
+  selectCardsError,
+} from "../slices/cardSlice";
 import { selectActiveTheme } from "../slices/themeSlice";
 import { selectActiveDeck } from "../slices/deckSlice";
 import { updateCard } from "../slices/cardSlice";
-import { getUpdatedCard } from "../helpers/getUpdatedCard";
-import { getReviewQueue } from "../helpers/getReviewQueue";
-import Header from "./General/Header";
-import CardRenderer from "./CardRenderer";
-import cardsData from "../data/cards";
 
 const StudySession = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const activeTheme = useSelector(selectActiveTheme);
   const activeDeck = useSelector(selectActiveDeck);
-  console.log("Active Deck:", activeDeck);
 
-  const allDeckCards = useMemo(() => {
-    return activeDeck
-      ? cardsData.filter((c) => c.deckId === activeDeck.id)
-      : [];
-  }, [activeDeck]);
+  const cards = useSelector(selectAllCards);
+  const status = useSelector(selectCardsStatus);
+  const error = useSelector(selectCardsError);
 
-  const reviewQueue = useMemo(
-    () => getReviewQueue(allDeckCards),
-    [allDeckCards]
-  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [reviewedCount, setReviewedCount] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
 
-  const totalCards = reviewQueue.length;
-  const currentCard = reviewQueue[currentIndex];
-  const progressPercentage = totalCards
-    ? (reviewedCount / totalCards) * 100
-    : 0;
+  const currentCard = cards[currentIndex];
+  const totalCards = cards.length;
 
-  const exitStudy = () => navigate("/decks");
+  /** 🧠 Fetch due cards from backend */
 
-  const revealAnswer = () => setShowAnswer(true);
+  useEffect(() => {
+    if (activeDeck) {
+      dispatch(fetchCardsByDeckId(activeDeck.id));
+    }
+  }, [activeDeck?.id, dispatch]);
 
-  const handleCardRating = (rating) => {
-    if (!currentCard) return;
+  /** 🧭 Navigation */
+  const exitStudy = () => {
+    navigate("/decks");
+  };
 
-    const updatedCard = getUpdatedCard(currentCard, rating);
-    dispatch(updateCard(updatedCard));
+  /** 🔍 Reveal Answer */
+  const handleReveal = () => setShowAnswer(true);
 
-    setReviewedCount((prev) => prev + 1);
+  const handleNextCard = () => {
     setShowAnswer(false);
-
-    if (currentIndex + 1 < reviewQueue.length) {
-      setCurrentIndex((prev) => prev + 1);
+    setReviewedCount((count) => count + 1);
+    if (currentIndex + 1 < totalCards) {
+      setCurrentIndex((i) => i + 1);
     } else {
       navigate("/decks");
     }
   };
+
+  /** 💬 Handle rating (“again”, “hard”, “good”, “easy”) */
+  const handleRate = async (rating) => {
+    if (!currentCard) return;
+
+    try {
+      let updatedCard;
+
+      // Try backend update first
+      const res = await fetch(`http://localhost:5000/cards/${currentCard.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(getUpdatedCard(currentCard, rating)),
+      });
+
+      if (res.ok) {
+        updatedCard = await res.json();
+        console.log("✅ Card updated on backend:", updatedCard);
+      } else {
+        console.warn("⚠️ Backend update failed, using local SRS.");
+        updatedCard = getUpdatedCard(currentCard, rating);
+      }
+
+      // Update in Redux (keeps UI in sync)
+      dispatch(updateCard(updatedCard));
+
+      // Optionally: if you want to persist even offline sessions,
+      // you can call a thunk to save it when backend is available again:
+      // dispatch(saveUpdatedCard(updatedCard));
+    } catch (err) {
+      console.warn("💡 Offline mode: using local SRS fallback.", err);
+      const updatedCard = getUpdatedCard(currentCard, rating);
+      dispatch(updateCard(updatedCard));
+    }
+
+    // Move to next card (depends on your component structure)
+    handleNextCard();
+  };
+
+  /** 📊 Progress */
+  const progressPercentage = totalCards
+    ? ((reviewedCount / totalCards) * 100).toFixed(1)
+    : 0;
+
+  // =======================
+  // 🧱 Render
+  // =======================
+  if (status === "loading") {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${activeTheme.background.app} ${activeTheme.text.primary}`}
+      >
+        <p>Loading cards...</p>
+      </div>
+    );
+  }
+
+  if (status === "failed") {
+    return (
+      <div
+        className={`min-h-screen flex items-center justify-center ${activeTheme.background.app} ${activeTheme.text.primary}`}
+      >
+        <p>{error || "Failed to load cards."}</p>
+      </div>
+    );
+  }
 
   if (!activeDeck) {
     return (
       <div
         className={`${activeTheme.background.secondary} text-center py-16 rounded-xl shadow-xl border ${activeTheme.border.dashed}`}
       >
-        <h3 className="text-2xl font-semibold mb-3">You're all caught up!</h3>
+        <h3
+          className={`text-2xl font-semibold mb-3 ${activeTheme.text.primary}`}
+        >
+          Select a deck to start studying
+        </h3>
+      </div>
+    );
+  }
+  console.log(activeDeck);
+  if (!cards.length) {
+    return (
+      <div
+        className={`h-screen flex items-center justify-center ${activeTheme.background.secondary} text-center`}
+      >
+        <h3
+          className={`text-2xl font-semibold mb-3 ${activeTheme.text.primary}`}
+        >
+          🎉 You're all caught up!
+        </h3>
+        <button
+          onClick={exitStudy}
+          className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5 mr-2" />
+          Select another deck
+        </button>
       </div>
     );
   }
@@ -77,9 +167,9 @@ const StudySession = () => {
       className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full`}
     >
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8">
-        <Header title={activeDeck.name} description={activeDeck.description} />
+        <Header title={activeDeck.title} description={activeDeck.description} />
 
-        {/* Top Bar */}
+        {/* === Top Bar === */}
         <header className="flex justify-between items-center mb-10">
           <button
             onClick={exitStudy}
@@ -104,19 +194,19 @@ const StudySession = () => {
           <div className="w-32"></div>
         </header>
 
-        {/* Main Card Area */}
-        {currentCard && (
-          <div className="relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8">
-            <CardRenderer
-              card={currentCard}
-              studyMode="A"
-              activeTheme={activeTheme}
-              showAnswer={showAnswer}
-              onReveal={revealAnswer}
-              onRate={handleCardRating}
-            />
-          </div>
-        )}
+        {/* === Card Renderer === */}
+        <div
+          className={`relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8`}
+        >
+          <CardRenderer
+            card={currentCard}
+            studyMode="A"
+            activeTheme={activeTheme}
+            showAnswer={showAnswer}
+            onReveal={handleReveal}
+            onRate={handleRate}
+          />
+        </div>
       </div>
     </div>
   );
