@@ -3,21 +3,31 @@ const themes = [
     id: "dark",
     name: "Dark Theme",
     isDark: true,
-    accent: "text-indigo-400", // Used for main focus/links
-    muted: "text-gray-500", // Used for secondary text/icons
+    accent: "text-indigo-400",
+    muted: "text-gray-500",
 
-    // Backgrounds
     background: {
-      app: "bg-gray-900", // Overall application background
-      secondary: "bg-gray-800", // Secondary background
+      app: "bg-gray-900",
+      secondary: "bg-gray-800",
+      navbar: "bg-gray-800",
     },
 
-    // Text
     text: {
-      primary: "text-gray-50", // Main text color
-      secondary: "text-gray-300", // Subheadings/less important text
-      muted: "text-gray-500", // Muted text color
-      activeButton: "text-white", // Text color on primary buttons
+      primary: "text-gray-50",
+      secondary: "text-gray-300",
+      muted: "text-gray-500",
+      activeButton: "text-white",
+    },
+
+    // New: Link/Navigation Item styling
+    link: {
+      hoverBg: "hover:bg-gray-700", // Background on hover
+      hoverText: "hover:text-white", // Text color on hover
+    },
+
+    // New: Focus ring
+    ring: {
+      focus: "ring-indigo-500", // Focus ring color
     },
 
     // Components (Buttons, Borders, Gradients)
@@ -30,6 +40,7 @@ const themes = [
       card: "border border-gray-700",
       dashed: "border-dashed border-gray-700",
       accent: "border-indigo-500",
+      bottom: "border-gray-700",
     },
     gradients: {
       from: "from-indigo-500",
@@ -40,21 +51,31 @@ const themes = [
     id: "light",
     name: "Light Theme",
     isDark: false,
-    accent: "text-indigo-600", // Used for main focus/links
-    muted: "text-gray-400", // Used for secondary text/icons
+    accent: "text-indigo-600",
+    muted: "text-gray-400",
 
-    // Backgrounds
     background: {
-      app: "bg-gray-50", // Overall application background
-      secondary: "bg-white", // Secondary background
+      app: "bg-gray-50",
+      secondary: "bg-white",
+      navbar: "bg-white/80",
     },
 
-    // Text
     text: {
-      primary: "text-gray-900", // Main text color
-      secondary: "text-gray-700", // Subheadings/less important text
-      muted: "text-gray-500", // Muted text color
-      activeButton: "text-white", // Text color on primary buttons
+      primary: "text-gray-900",
+      secondary: "text-gray-700",
+      muted: "text-gray-500",
+      activeButton: "text-white",
+    },
+
+    // New: Link/Navigation Item styling
+    link: {
+      hoverBg: "hover:bg-gray-200", // Background on hover
+      hoverText: "hover:text-gray-900", // Text color on hover
+    },
+
+    // New: Focus ring
+    ring: {
+      focus: "ring-indigo-600", // Focus ring color
     },
 
     // Components (Buttons, Borders, Gradients)
@@ -68,6 +89,7 @@ const themes = [
       card: "border border-gray-200",
       dashed: "border-dashed border-gray-300",
       accent: "border-indigo-500",
+      bottom: "border-gray-200",
     },
     gradients: {
       from: "from-indigo-400",

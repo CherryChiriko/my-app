@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div style={appContainerStyles}>
-      {/* <Navbar /> */}
+      <Navbar />
       <main>
         <Routes>
           <Route path="/decks" element={<DeckManager />}></Route>
