@@ -38,7 +38,6 @@ const themes = [
     },
     border: {
       card: "border border-gray-700",
-      dashed: "border-dashed border-gray-700",
       accent: "border-indigo-500",
       bottom: "border-gray-700",
     },

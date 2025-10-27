@@ -200,7 +200,7 @@ const StudySession = () => {
         >
           <CardRenderer
             card={currentCard}
-            studyMode="A"
+            studyMode={activeDeck.studyMode}
             activeTheme={activeTheme}
             showAnswer={showAnswer}
             onReveal={handleReveal}
