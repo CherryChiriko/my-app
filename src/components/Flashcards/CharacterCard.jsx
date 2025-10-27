@@ -1,4 +1,3 @@
-// src/components/Flashcard/CharacterCard.jsx
 import React from "react";
 import HanziCanvas from "../HanziCanvas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,7 +7,6 @@ import RevealButton from "./RevealButton";
 const CharacterCard = ({
   card,
   activeTheme,
-  showAnswer,
   onReveal,
   onRate,
   getRatingFromMistakes,
@@ -17,7 +15,7 @@ const CharacterCard = ({
   const [revealed, setRevealed] = React.useState(false);
   const audioRef = React.useRef(null);
 
-  const cardBg = activeTheme?.background?.secondary ?? "bg-white";
+  const cardBg = activeTheme?.background?.secondary ?? "bg-gray-100";
   const primaryText = activeTheme?.text?.primary ?? "text-black";
 
   const playAudio = () => {
@@ -34,21 +32,21 @@ const CharacterCard = ({
   const handleQuizComplete = (mistakesCount) => {
     setQuizComplete(true);
     const rating = getRatingFromMistakes(mistakesCount);
-    setTimeout(() => onRate(rating), 2000);
+    setTimeout(() => onRate(rating), 1500);
   };
 
   const handleReveal = () => {
     setRevealed(true);
-    if (onReveal) onReveal();
-    // Show full character and auto mark "again"
+    onReveal?.();
+    // After brief delay, auto-rate as "again"
     setTimeout(() => {
       onRate("again");
-    }, 600); // small delay so user briefly sees the revealed character
+    }, 1000);
   };
 
   return (
     <div
-      className={`relative w-full rounded-xl ${cardBg} px-8 py-8 flex flex-col justify-start items-center shadow-2xl`}
+      className={`relative w-full rounded-xl ${cardBg} p-8 flex flex-col justify-start items-center shadow-2xl transition-all duration-300`}
     >
       {/* Header */}
       <div className="w-full flex justify-between items-center mb-6">
@@ -66,29 +64,31 @@ const CharacterCard = ({
             <FontAwesomeIcon icon={faVolumeHigh} className="w-5 h-5" />
           </button>
         ) : (
-          <div className="w-8" /> // keep centered
+          <div className="w-8" /> // spacer for layout balance
         )}
       </div>
 
       {/* Canvas */}
-      <div className="flex justify-center items-center w-full mb-10">
+      <div className="flex justify-center items-center w-full mb-8">
         <HanziCanvas
           character={card.front}
           quizActive={!revealed && !quizComplete}
-          showFullCharacter={revealed}
           onQuizComplete={handleQuizComplete}
           activeTheme={activeTheme}
         />
       </div>
 
-      {/* Bottom Row: meaning + button */}
+      {/* Bottom Row: meaning + reveal button */}
       <div className="w-full flex justify-between items-center mt-auto">
         <div className="w-16" />
-        {!revealed && !quizComplete && (
+        {!revealed && !quizComplete ? (
           <RevealButton onReveal={handleReveal} activeTheme={activeTheme} />
+        ) : (
+          <div className="w-[150px]" /> // keeps layout aligned
         )}
+
         <p
-          className={`text-xl font-semibold ${primaryText} text-right pr-4 whitespace-nowrap`}
+          className={`text-xl font-semibold ${primaryText} text-right pr-2 whitespace-nowrap`}
         >
           {card.back}
         </p>
