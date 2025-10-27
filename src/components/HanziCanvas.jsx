@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const HanziQuizCanvas = ({
+const HanziCanvas = ({
   character,
   quizActive,
   onQuizComplete,
@@ -14,11 +14,8 @@ const HanziQuizCanvas = ({
     strokesRemaining: 0,
     isQuizComplete: false,
   };
-  const [quizStatus, setQuizStatus] = useState(initialStatus);
 
-  const primaryText = activeTheme?.text?.primary ?? "text-gray-900";
-  const secondaryText = activeTheme?.text?.secondary ?? "text-gray-600";
-  const accentColor = activeTheme?.button?.primary?.split("-")[1] ?? "indigo";
+  const [quizStatus, setQuizStatus] = useState(initialStatus);
 
   // --- Quiz Logic ---
   const startQuiz = (char) => {
@@ -88,12 +85,6 @@ const HanziQuizCanvas = ({
     };
   }, [character, quizActive]);
 
-  const handleRestart = () => {
-    if (character) {
-      startQuiz(character);
-    }
-  };
-
   return (
     <div className="flex flex-col items-center justify-center h-full w-full space-y-6">
       {/* HanziWriter Canvas */}
@@ -106,4 +97,4 @@ const HanziQuizCanvas = ({
   );
 };
 
-export default HanziQuizCanvas;
+export default HanziCanvas;

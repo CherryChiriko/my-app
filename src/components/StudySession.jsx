@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import Header from "./General/Header";
-import CardRenderer from "./CardRenderer";
+import CardRenderer from "./Flashcards/CardRenderer";
 import { getUpdatedCard } from "../helpers/getUpdatedCard";
 import {
   fetchCardsByDeckId,
