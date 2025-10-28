@@ -49,7 +49,7 @@ const CharacterCard = ({
       className={`relative w-full rounded-xl ${cardBg} p-8 flex flex-col justify-start items-center shadow-2xl transition-all duration-300`}
     >
       {/* Header */}
-      <div className="w-full flex justify-between items-center mb-6">
+      <div className="w-full flex justify-between items-center mb-2">
         <div className="w-8" />
         <p className={`text-2xl font-semibold ${primaryText} text-center`}>
           {card.reading}
@@ -67,6 +67,13 @@ const CharacterCard = ({
           <div className="w-8" /> // spacer for layout balance
         )}
       </div>
+      <div className="w-full flex justify-center items-center mb-6">
+        <p
+          className={`text-l ${primaryText} text-right pr-2 whitespace-nowrap`}
+        >
+          {card.back}
+        </p>
+      </div>
 
       {/* Canvas */}
       <div className="flex justify-center items-center w-full mb-8">
@@ -79,19 +86,12 @@ const CharacterCard = ({
       </div>
 
       {/* Bottom Row: meaning + reveal button */}
-      <div className="w-full flex justify-between items-center mt-auto">
-        <div className="w-16" />
+      <div className="w-full flex justify-center items-center mt-auto">
         {!revealed && !quizComplete ? (
           <RevealButton onReveal={handleReveal} activeTheme={activeTheme} />
         ) : (
           <div className="w-[150px]" /> // keeps layout aligned
         )}
-
-        <p
-          className={`text-xl font-semibold ${primaryText} text-right pr-2 whitespace-nowrap`}
-        >
-          {card.back}
-        </p>
       </div>
     </div>
   );

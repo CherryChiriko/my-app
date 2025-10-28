@@ -1,6 +1,19 @@
 const decks = [
   {
     id: 1,
+    name: "HSK 1",
+    description: "Beginner Chinese vocabulary (HSK 1)",
+    language: "Chinese",
+    studyMode: "C",
+    tags: ["old-hsk", "beginner"],
+    mastered: 0,
+    learning: 150,
+    due: 25,
+    cardsCount: 150,
+    lastStudied: "28/10/2025",
+  },
+  {
+    id: 12,
     name: "Japanese Hiragana Basics",
     description: "Learn basic hiragana characters",
     mastered: 20,

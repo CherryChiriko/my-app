@@ -167,7 +167,7 @@ const StudySession = () => {
       className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full`}
     >
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8">
-        <Header title={activeDeck.title} description={activeDeck.description} />
+        <Header title={activeDeck.name} description={activeDeck.description} />
 
         {/* === Top Bar === */}
         <header className="flex justify-between items-center mb-10">

@@ -1,6 +1,6 @@
 // src/slices/cardSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import cardsData from "../data/cards";
+import cardsData from "../data/cards-hsk1.json";
 
 // Local or backend API base
 const API_BASE =
