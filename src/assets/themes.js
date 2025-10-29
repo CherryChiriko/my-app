@@ -10,6 +10,7 @@ const themes = [
       app: "bg-gray-900",
       secondary: "bg-gray-800",
       navbar: "bg-gray-800",
+      canvas: "bg-gray-900",
     },
 
     text: {
@@ -57,6 +58,7 @@ const themes = [
       app: "bg-gray-50",
       secondary: "bg-white",
       navbar: "bg-white/80",
+      canvas: "bg-white",
     },
 
     text: {

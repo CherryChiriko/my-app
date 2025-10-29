@@ -5,9 +5,12 @@ const HanziCanvas = ({
   quizActive,
   onQuizComplete,
   activeTheme,
+  strokeColor,
 }) => {
   const hanziWriterRef = useRef(null);
   const writerInstanceRef = useRef(null);
+
+  console.log(String(strokeColor));
 
   useEffect(() => {
     if (!character || !window.HanziWriter || !hanziWriterRef.current) return;
@@ -21,7 +24,7 @@ const HanziCanvas = ({
       width: 250,
       height: 250,
       padding: 5,
-      strokeColor: "#337ab7",
+      strokeColor,
       showCharacter: false,
       showOutline: false,
     };
@@ -59,7 +62,7 @@ const HanziCanvas = ({
     <div className="flex flex-col items-center justify-center h-full w-full space-y-6">
       <div
         ref={hanziWriterRef}
-        className={`bg-white border-4 ${activeTheme.border.card} rounded-xl shadow-lg transition-all duration-300`}
+        className={` ${activeTheme.background.canvas}  border-4 ${activeTheme.border.card} rounded-xl shadow-lg transition-all duration-300`}
         style={{ width: "250px", height: "250px" }}
       ></div>
     </div>
