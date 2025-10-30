@@ -1,5 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBookOpen,
+  faGraduationCap,
+  faRedo,
+} from "@fortawesome/free-solid-svg-icons";
 // The builder is failing to resolve 'react-redux' and local slices, so we must mock these dependencies.
 // import { useDispatch } from "react-redux";
 // import { selectDeck } from "../../slices/deckSlice";
@@ -18,8 +24,8 @@ const selectDeck = (deck) => ({ type: "MOCK_SELECT_DECK", payload: deck });
 // ensuring SRS feedback (Mastered/Learning/Due) is clear regardless of the theme.
 const STATUS_COLORS = {
   mastered: { bar: "bg-green-500", text: "text-green-400" },
-  learning: { bar: "bg-yellow-500", text: "text-yellow-400" },
   due: { bar: "bg-red-500", text: "text-red-400" },
+  new: { bar: "bg-gray-500" },
 };
 // ======================================================================
 
@@ -35,7 +41,6 @@ const DeckCard = ({ deck, activeTheme }) => {
     name,
     description,
     mastered,
-    learning,
     due,
     tags,
     cardsCount,
@@ -43,19 +48,30 @@ const DeckCard = ({ deck, activeTheme }) => {
     lastStudied,
   } = deck;
 
-  const totalCards = mastered + learning + due;
-  const masteredPercentage = totalCards > 0 ? (mastered / totalCards) * 100 : 0;
-  const learningPercentage = totalCards > 0 ? (learning / totalCards) * 100 : 0;
-  const duePercentage = totalCards > 0 ? (due / totalCards) * 100 : 0;
+  const newCards = cardsCount - mastered - due;
+
+  const masteredPercentage = cardsCount > 0 ? (mastered / cardsCount) * 100 : 0;
+  const duePercentage = cardsCount > 0 ? (due / cardsCount) * 100 : 0;
+  const newPercentage = cardsCount > 0 ? (newCards / cardsCount) * 100 : 0;
+
+  // Conditional button flags
+  const showLearn = newCards > 0;
+  const showReview = due > 0;
 
   const handleCardClick = () => {
     navigate(`${id}`); // Navigate to /decks/:deckId
   };
 
-  const handleStudyNow = (e) => {
+  const handleAction = (e, actionType) => {
     e.stopPropagation(); // Prevent triggering the card click
-    dispatch(selectDeck(deck)); // Dispatch the selected deck (now mocked)
-    navigate("/study");
+    dispatch(selectDeck(deck)); // Dispatch the selected deck
+
+    // Navigate to a specific study mode
+    if (actionType === "learn") {
+      navigate("/study?mode=learn");
+    } else if (actionType === "review") {
+      navigate("/study?mode=due");
+    }
   };
 
   return (
@@ -92,14 +108,13 @@ const DeckCard = ({ deck, activeTheme }) => {
           title={`Mastered: ${mastered}`}
         ></div>
         <div
-          className={`${STATUS_COLORS.learning.bar} h-2.5 float-left`}
-          style={{ width: `${learningPercentage}%` }}
-          title={`Learning: ${learning}`}
-        ></div>
-        <div
           className={`${STATUS_COLORS.due.bar} h-2.5 float-left`}
           style={{ width: `${duePercentage}%` }}
           title={`Due: ${due}`}
+        ></div>
+        <div
+          className={`${STATUS_COLORS.new.bar} h-2.5 float-left`}
+          style={{ width: `${newPercentage}%` }}
         ></div>
       </div>
 
@@ -110,9 +125,6 @@ const DeckCard = ({ deck, activeTheme }) => {
         <div className="flex items-center space-x-4">
           <span className={`${STATUS_COLORS.mastered.text} font-semibold`}>
             {mastered} Mastered
-          </span>
-          <span className={`${STATUS_COLORS.learning.text} font-semibold`}>
-            {learning} Learning
           </span>
           <span className={`${STATUS_COLORS.due.text} font-semibold`}>
             {due} Due
@@ -130,14 +142,39 @@ const DeckCard = ({ deck, activeTheme }) => {
         <span>Last studied: {lastStudied}</span>
       </div>
 
-      {/* Study Now Button */}
-      <button
-        onClick={handleStudyNow}
-        // Use the primary button theme definition
-        className={`mt-6 w-full ${activeTheme.button.primary} ${activeTheme.text.activeButton} font-semibold py-2 rounded-lg transition-colors duration-200 shadow-md`}
-      >
-        Study Now
-      </button>
+      {/* ACTION BUTTONS (Contextual Learn and Review) */}
+      <div className="mt-6 flex space-x-3">
+        {showLearn && (
+          <button
+            onClick={(e) => handleAction(e, "learn")}
+            className={`flex-1 flex items-center justify-center space-x-2 ${activeTheme.button.primary} ${activeTheme.text.activeButton} font-semibold py-3 rounded-lg transition-colors duration-200 shadow-lg hover:shadow-xl`}
+          >
+            <FontAwesomeIcon icon={faGraduationCap} className="h-4 w-4" />
+            <span>Learn</span>
+          </button>
+        )}
+
+        {showReview && (
+          <button
+            onClick={(e) => handleAction(e, "review")}
+            className={`flex-1 flex items-center justify-center space-x-2 ${activeTheme.button.secondary} ${activeTheme.text.secondary} border ${activeTheme.border.card} font-semibold py-3 rounded-lg transition-colors duration-200 hover:opacity-90`}
+          >
+            <FontAwesomeIcon icon={faRedo} className="h-4 w-4" />
+            <span>Review ({due})</span>
+          </button>
+        )}
+
+        {/* Fallback button if neither Learn nor Review is needed */}
+        {!showLearn && !showReview && (
+          <button
+            onClick={(e) => handleAction(e, "default")}
+            className={`w-full flex items-center justify-center space-x-2 ${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-3 rounded-lg transition-colors duration-200 opacity-60 cursor-default`}
+          >
+            <FontAwesomeIcon icon={faBookOpen} className="h-4 w-4" />
+            <span>All Cards Mastered! 🎉</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 };

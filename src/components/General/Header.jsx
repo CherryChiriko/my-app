@@ -6,7 +6,7 @@ const Header = ({ title, description }) => {
   const activeTheme = useSelector(selectActiveTheme);
 
   return (
-    <header className="mb-8">
+    <header className="mb-2">
       {" "}
       <h1
         className={`text-4xl font-extrabold ${activeTheme.text.primary} mb-3`}

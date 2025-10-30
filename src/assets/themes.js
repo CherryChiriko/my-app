@@ -3,8 +3,6 @@ const themes = [
     id: "dark",
     name: "Dark Theme",
     isDark: true,
-    accent: "text-indigo-400",
-    muted: "text-gray-500",
 
     background: {
       app: "bg-gray-900",
@@ -18,6 +16,8 @@ const themes = [
       secondary: "text-gray-300",
       muted: "text-gray-500",
       activeButton: "text-white",
+      accent1: "text-blue-500",
+      accent2: "text-indigo-500",
     },
 
     // New: Link/Navigation Item styling
@@ -51,8 +51,6 @@ const themes = [
     id: "light",
     name: "Light Theme",
     isDark: false,
-    accent: "text-indigo-600",
-    muted: "text-gray-400",
 
     background: {
       app: "bg-gray-50",
@@ -66,6 +64,8 @@ const themes = [
       secondary: "text-gray-700",
       muted: "text-gray-500",
       activeButton: "text-white",
+      accent1: "text-blue-500",
+      accent2: "text-indigo-500",
     },
 
     // New: Link/Navigation Item styling

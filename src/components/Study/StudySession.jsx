@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import Header from "./General/Header";
+import Header from "../General/Header";
 import CardRenderer from "./Flashcards/CardRenderer";
-import { getUpdatedCard } from "../helpers/getUpdatedCard";
+import { getUpdatedCard } from "../../helpers/getUpdatedCard";
 import {
   fetchCardsByDeckId,
   selectAllCards,
   selectCardsStatus,
   selectCardsError,
-} from "../slices/cardSlice";
-import { selectActiveTheme } from "../slices/themeSlice";
-import { selectActiveDeck } from "../slices/deckSlice";
-import { updateCard } from "../slices/cardSlice";
+} from "../../slices/cardSlice";
+import { selectActiveTheme } from "../../slices/themeSlice";
+import { selectActiveDeck } from "../../slices/deckSlice";
+import { updateCard } from "../../slices/cardSlice";
 
 const StudySession = () => {
   const dispatch = useDispatch();

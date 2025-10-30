@@ -2,8 +2,9 @@ import { useSelector } from "react-redux";
 import { selectActiveTheme } from "./slices/themeSlice";
 import Navbar from "./components/Navbar/Navbar";
 import DeckManager from "./components/Decks/DeckManager";
-import StudySession from "./components/StudySession";
+import StudySession from "./components/Study/StudySession";
 import Fourzerofour from "./components/404";
+import DeckListView from "./components/Decks/DeckListView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -21,7 +22,14 @@ function App() {
       <Navbar />
       <main>
         <Routes>
-          <Route path="/decks" element={<DeckManager />}></Route>
+          <Route path="/decks" element={<DeckManager />}>
+            {/* Index route for /decks - shows the main deck list */}
+            <Route index element={<DeckListView />} />
+            {/* Nested route for /decks/import - shows the import page */}
+            {/* <Route path="import" element={<Import />} /> */}
+            {/* Nested route for viewing a specific deck */}
+            {/* <Route path=":deckId" element={<DeckDetails />} /> */}
+          </Route>
           <Route path="*" element={<StudySession />} />
         </Routes>
       </main>
