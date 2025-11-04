@@ -136,12 +136,7 @@ const LearningMode = ({ activeTheme, activeDeck }) => {
       className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full`}
     >
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8">
-        <Header
-          title={`Learning: ${activeDeck.name}`}
-          description={`Stage ${stageIndex + 1}/${LEARN_STAGES.length}: ${
-            currentStage.charAt(0).toUpperCase() + currentStage.slice(1)
-          }`}
-        />
+        <Header title={`${activeDeck.name}`} />
 
         {/* --- Top Bar --- */}
         <header className="flex justify-between items-center mb-10">
@@ -174,11 +169,10 @@ const LearningMode = ({ activeTheme, activeDeck }) => {
         >
           <CardRenderer
             card={currentCard}
-            // Pass the current stage as the studyMode
-            studyMode={currentStage}
+            studyMode={activeDeck.studyMode}
             activeTheme={activeTheme}
-            // In Learning Mode, we only need a single 'Continue' action
             onContinue={handleContinue}
+            // step={}
           />
         </div>
 

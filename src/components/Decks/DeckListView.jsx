@@ -30,10 +30,10 @@ const DeckListView = () => {
 
   // --- Dynamic Configuration based on viewMode ---
   const DECKS_PER_PAGE = useMemo(() => {
-    // Large Card View (Grid) shows 3 decks per page (as per original setting)
+    // Large Card View (Grid) shows 3 decks per page
     if (viewMode === "grid") return 3;
-    // Compact View (List) shows 6 decks per page (as requested)
-    if (viewMode === "list") return 6;
+    // Compact View (List) shows 8 decks per page
+    if (viewMode === "list") return 8;
     return 3; // Default
   }, [viewMode]);
   // --- END Dynamic Configuration ---
@@ -41,7 +41,7 @@ const DeckListView = () => {
   // Derived Data
   const uniqueLanguages = useMemo(
     () => ["All Languages", ...new Set(decks.map((deck) => deck.language))],
-    [decks]
+    []
   );
 
   // --- 1. Filtering & Sorting Logic ---
@@ -73,10 +73,8 @@ const DeckListView = () => {
       if (aValue > bValue) return direction === "asc" ? 1 : -1;
       return 0;
     });
-
-    // NOTE: We no longer reset currentPage here. We do it in the viewMode change handler.
     return result;
-  }, [decks, searchTerm, selectedLanguage, sortBy]);
+  }, [searchTerm, selectedLanguage, sortBy]);
 
   // --- 3. Pagination Logic ---
   // The DECKS_PER_PAGE variable is now dynamic based on useMemo above
@@ -139,7 +137,7 @@ const DeckListView = () => {
   const gridClasses =
     viewMode === "grid"
       ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      : "grid grid-cols-1 md:grid-cols-2 gap-3";
+      : "grid grid-cols-1 md:grid-cols-4 gap-3";
 
   return (
     <div
@@ -230,7 +228,7 @@ const DeckListView = () => {
             {/* Import Button */}
             <button
               onClick={handleImportClick}
-              className={`flex items-center ${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-2 px-3 rounded-lg transition-colors duration-200`}
+              className={`flex items-center ${activeTheme.button.accent2} ${activeTheme.text.secondary} font-semibold py-2 px-3 rounded-lg transition-colors duration-200`}
             >
               <FontAwesomeIcon icon={faUpload} className="h-5 w-5 mr-2" />
               Import

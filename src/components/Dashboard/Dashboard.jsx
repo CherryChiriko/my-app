@@ -19,6 +19,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardHero from "./DashboardHero";
+import DeckCompact from "../Decks/DeckCompact";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -155,7 +156,11 @@ const Dashboard = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {decks.slice(0, 2).map((deck) => (
-                <div key={deck.id}>Mini card</div>
+                <DeckCompact
+                  key={deck.id}
+                  deck={deck}
+                  activeTheme={activeTheme}
+                />
               ))}
               <div
                 className={`${activeTheme.background.secondary} rounded-xl p-6 shadow-xl flex items-center justify-center`}

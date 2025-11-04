@@ -40,6 +40,7 @@ const themes = [
       disabled: "bg-gray-700 text-gray-500 cursor-not-allowed",
       accent:
         "bg-purple-500 hover:bg-purple-600 active:bg-purple-600 text-white",
+      accent2: "bg-sky-500 hover:bg-sky-600 active:bg-sky-600 text-white",
     },
     border: {
       card: "border border-gray-700",
@@ -93,6 +94,7 @@ const themes = [
       accent:
         "bg-purple-200 hover:bg-purple-300 active:bg-purple-400 text-purple-800",
       disabled: "bg-gray-100 text-gray-400 cursor-not-allowed",
+      accent2: "bg-sky-500 hover:bg-sky-600 active:bg-sky-600 text-white",
     },
     border: {
       card: "border border-gray-200",

@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar/Navbar";
 import DeckManager from "./components/Decks/DeckManager";
 import Dashboard from "./components/Dashboard/Dashboard";
 import StudySession from "./components/Study/StudySession";
-import Fourzerofour from "./components/404";
+import NotFound404 from "./components/404";
 import DeckListView from "./components/Decks/DeckListView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -33,7 +33,7 @@ function App() {
             {/* <Route path=":deckId" element={<DeckDetails />} /> */}
           </Route>
           <Route path="/study" element={<StudySession />} />
-          <Route path="*" element={<Fourzerofour />} />
+          <Route path="*" element={<NotFound404 activeTheme={activeTheme} />} />
         </Routes>
       </main>
     </div>

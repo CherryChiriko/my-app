@@ -1,38 +1,31 @@
-// src/components/Decks/DeckCompact.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faGraduationCap,
   faRedo,
   faFire,
-  faGraduationCap,
 } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { selectDeck } from "../../slices/deckSlice";
-import { motion } from "framer-motion";
+import ProgressBar from "./ProgressBar";
 
-const DeckCompact = ({ deck, activeTheme }) => {
+const DeckCard = ({ deck, activeTheme }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Determine the progress bar track background based on the active theme
-  const progressBarBg = activeTheme.isDark ? "bg-gray-700" : "bg-gray-200";
+  const hasStreak = deck.streak > 0 ? deck.streak : false;
 
-  const newCards = deck.cardsCount - deck.mastered - deck.due;
+  const { id, name, mastered, due, cardsCount, language } = deck;
 
-  const masteredPercentage =
-    deck.cardsCount > 0 ? (deck.mastered / deck.cardsCount) * 100 : 0;
-  const duePercentage =
-    deck.cardsCount > 0 ? (deck.due / deck.cardsCount) * 100 : 0;
-  const newPercentage =
-    deck.cardsCount > 0 ? (newCards / deck.cardsCount) * 100 : 0;
+  const newCards = cardsCount - mastered - due;
 
   // Conditional button flags
   const showLearn = newCards > 0;
-  const showReview = deck.due > 0;
+  const showReview = due > 0;
 
-  const handleDeckClick = () => {
-    navigate(`/decks/${deck.id}`);
+  const handleCardClick = () => {
+    navigate(`${id}`); // Navigate to /decks/:deckId
   };
 
   const handleAction = (e, actionType) => {
@@ -48,77 +41,80 @@ const DeckCompact = ({ deck, activeTheme }) => {
   };
 
   return (
-    <motion.div
-      layout
-      whileHover={{
-        translateY: -6,
-        boxShadow: "0 10px 30px rgba(16,24,40,0.12)",
-      }}
-      className={`rounded-xl p-4 cursor-pointer border ${activeTheme.border.card} ${activeTheme.background.secondary} transition-all`}
-      onClick={handleDeckClick}
+    <div
+      className={`${activeTheme.background.secondary} rounded-xl p-6 shadow-xl hover:shadow-2xl transition-shadow duration-300 transform hover:-translate-y-1 cursor-pointer border ${activeTheme.border.card}`}
+      onClick={handleCardClick}
     >
-      <div className="flex items-start justify-between">
-        <div className="w-1/3 flex-col">
-          <span className={`font-semibold ${activeTheme.text.primary}`}>
-            {deck.name}
-          </span>
-          <div className="flex flex-row">
-            <div
-              className={`${activeTheme.text.accent1} font-semibold text-sm`}
+      <div className="flex flex-row justify-between mb-2">
+        <span className={`text-sm font-bold ${activeTheme.text.primary}`}>
+          {name}
+        </span>
+        <div>
+          {hasStreak && (
+            <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold bg-amber-500/10 px-2 py-1 rounded-full">
+              <FontAwesomeIcon icon={faFire} /> {deck.streak}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Progress Bar with distinct sections */}
+      <ProgressBar deck={deck} activeTheme={activeTheme} />
+
+      {/* Footer Details */}
+      <div
+        className={`flex justify-between items-center ${activeTheme.text.secondary} text-xs mb-2`}
+      >
+        <span>
+          {language} • {cardsCount} cards
+        </span>
+
+        {/* ACTION BUTTONS (Contextual Learn and Review) */}
+        <div className="flex space-x-3">
+          {showLearn && (
+            <button
+              onClick={(e) => handleAction(e, "learn")}
+              className={`
+          flex items-center justify-center 
+          w-6 h-6
+          rounded-full           
+          ${activeTheme.button.primary} 
+          ${activeTheme.text.activeButton} 
+          transition-colors duration-200 
+          shadow-lg hover:shadow-xl
+        `}
+              title="Learn New Cards"
             >
-              {deck.language}
-            </div>
-            •
-            <div className={`text-xs ${activeTheme.text.muted}`}>
-              {deck.cardsCount} cards
-            </div>
-          </div>
+              <FontAwesomeIcon icon={faGraduationCap} className="h-3 w-3" />
+            </button>
+          )}
+
+          {showReview && (
+            <button
+              onClick={(e) => handleAction(e, "review")}
+              className={`
+          flex items-center justify-center 
+          w-6 h-6
+          rounded-full                
+          ${activeTheme.button.accent} 
+          ${activeTheme.text.activeButton} 
+          transition-colors duration-200 
+          hover:opacity-90
+        `}
+              title={`Review ${due} Card(s)`}
+            >
+              <FontAwesomeIcon icon={faRedo} className="h-3 w-3" />
+            </button>
+          )}
+
+          {/* Fallback if neither Learn nor Review is needed */}
+          {!showLearn && !showReview && (
+            <button className={`${activeTheme.button.muted}`}>Mastered</button>
+          )}
         </div>
       </div>
-
-      <div className="flex flex-col w-full">
-        {/* Progress Bar with distinct sections */}
-        <div
-          className={`w-full ${progressBarBg} rounded-full h-2.5 mb-4 overflow-hidden`}
-        >
-          <div
-            className={`${activeTheme.background.accent1} h-2.5 float-left`}
-            style={{ width: `${masteredPercentage}%` }}
-            title={`Mastered: ${deck.mastered}`}
-          ></div>
-          <div
-            className={`${activeTheme.background.accent2} h-2.5 float-left`}
-            style={{ width: `${duePercentage}%` }}
-            title={`Due: ${deck.due}`}
-          ></div>
-          <div
-            className={`${progressBarBg} h-2.5 float-left`}
-            style={{ width: `${newPercentage}%` }}
-          ></div>
-        </div>
-        {/* Status Indicators */}
-        <div
-          className={`flex justify-between items-center ${activeTheme.text.secondary} text-sm mb-4`}
-        >
-          <div className="flex items-center space-x-4">
-            <span className={`${activeTheme.text.muted}`}>
-              {deck.mastered} Mastered
-            </span>
-            <span className={`${activeTheme.text.muted}`}>{deck.due} Due</span>
-          </div>
-        </div>
-
-        <div className="text-right text-sm w-1/4">
-          <div className={`${activeTheme.text.accent1} font-semibold`}>
-            {deck.language}
-          </div>
-          <div className={`text-xs ${activeTheme.text.muted}`}>
-            {deck.cardsCount} cards
-          </div>
-        </div>
-      </div>
-    </motion.div>
+    </div>
   );
 };
 
-export default DeckCompact;
+export default DeckCard;
