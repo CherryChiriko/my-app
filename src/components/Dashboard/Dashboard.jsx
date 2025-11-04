@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
+import { selectGlobalStreak } from "../../slices/streakSlice";
 import {
   fetchDecks,
   selectAllDecks,
@@ -36,9 +37,11 @@ const Dashboard = () => {
     }
   }, [dispatch, status]);
 
-  // Compute stats from real deck data
+  // Compute stats
   const cards_due_today = decks.reduce((t, d) => t + (d.due || 0), 0);
   const mastered_cards = decks.reduce((t, d) => t + (d.mastered || 0), 0);
+
+  const currentStreak = useSelector(selectGlobalStreak);
 
   // Example stats that will eventually come from backend streak + study logs
   const today = {
@@ -48,7 +51,7 @@ const Dashboard = () => {
   };
 
   const streaks = {
-    current_streak: 0,
+    current_streak: currentStreak,
     longest_streak: 0,
   };
 
@@ -168,13 +171,13 @@ const Dashboard = () => {
           )}
         </div>
 
-        <h2 className="text-3xl font-bold flex items-center gap-3">
+        {/* <h2 className="text-3xl font-bold flex items-center gap-3">
           <FontAwesomeIcon icon={faBookOpen} className="w-7 h-7" />
           Your Stats
-        </h2>
+        </h2> */}
 
         {/* Stats cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div
             className={`${activeTheme.background.secondary} rounded-xl p-6 shadow-xl`}
           >
@@ -194,7 +197,7 @@ const Dashboard = () => {
             </h3>
             <div className="text-4xl font-bold mt-4">0 days</div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

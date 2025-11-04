@@ -139,7 +139,7 @@ const DeckListView = () => {
   const gridClasses =
     viewMode === "grid"
       ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      : "flex flex-col space-y-3";
+      : "grid grid-cols-1 md:grid-cols-2 gap-3";
 
   return (
     <div
@@ -253,7 +253,6 @@ const DeckListView = () => {
               viewMode === "grid" ? (
                 <DeckCard key={deck.id} deck={deck} activeTheme={activeTheme} />
               ) : (
-                // NOTE: Using the renamed component
                 <DeckCompact
                   key={deck.id}
                   deck={deck}

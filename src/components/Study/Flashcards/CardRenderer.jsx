@@ -3,27 +3,6 @@ import React from "react";
 import CharacterCard from "./CharacterCard";
 import FlipCard from "./FlipCard";
 
-/* Minimal CSS for 3D flip (you can move to a global CSS file) */
-const CardStyles = () => (
-  <style jsx>{`
-    .perspective {
-      perspective: 1000px;
-    }
-    .preserve-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    .rotate-y-0 {
-      transform: rotateY(0deg);
-    }
-  `}</style>
-);
-
 /**
  * Maps mistake count to an SRS rating for the parent component.
  * @param {number} mistakes

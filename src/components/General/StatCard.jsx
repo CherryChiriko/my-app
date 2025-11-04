@@ -1,10 +1,6 @@
 import React from "react";
 
 const StatCard = ({ icon, title, value, description, className = "" }) => (
-  // <div
-  //   className={`rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300
-  //     bg-gradient-to-br ${activeTheme.gradients.from} ${activeTheme.gradients.to} ${activeTheme.text.activeButton}`}
-  // >
   <div
     className={`rounded-2xl p-6 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300
       ${className}`}

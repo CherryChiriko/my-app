@@ -9,6 +9,8 @@ const themes = [
       secondary: "bg-gray-800",
       navbar: "bg-gray-800",
       canvas: "bg-gray-900",
+      accent1: "bg-sky-500",
+      accent2: "bg-purple-500",
     },
 
     text: {
@@ -16,8 +18,8 @@ const themes = [
       secondary: "text-gray-300",
       muted: "text-gray-500",
       activeButton: "text-white",
-      accent1: "text-blue-500",
-      accent2: "text-indigo-500",
+      accent1: "text-sky-500",
+      accent2: "text-purple-500",
     },
 
     // New: Link/Navigation Item styling
@@ -36,6 +38,8 @@ const themes = [
       primary: "bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800",
       secondary: "bg-gray-700 hover:bg-gray-600 active:bg-gray-700",
       disabled: "bg-gray-700 text-gray-500 cursor-not-allowed",
+      accent:
+        "bg-purple-500 hover:bg-purple-600 active:bg-purple-600 text-white",
     },
     border: {
       card: "border border-gray-700",
@@ -57,6 +61,8 @@ const themes = [
       secondary: "bg-white",
       navbar: "bg-white/80",
       canvas: "bg-white",
+      accent1: "bg-sky-500",
+      accent2: "bg-purple-500",
     },
 
     text: {
@@ -64,8 +70,8 @@ const themes = [
       secondary: "text-gray-700",
       muted: "text-gray-500",
       activeButton: "text-white",
-      accent1: "text-blue-500",
-      accent2: "text-indigo-500",
+      accent1: "text-sky-500",
+      accent2: "text-purple-500",
     },
 
     // New: Link/Navigation Item styling
@@ -84,6 +90,8 @@ const themes = [
       primary: "bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700",
       secondary:
         "bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-800",
+      accent:
+        "bg-purple-200 hover:bg-purple-300 active:bg-purple-400 text-purple-800",
       disabled: "bg-gray-100 text-gray-400 cursor-not-allowed",
     },
     border: {

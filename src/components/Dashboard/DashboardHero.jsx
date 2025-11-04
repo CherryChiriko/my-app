@@ -9,7 +9,7 @@ import {
   faBook,
 } from "@fortawesome/free-solid-svg-icons";
 import StatCard from "../General/StatCard";
-import RevuLogo from "../../assets/Revu_logo.png";
+import RevuLogo from "../../assets/revu_logo_long.png";
 
 const DashboardHero = ({
   activeTheme,
@@ -64,37 +64,7 @@ const DashboardHero = ({
       </div>
 
       {/* Quick Stats */}
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mb-12">
-        <StatCard
-          icon={<FontAwesomeIcon icon={faFire} className="w-5 h-5" />}
-          title="Current Streak"
-          value={streaks.current_streak || 0}
-          description="days in a row"
-          activeTheme={activeTheme}
-        />
-        <StatCard
-          icon={<FontAwesomeIcon icon={faBullseye} className="w-5 h-5" />}
-          title="Cards Due"
-          value={cards_due_today || 0}
-          description="ready to review"
-          activeTheme={activeTheme}
-        />
-        <StatCard
-          icon={<FontAwesomeIcon icon={faTrophy} className="w-5 h-5" />}
-          title="Mastered"
-          value={mastered_cards || 0}
-          description="cards learned"
-          activeTheme={activeTheme}
-        />
-        <StatCard
-          icon={<FontAwesomeIcon icon={faClock} className="w-5 h-5" />}
-          title="Study Time"
-          value={today.study_time || 0}
-          description="minutes today"
-          activeTheme={activeTheme}
-        />
-      </div> */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl mb-12 ">
         {statCards.map((card, i) => (
           <StatCard
             key={card.title}
@@ -102,7 +72,7 @@ const DashboardHero = ({
             title={card.title}
             value={card.value}
             description={card.description}
-            // className={accents[i % accents.length]}
+            className={`${activeTheme.background.secondary}`}
           />
         ))}
       </div>
@@ -122,7 +92,7 @@ const DashboardHero = ({
           </button>
         ) : (
           <div
-            className={`space-y-4 p-8 rounded-xl border border-dashed ${activeTheme.border.dashed} ${activeTheme.card.bg} shadow-lg`}
+            className={`space-y-4 p-8 rounded-xl border border-dashed ${activeTheme.background.secondary} shadow-lg`}
           >
             <div
               className={`text-3xl font-semibold ${activeTheme.text.primary}`}

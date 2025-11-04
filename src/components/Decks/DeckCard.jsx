@@ -7,32 +7,14 @@ import {
   faRedo,
   faFire,
 } from "@fortawesome/free-solid-svg-icons";
-// The builder is failing to resolve 'react-redux' and local slices, so we must mock these dependencies.
-// import { useDispatch } from "react-redux";
-// import { selectDeck } from "../../slices/deckSlice";
-
-// ======================================================================
-// TEMPORARY MOCKS FOR COMPILATION STABILITY
-// ======================================================================
-// Mock useDispatch: returns a function that does nothing
-const useDispatch = () => (action) =>
-  console.log("Mock Dispatch (Redux not available):", action);
-
-// Mock selectDeck: placeholder function for the Redux action creator
-const selectDeck = (deck) => ({ type: "MOCK_SELECT_DECK", payload: deck });
-
-// Define consistent status colors for progress bar and text,
-// ensuring SRS feedback (Mastered/Learning/Due) is clear regardless of the theme.
-const STATUS_COLORS = {
-  mastered: { bar: "bg-green-500", text: "text-green-400" },
-  due: { bar: "bg-red-500", text: "text-red-400" },
-  new: { bar: "bg-gray-500" },
-};
-// ======================================================================
+import { useDispatch } from "react-redux";
+import { selectDeck } from "../../slices/deckSlice";
 
 const DeckCard = ({ deck, activeTheme }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const hasStreak = deck.streak > 0 ? deck.streak : false;
 
   // Determine the progress bar track background based on the active theme
   const progressBarBg = activeTheme.isDark ? "bg-gray-700" : "bg-gray-200";
@@ -59,6 +41,9 @@ const DeckCard = ({ deck, activeTheme }) => {
   const showLearn = newCards > 0;
   const showReview = due > 0;
 
+  console.log(deck.streak);
+  console.log(deck);
+
   const handleCardClick = () => {
     navigate(`${id}`); // Navigate to /decks/:deckId
   };
@@ -71,7 +56,7 @@ const DeckCard = ({ deck, activeTheme }) => {
     if (actionType === "learn") {
       navigate("/study?mode=learn");
     } else if (actionType === "review") {
-      navigate("/study?mode=due");
+      navigate("/study?mode=review");
     }
   };
 
@@ -83,10 +68,9 @@ const DeckCard = ({ deck, activeTheme }) => {
       <h3 className={`text-2xl font-bold ${activeTheme.text.primary} mb-2`}>
         {name}
       </h3>
-      <p className={`${activeTheme.text.secondary} text-sm mb-4`}>
+      <p className={`${activeTheme.text.secondary} text-sm mb-3`}>
         {description}
       </p>
-
       {/* Tags: Using the primary app background and accent text for visibility */}
       <div className="flex flex-wrap gap-2 mb-4">
         {tags.map((tag, index) => (
@@ -97,41 +81,38 @@ const DeckCard = ({ deck, activeTheme }) => {
             {tag}
           </span>
         ))}
+        {hasStreak && (
+          <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold bg-amber-500/10 px-2 py-1 rounded-full">
+            <FontAwesomeIcon icon={faFire} /> {deck.streak}
+          </div>
+        )}
       </div>
-
       {/* Progress Bar with distinct sections */}
       <div
-        className={`w-full ${progressBarBg} rounded-full h-2.5 mb-4 overflow-hidden`}
+        className={`w-full ${progressBarBg} rounded-full h-2.5 mb-2 overflow-hidden`}
       >
         <div
-          className={`${STATUS_COLORS.mastered.bar} h-2.5 float-left`}
+          className={`${activeTheme.background.accent1} h-2.5 float-left`}
           style={{ width: `${masteredPercentage}%` }}
           title={`Mastered: ${mastered}`}
         ></div>
         <div
-          className={`${STATUS_COLORS.due.bar} h-2.5 float-left`}
+          className={`${activeTheme.background.accent2} h-2.5 float-left`}
           style={{ width: `${duePercentage}%` }}
           title={`Due: ${due}`}
         ></div>
         <div
-          className={`${STATUS_COLORS.new.bar} h-2.5 float-left`}
+          className={`${progressBarBg} h-2.5 float-left`}
           style={{ width: `${newPercentage}%` }}
         ></div>
       </div>
-
       {/* Status Indicators */}
-      <div
-        className={`flex justify-between items-center ${activeTheme.text.secondary} text-sm mb-4`}
-      >
-        <div className="flex items-center space-x-4">
-          <span className={`${STATUS_COLORS.mastered.text} font-semibold`}>
-            {mastered} Mastered
-          </span>
-          <span className={`${STATUS_COLORS.due.text} font-semibold`}>
-            {due} Due
-          </span>
-        </div>
+      <div className="flex justify-between text-xs mb-3">
+        <span className={activeTheme.text.accent1}>{mastered} mastered</span>
+        <span className={activeTheme.text.accent2}>{due} due</span>
+        <span className={activeTheme.text.muted}>{newCards} new</span>
       </div>
+      <div></div>
 
       {/* Footer Details */}
       <div
@@ -142,16 +123,6 @@ const DeckCard = ({ deck, activeTheme }) => {
         </span>
         <span>Last studied: {lastStudied}</span>
       </div>
-
-      {/* Streak UI */}
-      {deck.streak > 0 && (
-        <div className="mt-2 flex items-center text-sm font-semibold">
-          <FontAwesomeIcon icon={faFire} className="text-orange-500 mr-2" />
-          <span className={`${activeTheme.text.primary}`}>
-            {deck.streak}-day streak 🔥
-          </span>
-        </div>
-      )}
 
       {/* ACTION BUTTONS (Contextual Learn and Review) */}
       <div className="mt-6 flex space-x-3">
@@ -168,22 +139,16 @@ const DeckCard = ({ deck, activeTheme }) => {
         {showReview && (
           <button
             onClick={(e) => handleAction(e, "review")}
-            className={`flex-1 flex items-center justify-center space-x-2 ${activeTheme.button.secondary} ${activeTheme.text.secondary} border ${activeTheme.border.card} font-semibold py-3 rounded-lg transition-colors duration-200 hover:opacity-90`}
+            className={`flex-1 flex items-center justify-center space-x-2 ${activeTheme.button.accent} ${activeTheme.text.secondary} border ${activeTheme.border.card} font-semibold py-3 rounded-lg transition-colors duration-200 hover:opacity-90`}
           >
             <FontAwesomeIcon icon={faRedo} className="h-4 w-4" />
             <span>Review ({due})</span>
           </button>
         )}
 
-        {/* Fallback button if neither Learn nor Review is needed */}
+        {/* Fallback if neither Learn nor Review is needed */}
         {!showLearn && !showReview && (
-          <button
-            onClick={(e) => handleAction(e, "default")}
-            className={`w-full flex items-center justify-center space-x-2 ${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-3 rounded-lg transition-colors duration-200 opacity-60 cursor-default`}
-          >
-            <FontAwesomeIcon icon={faBookOpen} className="h-4 w-4" />
-            <span>All Cards Mastered! 🎉</span>
-          </button>
+          <span className={`${activeTheme.button.muted}`}>Mastered</span>
         )}
       </div>
     </div>

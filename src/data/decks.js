@@ -12,7 +12,7 @@ const decks = [
     lastStudied: "28/10/2025",
     dailyLearned: 0,
     dailyReviewed: 0,
-    streak: 0,
+    streak: 1,
   },
   {
     id: 12,
@@ -42,6 +42,7 @@ const decks = [
     dailyLearned: 0,
     dailyReviewed: 0,
     studyMode: "A",
+    streak: 0,
   },
   {
     id: 3,
@@ -70,7 +71,7 @@ const decks = [
     lastStudied: "01/03/2025",
     dailyLearned: 0,
     dailyReviewed: 0,
-    streak: 0,
+    streak: 2,
     studyMode: "C",
   },
   {
