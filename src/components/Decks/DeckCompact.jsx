@@ -95,7 +95,7 @@ const DeckCompact = ({ deck, activeTheme }) => {
             transition-opacity 
             duration-200 
             flex items-center justify-center
-            hidden md:flex // Hide on small screens, show on medium and up
+            md:flex // Hide on small screens, show on medium and up
           `}
           title="Start Study"
         >

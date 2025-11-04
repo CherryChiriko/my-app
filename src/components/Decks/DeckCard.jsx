@@ -5,6 +5,7 @@ import {
   faBookOpen,
   faGraduationCap,
   faRedo,
+  faFire,
 } from "@fortawesome/free-solid-svg-icons";
 // The builder is failing to resolve 'react-redux' and local slices, so we must mock these dependencies.
 // import { useDispatch } from "react-redux";
@@ -141,6 +142,16 @@ const DeckCard = ({ deck, activeTheme }) => {
         </span>
         <span>Last studied: {lastStudied}</span>
       </div>
+
+      {/* Streak UI */}
+      {deck.streak > 0 && (
+        <div className="mt-2 flex items-center text-sm font-semibold">
+          <FontAwesomeIcon icon={faFire} className="text-orange-500 mr-2" />
+          <span className={`${activeTheme.text.primary}`}>
+            {deck.streak}-day streak 🔥
+          </span>
+        </div>
+      )}
 
       {/* ACTION BUTTONS (Contextual Learn and Review) */}
       <div className="mt-6 flex space-x-3">

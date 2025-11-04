@@ -10,6 +10,9 @@ const decks = [
     due: 25,
     cardsCount: 150,
     lastStudied: "28/10/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
+    streak: 0,
   },
   {
     id: 12,
@@ -21,6 +24,9 @@ const decks = [
     cardsCount: 46,
     language: "Japanese",
     lastStudied: "20/01/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
+    streak: 0,
     studyMode: "A",
   },
   {
@@ -33,6 +39,8 @@ const decks = [
     cardsCount: 28,
     language: "French",
     lastStudied: "15/02/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
     studyMode: "A",
   },
   {
@@ -45,6 +53,9 @@ const decks = [
     cardsCount: 48,
     language: "English",
     lastStudied: "01/03/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
+    streak: 0,
     studyMode: "A",
   },
   {
@@ -57,6 +68,9 @@ const decks = [
     cardsCount: 48,
     language: "Chinese",
     lastStudied: "01/03/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
+    streak: 0,
     studyMode: "C",
   },
   {
@@ -69,6 +83,9 @@ const decks = [
     cardsCount: 48,
     language: "English",
     lastStudied: "01/03/2025",
+    dailyLearned: 0,
+    dailyReviewed: 0,
+    streak: 0,
     studyMode: "B",
   },
 ];

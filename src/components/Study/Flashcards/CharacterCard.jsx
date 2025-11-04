@@ -1,5 +1,5 @@
 import React from "react";
-import HanziCanvas from "../HanziCanvas";
+import HanziCanvas from "./HanziCanvas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import {
