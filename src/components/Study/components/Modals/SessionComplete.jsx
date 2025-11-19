@@ -46,8 +46,8 @@ export default function SessionComplete({
               transition={{ delay: 0.25 }}
               className={`${activeTheme.text.secondary} text-lg`}
             >
-              You learned <span className="font-bold">{learnedCount}</span>{" "}
-              words today.
+              You learned <span className="font-bold">{learnedCount}</span> word
+              {learnedCount > 1 ? "s" : ""} today.
             </motion.p>
 
             <div className="flex flex-col gap-4">
@@ -56,7 +56,7 @@ export default function SessionComplete({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.35 }}
-                className={`py-4 rounded-lg ${activeTheme.button.accent} transition`}
+                className={`py-2 rounded-lg ${activeTheme.button.accent} transition`}
               >
                 Learn More
               </motion.button>

@@ -1,12 +1,13 @@
-// src/components/StudySession.jsx
-
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchCardsByDeckId, selectCardsStatus } from "../../slices/cardSlice";
-import { selectActiveTheme } from "../../slices/themeSlice";
-import { selectActiveDeck } from "../../slices/deckSlice";
-import SessionMode from "./Modes/SessionMode";
+import {
+  fetchCardsByDeckId,
+  selectCardsStatus,
+} from "../../../slices/cardSlice";
+import { selectActiveTheme } from "../../../slices/themeSlice";
+import { selectActiveDeck } from "../../../slices/deckSlice";
+import SessionMode from "./SessionMode";
 
 const StudySession = () => {
   const dispatch = useDispatch();

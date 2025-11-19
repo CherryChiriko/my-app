@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Header from "../../General/Header";
-import CardRenderer from "../Flashcards/CardRenderer";
+import CardRenderer from "../../Study/components/Card/CardRenderer";
 import { selectAllCards, updateCard } from "../../../slices/cardSlice";
 import { recordStudyActivity } from "../../../slices/deckSlice";
 import { getUpdatedCard } from "../../../helpers/getUpdatedCard";
-import SessionComplete from "./SessionComplete";
+import SessionComplete from "../components/Modals/SessionComplete";
 
 const LEARN_LIMIT = 1;
 const REVIEW_LIMIT = 10;

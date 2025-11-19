@@ -1,10 +1,8 @@
 import CharacterCard from "./CharacterCard";
 import FlipCard from "./FlipCard";
-import NotFound404 from "../../404";
+import NotFound404 from "../../../404";
 
-/**
- * Maps mistake count to an SRS rating for the parent component.
- */
+/* Maps mistake count to an SRS rating  */
 const getRatingFromMistakes = (mistakes) => {
   if (mistakes >= 3) return "again";
   if (mistakes === 2) return "hard";

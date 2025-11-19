@@ -1,10 +1,9 @@
-// src/components/Flashcards/CharacterCard.jsx
 import React from "react";
 import HanziCanvas from "./HanziCanvas";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
-import RevealButton from "./RevealButton";
-import ContinueButton from "./ContinueButton";
+import RevealButton from "../Controls/RevealButton";
+import ContinueButton from "../Controls/ContinueButton";
 
 const CharacterCard = ({
   card,

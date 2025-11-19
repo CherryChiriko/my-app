@@ -3,7 +3,7 @@ import { selectActiveTheme } from "./slices/themeSlice";
 import Navbar from "./components/Navbar/Navbar";
 import DeckManager from "./components/Decks/DeckManager";
 import Dashboard from "./components/Dashboard/Dashboard";
-import StudySession from "./components/Study/StudySession";
+import StudySession from "./components/Study/views/StudySession";
 import NotFound404 from "./components/404";
 import DeckListView from "./components/Decks/DeckListView";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";

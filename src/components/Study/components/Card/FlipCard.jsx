@@ -1,7 +1,7 @@
 // src/components/Flashcards/FlipCard.jsx
 import React, { useEffect } from "react";
-import RatingButtons from "./RatingButtons";
-import RevealButton from "./RevealButton";
+import RatingButtons from "../Controls/RatingButtons";
+import RevealButton from "../Controls/RevealButton";
 
 const CardStyles = () => (
   <style jsx>{`
