@@ -6,8 +6,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { fetchCardsByDeckId, selectCardsStatus } from "../../slices/cardSlice";
 import { selectActiveTheme } from "../../slices/themeSlice";
 import { selectActiveDeck } from "../../slices/deckSlice";
-import ReviewMode from "./Modes/ReviewMode";
-import LearningMode from "./Modes/LearningMode";
+import SessionMode from "./Modes/SessionMode";
 
 const StudySession = () => {
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ const StudySession = () => {
   const status = useSelector(selectCardsStatus); // 'idle', 'loading', 'succeeded', 'failed'
 
   // --- START: MODE SELECTION LOGIC ---
-  let StudyModeComponent = null;
+  let currentMode = null;
 
   if (activeDeck) {
     // Ensure you use the correct prop name from your deck slice
@@ -31,17 +30,12 @@ const StudySession = () => {
     const dueCards = activeDeck.due;
 
     // 1. Explicit mode selection from URL
-    if (navMode === "review") {
-      StudyModeComponent = ReviewMode;
-    } else if (navMode === "learn") {
-      StudyModeComponent = LearningMode;
-    } else {
-      // 2. Auto-select mode if 'mode' is not specified in the URL
-      if (newCards > 0) {
-        StudyModeComponent = LearningMode;
-      } else if (dueCards > 0) {
-        StudyModeComponent = ReviewMode;
-      }
+    if (navMode === "review" || "learn") {
+      currentMode = navMode;
+    } else if (newCards > 0) {
+      currentMode = "learn";
+    } else if (dueCards > 0) {
+      currentMode = "review";
     }
   }
   // --- END: MODE SELECTION LOGIC ---
@@ -85,7 +79,7 @@ const StudySession = () => {
         className={`h-screen flex items-center justify-center ${activeTheme.background.app}`}
       >
         <p className={`${activeTheme.text.primary} text-xl`}>
-          Loading cards for **{activeDeck.name}**...
+          Loading cards for "{activeDeck.name}"...
         </p>
         {/*  */}
       </div>
@@ -105,10 +99,13 @@ const StudySession = () => {
   }
 
   // --- Render the specific Study Mode ---
-  if (StudyModeComponent) {
-    // Cards are loaded (status === 'succeeded') and we have a component to render
+  if (currentMode) {
     return (
-      <StudyModeComponent activeTheme={activeTheme} activeDeck={activeDeck} />
+      <SessionMode
+        mode={currentMode}
+        activeTheme={activeTheme}
+        activeDeck={activeDeck}
+      />
     );
   }
 
@@ -121,7 +118,7 @@ const StudySession = () => {
         🎉 All caught up!
       </p>
       <p className={`${activeTheme.text.secondary} text-xl mt-2`}>
-        **{activeDeck.name}** has no new or due cards.
+        "{activeDeck.name}" has no new or due cards.
       </p>
       <button
         onClick={() => navigate("/decks")}

@@ -1,5 +1,5 @@
-// src/components/Flashcard/FlipCard.jsx
-import React from "react";
+// src/components/Flashcards/FlipCard.jsx
+import React, { useEffect } from "react";
 import RatingButtons from "./RatingButtons";
 import RevealButton from "./RevealButton";
 
@@ -23,9 +23,27 @@ const CardStyles = () => (
   `}</style>
 );
 
-const FlipCard = ({ card, activeTheme, showAnswer, onReveal, onRate }) => {
+const FlipCard = ({
+  card,
+  activeTheme,
+  showAnswer,
+  onReveal,
+  onRate,
+  allowRating = false,
+  onPassComplete,
+}) => {
   const cardBg = activeTheme?.background?.secondary ?? "bg-white";
   const primaryText = activeTheme?.text?.primary ?? "text-black";
+
+  // If we are showing the answer but ratings are NOT allowed, auto-advance after a brief pause
+  useEffect(() => {
+    if (showAnswer && !allowRating) {
+      const t = setTimeout(() => {
+        onPassComplete?.();
+      }, 900);
+      return () => clearTimeout(t);
+    }
+  }, [showAnswer, allowRating, onPassComplete]);
 
   return (
     <>
@@ -43,7 +61,7 @@ const FlipCard = ({ card, activeTheme, showAnswer, onReveal, onRate }) => {
             <span
               className={`text-6xl font-extrabold ${primaryText} text-center p-4 max-w-full`}
             >
-              {card.front}
+              {card?.front}
             </span>
             {!showAnswer && (
               <RevealButton onReveal={onReveal} activeTheme={activeTheme} />
@@ -59,11 +77,11 @@ const FlipCard = ({ card, activeTheme, showAnswer, onReveal, onRate }) => {
                 <p
                   className={`text-4xl font-semibold ${primaryText} text-center mb-4`}
                 >
-                  {card.back}
+                  {card?.back}
                 </p>
               </div>
             )}
-            {showAnswer && <RatingButtons onRate={onRate} />}
+            {showAnswer && allowRating && <RatingButtons onRate={onRate} />}
           </div>
         </div>
       </div>

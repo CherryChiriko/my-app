@@ -10,7 +10,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   const activeTheme = useSelector(selectActiveTheme);
-  console.log("Active Theme in App:", activeTheme);
   // Apply dynamic background and text color directly as inline styles
   const appContainerStyles = {
     backgroundColor: activeTheme.bgColor,

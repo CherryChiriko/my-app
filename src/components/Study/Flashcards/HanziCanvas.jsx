@@ -1,32 +1,48 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
+/**
+ * displayState:
+ * - "animation" -> animate character
+ * - "outline"   -> show outline
+ * - "quiz"      -> quiz
+ * - "reveal"    -> show full character
+ */
 
 const HanziCanvas = ({
   character,
-  quizActive,
+  displayState = "reveal",
   onQuizComplete,
   activeTheme,
   strokeColor,
 }) => {
-  const hanziWriterRef = useRef(null);
-  const writerInstanceRef = useRef(null);
+  const outlineColor = activeTheme.isDark
+    ? "rgb(212,212,212)"
+    : "rgb(64,64,64)";
 
-  console.log(String(strokeColor));
+  const hanziWriterRef = useRef(null);
+  const writerRef = useRef(null);
 
   useEffect(() => {
     if (!character || !window.HanziWriter || !hanziWriterRef.current) return;
 
-    // Clear any previous writer
+    // clear previous
     hanziWriterRef.current.innerHTML = "";
-    writerInstanceRef.current = null;
+    writerRef.current = null;
 
-    // Create writer
     const options = {
       width: 250,
       height: 250,
       padding: 5,
       strokeColor,
       showCharacter: false,
-      showOutline: false,
+      // showOutline: false,
+      // showOutline: true, // Outline is *on by default*
+      strokeAnimationSpeed: 2, //4x normal speed
+      delayBetweenStrokes: 100,
+      outlineColor: outlineColor,
+      drawingColor: "rgba(0,0,0,0)",
+      highlightColor: strokeColor,
+      highlightWrongColor: "#ff4d4d",
     };
 
     const writer = window.HanziWriter.create(
@@ -34,37 +50,45 @@ const HanziCanvas = ({
       character,
       options
     );
+    writerRef.current = writer;
 
-    if (quizActive) {
-      // QUIZ MODE
-      writer.quiz({
-        onComplete: (summary) => {
-          onQuizComplete?.(summary.totalMistakes);
-        },
-      });
-    } else {
-      // REVEAL MODE
-      writer.showCharacter();
+    // Decide what to do based on displayState
+    switch (displayState) {
+      case "animation":
+        writer.loopCharacterAnimation();
+        break;
+      case "outline":
+        writer.quiz();
+        break;
+      case "quiz":
+        writer.hideOutline();
+        writer.quiz({
+          showOutline: false,
+          onComplete: (summary) => {
+            const mistakes = summary?.totalMistakes ?? 0;
+            onQuizComplete?.(mistakes);
+          },
+        });
+        break;
+      default:
+        console.log("Im here");
+        writer.showCharacter();
     }
 
-    writerInstanceRef.current = writer;
-
-    // Cleanup on unmount or re-render
     return () => {
-      if (hanziWriterRef.current) {
-        hanziWriterRef.current.innerHTML = "";
-      }
-      writerInstanceRef.current = null;
+      writerRef.current = null;
     };
-  }, [character, quizActive, onQuizComplete]);
+  }, [character, displayState, strokeColor, onQuizComplete, outlineColor]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full space-y-6">
       <div
         ref={hanziWriterRef}
-        className={` ${activeTheme.background.canvas}  border-4 ${activeTheme.border.card} rounded-xl shadow-lg transition-all duration-300`}
+        className={`${activeTheme?.background?.canvas ?? "bg-white"} border-4 ${
+          activeTheme?.border?.card ?? "border-gray-200"
+        } rounded-xl shadow-lg transition-all duration-300`}
         style={{ width: "250px", height: "250px" }}
-      ></div>
+      />
     </div>
   );
 };
