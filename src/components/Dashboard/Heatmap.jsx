@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 
 export const Heatmap = ({ data = [], activeTheme }) => {
+  const COLORS = activeTheme.gradients.colors;
+
   // Map dates to values for quick lookup
   const map = useMemo(() => {
     const m = new Map();
@@ -15,15 +17,27 @@ export const Heatmap = ({ data = [], activeTheme }) => {
     const date = new Date();
     date.setDate(date.getDate() - i);
     const iso = date.toISOString().slice(0, 10);
-    const v = map.get(iso) || 0;
-    cells.push({ iso, v });
+    const xp = map.get(iso) || 0;
+    cells.push({ iso, xp });
   }
 
-  const getColor = (v) => {
-    if (v === 0) return activeTheme.background.canvas || "#111827";
-    if (v < 3) return activeTheme.background.accent1 || "#86efac";
-    if (v < 7) return activeTheme.background.accent2 || "#facc15";
-    return activeTheme.background.danger || "#fb7185";
+  const getColor = (xp) => {
+    const max_xp = 10;
+    const nonzero_steps = COLORS.length - 1;
+    let index;
+    switch (xp) {
+      case 0:
+        index = 0;
+        break;
+      case xp >= max_xp:
+        index = nonzero_steps;
+        break;
+      default:
+        let raw_index = Math.floor((xp / max_xp) * nonzero_steps);
+        let index_offset = Math.min(Math.max(0, raw_index), nonzero_steps - 1);
+        index = index_offset + 1;
+    }
+    return COLORS[index];
   };
 
   return (
@@ -37,12 +51,24 @@ export const Heatmap = ({ data = [], activeTheme }) => {
           <div
             key={c.iso}
             className="w-7 h-7 rounded-sm"
-            title={`${c.iso}: ${c.v} reviews`}
-            style={{ background: getColor(c.v) }}
+            title={`${c.iso}: ${c.xp} XP`}
+            style={{ background: getColor(c.xp) }}
           />
         ))}
       </div>
-      <div className="text-xs opacity-60">Darker = more activity</div>
+      <div className="flex justify-between items-center text-xs opacity-60 pt-1">
+        <span>Less activity</span>
+        <div className="flex space-x-1">
+          {COLORS.map((hex, index) => (
+            <div
+              key={index}
+              className={`w-4 h-4 rounded-sm`}
+              style={{ backgroundColor: hex }}
+            />
+          ))}
+        </div>
+        <span>More activity</span>
+      </div>
     </div>
   );
 };

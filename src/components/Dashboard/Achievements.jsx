@@ -17,6 +17,15 @@ export const Achievements = ({ onClaim, activeTheme }) => {
             <p className={`${activeTheme.text.secondary} text-xs mb-2`}>
               {ach.hint}
             </p>
+            <div className="flex items-center gap-2">
+              {ach.unlocked ? (
+                <button className={`text-xs px-3 ${activeTheme.text.accent1}`}>
+                  Claim
+                </button>
+              ) : (
+                <div className="text-xs opacity-60">Owned</div>
+              )}
+            </div>
           </div>
         ))}
       </div>

@@ -44,14 +44,12 @@ const Dashboard = () => {
   const mastered_cards = decks.reduce((t, d) => t + (d.mastered || 0), 0);
   const currentStreak = useSelector(selectGlobalStreak);
 
-  // Mocked / derived values until backend provides XP & achievement data
   const totalXP = useMemo(
     () =>
       Math.max(0, mastered_cards * 5 + currentStreak * 10 + cards_due_today),
     [mastered_cards, currentStreak, cards_due_today]
   );
 
-  // Mock heatmap data for last 28 days
   const heatmapData = useMemo(() => {
     const arr = [];
     for (let i = 0; i < 28; i++) {
@@ -89,11 +87,12 @@ const Dashboard = () => {
       className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full py-8 px-6 font-inter`}
     >
       <div className="max-w-screen-xl mx-auto space-y-4">
+        {/* ===== TOP SECTION (Improved Compact Layout) ===== */}
         <div
-          className={`${activeTheme.background.secondary} rounded-2xl p-8 shadow-xl flex flex-col sm:flex-row items-center justify-evenly gap-6`}
+          className={`${activeTheme.background.secondary} rounded-2xl p-6 sm:p-8 shadow-xl flex items-center justify-between gap-6`}
         >
-          {/* Logo with gradient mask */}
-          <div className="flex items-center space-x-2 w-32 h-32 relative">
+          {/* Logo */}
+          <div className="flex items-center w-32 h-20 relative shrink-0">
             <div
               className={`absolute inset-0 ${gradient}`}
               style={{
@@ -109,8 +108,8 @@ const Dashboard = () => {
             />
           </div>
 
-          {/* XPBar component */}
-          <div className="md:w-72">
+          {/* XP Bar */}
+          <div className="flex-1 max-w-lg">
             <XPBar totalXP={totalXP} activeTheme={activeTheme} />
           </div>
         </div>
@@ -148,8 +147,9 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Main grid: Left (decks) | Right (heatmap + achievements) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ===== MAIN GRID (Vertically Centered) ===== */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          {/* Left: Decks */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Continue Learning</h2>
@@ -187,11 +187,11 @@ const Dashboard = () => {
             )}
           </div>
 
+          {/* Right: Heatmap + Achievements */}
           <div
-            className={`${activeTheme.background.secondary} p-6 rounded-2xl shadow-lg flex-col space-y-6`}
+            className={`${activeTheme.background.secondary} p-6 rounded-2xl shadow-lg flex flex-col space-y-6`}
           >
             <Heatmap data={heatmapData} activeTheme={activeTheme} />
-
             <Achievements activeTheme={activeTheme} />
           </div>
         </div>

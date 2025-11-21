@@ -50,6 +50,14 @@ const themes = [
     gradients: {
       from: "from-indigo-500",
       to: "to-purple-500",
+      colors: [
+        "#111827",
+        "#1a2347",
+        "#2d2d67",
+        "#4b3284",
+        "#71329d",
+        "#9c27b0",
+      ],
     },
   },
   {
@@ -105,6 +113,14 @@ const themes = [
     gradients: {
       from: "from-indigo-400",
       to: "to-blue-500",
+      colors: [
+        "#111827",
+        "#1a2347",
+        "#2d2d67",
+        "#4b3284",
+        "#71329d",
+        "#9c27b0",
+      ],
     },
   },
 ];
