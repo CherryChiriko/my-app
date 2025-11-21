@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 export function useCharacterFlow({
   card,
@@ -31,6 +32,16 @@ export function useCharacterFlow({
     const toneIdx = card?.tones?.[currentIndex] ?? 0;
     return toneColors[toneIdx];
   }, [card?.tones, currentIndex]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setCurrentIndex(0);
+    setRevealed(false);
+    setMistakeList([]);
+    setCompletedChars([]);
+    setShowAnswer(false);
+  }, [location.pathname]);
 
   // Reset when card changes
   useEffect(() => {
