@@ -1,30 +1,40 @@
+import React from "react";
 import { useHanziWriter } from "../../hooks/useHanziWriter";
 
 const HanziCanvas = ({
   character,
-  displayState = "reveal",
+  displayState,
   onQuizComplete,
   activeTheme,
   strokeColor,
+  showAnswer,
 }) => {
-  const hanziWriterRef = useHanziWriter({
+  const { containerRef } = useHanziWriter({
     character,
     displayState,
     onQuizComplete,
     activeTheme,
     strokeColor,
+    showAnswer,
   });
+
+  const bgColor = activeTheme?.background?.canvas ?? "bg-white";
+  const borderColor = activeTheme?.border?.card ?? "border-gray-200";
+
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full space-y-6">
+    <div className="flex flex-col items-center justify-center h-full w-full">
       <div
-        ref={hanziWriterRef.containerRef}
-        className={`${activeTheme?.background?.canvas ?? "bg-white"} border-4 ${
-          activeTheme?.border?.card ?? "border-gray-200"
-        } rounded-xl shadow-lg transition-all duration-300`}
-        style={{ width: "250px", height: "250px" }}
+        ref={containerRef}
+        className={`${bgColor} border-4 ${borderColor} rounded-xl shadow-lg transition-all duration-300`}
+        style={{
+          width: "250px",
+          height: "250px",
+        }}
+        role="region"
+        aria-label="Character writing canvas"
       />
     </div>
   );
 };
 
-export default HanziCanvas;
+export default React.memo(HanziCanvas);

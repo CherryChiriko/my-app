@@ -6,11 +6,12 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import StudySession from "./components/Study/views/StudySession";
 import NotFound404 from "./components/404";
 import DeckListView from "./components/Decks/DeckListView";
+import ScrollToTop from "./helpers/ScrollToTop";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   const activeTheme = useSelector(selectActiveTheme);
-  // Apply dynamic background and text color directly as inline styles
+
   const appContainerStyles = {
     backgroundColor: activeTheme.bgColor,
     color: activeTheme.textColor,
@@ -21,6 +22,7 @@ function App() {
     <div style={appContainerStyles}>
       <Navbar />
       <main>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/decks" element={<DeckManager />}>

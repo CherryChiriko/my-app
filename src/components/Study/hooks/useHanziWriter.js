@@ -1,19 +1,22 @@
 import { useEffect, useRef } from "react";
 
-/**
- * displayState:
- * - "animation" -> animate character
- * - "outline"   -> show outline
- * - "quiz"      -> quiz
- * - "reveal"    -> show full character
- */
+const WRITER_CONFIG = {
+  width: 250,
+  height: 250,
+  padding: 5,
+  strokeAnimationSpeed: 2,
+  delayBetweenStrokes: 100,
+  drawingColor: "rgba(0,0,0,0)",
+  highlightWrongColor: "#ff4d4d",
+};
 
 export function useHanziWriter({
   character,
-  displayState = "reveal",
+  displayState,
   onQuizComplete,
   activeTheme,
   strokeColor,
+  showAnswer,
 }) {
   const outlineColor = activeTheme.isDark
     ? "rgb(212,212,212)"
@@ -22,59 +25,94 @@ export function useHanziWriter({
   const containerRef = useRef(null);
   const writerRef = useRef(null);
 
+  // Create/recreate writer when character changes
   useEffect(() => {
-    if (!character || !window.HanziWriter || !containerRef.current) return;
+    if (!character || !window.HanziWriter || !containerRef.current) {
+      return;
+    }
 
-    // clear previous
+    // Clear previous writer
     containerRef.current.innerHTML = "";
     writerRef.current = null;
 
-    const options = {
-      width: 250,
-      height: 250,
-      padding: 5,
-      strokeColor,
-      showCharacter: false,
-      strokeAnimationSpeed: 2, //2x normal speed
-      delayBetweenStrokes: 100,
-      outlineColor: outlineColor,
-      drawingColor: "rgba(0,0,0,0)",
-      highlightColor: strokeColor,
-      highlightWrongColor: "#ff4d4d",
-    };
-
-    const writer = window.HanziWriter.create(
-      containerRef.current,
-      character,
-      options
-    );
-    writerRef.current = writer;
-
-    switch (displayState) {
-      case "animation":
-        writer.loopCharacterAnimation();
-        break;
-      case "outline":
-        writer.quiz();
-        break;
-      case "quiz":
-        writer.hideOutline();
-        writer.quiz({
-          showOutline: false,
-          onComplete: (summary) => {
-            const mistakes = summary?.totalMistakes ?? 0;
-            onQuizComplete?.(mistakes);
-          },
-        });
-        break;
-      default:
-        writer.showCharacter();
+    try {
+      const writer = window.HanziWriter.create(
+        containerRef.current,
+        character,
+        {
+          ...WRITER_CONFIG,
+          strokeColor,
+          outlineColor,
+          highlightColor: strokeColor,
+        }
+      );
+      writerRef.current = writer;
+    } catch (error) {
+      console.error("Failed to create HanziWriter:", error);
     }
+  }, [character, strokeColor, outlineColor]);
 
+  // Apply mode-specific behavior when displayState changes
+  useEffect(() => {
+    const writer = writerRef.current;
+    if (!writer) return;
+
+    try {
+      switch (displayState) {
+        case "animation":
+          writer.hideCharacter();
+          writer.loopCharacterAnimation();
+          break;
+
+        case "outline":
+          writer.hideCharacter();
+          writer.quiz({
+            onComplete: () => onQuizComplete?.(0),
+          });
+          break;
+
+        case "quiz":
+          writer.hideCharacter();
+          writer.hideOutline();
+          writer.quiz({
+            onComplete: (summary) => {
+              const mistakes = summary?.totalMistakes ?? 0;
+              onQuizComplete?.(mistakes);
+            },
+          });
+          break;
+
+        default:
+          writer.showCharacter();
+      }
+    } catch (error) {
+      console.error(`Failed to apply ${displayState} mode:`, error);
+    }
+  }, [displayState, onQuizComplete]);
+
+  // Show character when answer is revealed
+  useEffect(() => {
+    const writer = writerRef.current;
+    if (!writer || !showAnswer) return;
+
+    try {
+      writer.showCharacter();
+    } catch (error) {
+      console.error("Failed to show character:", error);
+    }
+  }, [showAnswer]);
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
-      writerRef.current = null;
+      if (writerRef.current) {
+        writerRef.current = null;
+      }
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
     };
-  }, [character, displayState, strokeColor, onQuizComplete, outlineColor]);
+  }, []);
 
   return { containerRef };
 }

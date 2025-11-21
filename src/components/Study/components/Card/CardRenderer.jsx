@@ -13,7 +13,7 @@ const getRatingFromMistakes = (mistakes) => {
 const CardRenderer = ({
   card,
   studyMode = "A",
-  displayState = "reveal",
+  displayState,
   showAnswer,
   allowRating = false,
   activeTheme,

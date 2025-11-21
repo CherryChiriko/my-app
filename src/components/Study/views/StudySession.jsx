@@ -31,7 +31,7 @@ const StudySession = () => {
     const dueCards = activeDeck.due;
 
     // 1. Explicit mode selection from URL
-    if (navMode === "review" || "learn") {
+    if (navMode === "review" || navMode === "learn") {
       currentMode = navMode;
     } else if (newCards > 0) {
       currentMode = "learn";
@@ -66,9 +66,9 @@ const StudySession = () => {
         </p>
         <button
           onClick={() => navigate("/decks")}
-          className="text-blue-500 hover:text-blue-600 mt-4"
+          className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
         >
-          Go to Decks
+          Return to Decks
         </button>
       </div>
     );
@@ -123,7 +123,7 @@ const StudySession = () => {
       </p>
       <button
         onClick={() => navigate("/decks")}
-        className="text-blue-500 hover:text-blue-600 mt-4"
+        className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
       >
         Return to Decks
       </button>

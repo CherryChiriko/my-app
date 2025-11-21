@@ -7,8 +7,10 @@ import { selectAllCards, updateCard } from "../../../slices/cardSlice";
 import { recordStudyActivity } from "../../../slices/deckSlice";
 import { getUpdatedCard } from "../../../helpers/getUpdatedCard";
 import SessionComplete from "../components/Modals/SessionComplete";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-const LEARN_LIMIT = 1;
+const LEARN_LIMIT = 5;
 const REVIEW_LIMIT = 10;
 
 const PHASES = {
@@ -27,14 +29,18 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const isReviewMode = mode === "review";
+
   const [sessionFinished, setSessionFinished] = useState(false);
 
-  const limit = mode === "review" ? REVIEW_LIMIT : LEARN_LIMIT;
+  const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
 
   const allCards = useSelector(selectAllCards);
   const cards = useMemo(() => allCards.slice(0, limit), [limit, allCards]);
 
-  const phases = PHASES[activeDeck.studyMode] ?? PHASES.A;
+  const phases = isReviewMode
+    ? [{ displayState: "quiz", allowRating: true }]
+    : PHASES[activeDeck.studyMode] ?? PHASES.A;
   const totalPhases = phases.length;
 
   const [phaseIndex, setPhaseIndex] = useState(0);
@@ -194,6 +200,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
             onClick={exitStudy}
             className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
           >
+            <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5 mr-2" />
             Exit Study
           </button>
 
