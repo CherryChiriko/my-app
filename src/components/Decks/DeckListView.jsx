@@ -108,24 +108,24 @@ const DeckListView = () => {
     if (totalPages <= 1) return null;
 
     return (
-      <div className="flex justify-center items-center mt-8 space-x-2">
+      <div className="flex justify-center items-center mt-4 space-x-2">
         <button
           onClick={() => paginate(currentPage - 1)}
           disabled={currentPage === 1}
-          className={`${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50`}
+          className={`${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-1 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50`}
         >
           Previous
         </button>
 
         {/* Simple Page Indicator */}
-        <span className={`${activeTheme.text.secondary} px-3`}>
+        <span className={`${activeTheme.text.secondary} text-sm px-3`}>
           Page {currentPage}/{totalPages}
         </span>
 
         <button
           onClick={() => paginate(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className={`${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50`}
+          className={`${activeTheme.button.secondary} ${activeTheme.text.secondary} font-semibold py-1 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50`}
         >
           Next
         </button>

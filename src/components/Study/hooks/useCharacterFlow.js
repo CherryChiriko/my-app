@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
 
 export function useCharacterFlow({
   card,
@@ -33,15 +32,13 @@ export function useCharacterFlow({
     return toneColors[toneIdx];
   }, [card?.tones, currentIndex]);
 
-  const location = useLocation();
-
-  useEffect(() => {
-    setCurrentIndex(0);
-    setRevealed(false);
-    setMistakeList([]);
-    setCompletedChars([]);
-    setShowAnswer(false);
-  }, [location.pathname]);
+  console.log("[useCharacterFlow] STATE", {
+    currentCharacter,
+    currentIndex,
+    displayState,
+    revealed,
+    showAnswer,
+  });
 
   // Reset when card changes
   useEffect(() => {
@@ -118,6 +115,11 @@ export function useCharacterFlow({
   const handleReveal = useCallback(
     (mistakes = null) => {
       const mistakeCount = Number.isFinite(mistakes) ? mistakes : 0;
+      console.log("[useCharacterFlow] handleReveal", {
+        mistakes,
+        currentCharacter,
+        index: currentIndex,
+      });
 
       setShowAnswer(true);
       setRevealed(true);

@@ -29,6 +29,7 @@ const HanziCanvas = ({
         style={{
           width: "250px",
           height: "250px",
+          position: "relative", // ensures SVG sits inside
         }}
         role="region"
         aria-label="Character writing canvas"
