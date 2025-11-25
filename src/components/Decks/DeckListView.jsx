@@ -14,11 +14,13 @@ import {
 
 import DeckCard from "./DeckCard";
 import DeckCompact from "./DeckCompact";
-import decks from "../../data/decks";
+// import decks from "../../data/decks";
+import { selectDecks } from "../../slices/deckSlice";
 import { useNavigate } from "react-router-dom";
 
 const DeckListView = () => {
   const activeTheme = useSelector(selectActiveTheme);
+  const decks = useSelector(selectDecks);
   const navigate = useNavigate();
 
   // State

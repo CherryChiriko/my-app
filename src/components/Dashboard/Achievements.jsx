@@ -1,7 +1,6 @@
 import achievements from "../../data/achievements.json";
 
 export const Achievements = ({ onClaim, activeTheme }) => {
-  console.log(achievements);
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">

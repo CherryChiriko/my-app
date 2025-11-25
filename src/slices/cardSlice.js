@@ -1,67 +1,93 @@
-// src/slices/cardSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import cardsData from "../data/cards-hsk1.json";
 
-// Local or backend API base
-const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : "https://your-production-backend-url.com";
+const API_BASE = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-/** 🧠 Async thunk: fetch cards by deckId (offline fallback supported) */
-export const fetchCardsByDeckId = createAsyncThunk(
-  "cards/fetchByDeckId",
-  async (deckId, { rejectWithValue }) => {
+// Map study modes to tables
+const CARD_SOURCES = {
+  A: "cards_a",
+  C: "cards_c",
+};
+
+/** Fetch cards for a specific deck (remote + fallback local optional) */
+export const fetchCards = createAsyncThunk(
+  "cards/fetchCards",
+  async ({ deck_id, studyMode }, { rejectWithValue }) => {
+    const table = CARD_SOURCES[studyMode];
+    console.log(
+      `🌐 fetchCards: fetching cards for deckId=${deck_id}, studyMode=${studyMode}`
+    );
+
+    if (!table) return rejectWithValue("Unknown studyMode");
+    if (!table) {
+      console.warn(
+        `⚠️ fetchCards: Unknown studyMode ${studyMode}, falling back to local data`
+      );
+    }
+
     try {
-      const res = await fetch(`${API_BASE}/cards?deckId=${deckId}`);
-      if (!res.ok) throw new Error("Failed to fetch cards from backend");
+      const res = await fetch(
+        `${API_BASE}/rest/v1/${table}?deck_id=eq.${deck_id}`,
+        {
+          headers: {
+            apikey: SUPABASE_ANON_KEY,
+            Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to fetch cards");
+
       const data = await res.json();
-      return data; // expects an array of cards
+      console.log(`✅ fetchCards: fetched ${data.length} cards from Supabase`);
+      return data;
     } catch (err) {
-      console.warn("⚠️ Backend unavailable — using local data.");
-      // fallback to local data filtered by deck
-      return cardsData.filter((c) => c.deckId === deckId);
+      console.warn(
+        "⚠️ Backend unavailable — could fallback to local data if available."
+      );
+      return []; // optional: filter from local cards JSON
     }
   }
 );
 
-const initialState = {
-  cards: [],
-  status: "idle",
-  error: null,
-};
-
-/** 🧩 Card Slice */
-export const cardSlice = createSlice({
+const cardSlice = createSlice({
   name: "cards",
-  initialState,
+  initialState: {
+    cards: [],
+    status: "idle",
+    error: null,
+  },
   reducers: {
-    updateCard: (state, action) => {
+    updateCard(state, action) {
       const updatedCard = action.payload;
       const index = state.cards.findIndex((c) => c.id === updatedCard.id);
       if (index !== -1) state.cards[index] = updatedCard;
     },
+    clearCards(state) {
+      state.cards = [];
+      state.status = "idle";
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCardsByDeckId.pending, (state) => {
+      .addCase(fetchCards.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchCardsByDeckId.fulfilled, (state, action) => {
+      .addCase(fetchCards.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cards = action.payload;
       })
-      .addCase(fetchCardsByDeckId.rejected, (state, action) => {
+      .addCase(fetchCards.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
       });
   },
 });
 
-export const { updateCard } = cardSlice.actions;
+export const { updateCard, clearCards } = cardSlice.actions;
 
-/** 🎯 Selectors */
-export const selectAllCards = (state) => state.cards.cards;
+export const selectCards = (state) => state.cards.cards;
 export const selectCardsStatus = (state) => state.cards.status;
 export const selectCardsError = (state) => state.cards.error;
 

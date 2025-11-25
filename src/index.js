@@ -8,7 +8,6 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import HanziWriter from "hanzi-writer";
 window.HanziWriter = HanziWriter;
-console.log("HanziWriter assigned to window");
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

@@ -17,13 +17,13 @@ const writeDB = async (data) =>
 // === Routes ===
 
 // Get cards due for a deck
-app.get("/api/cards/deck/:deckId/due", async (req, res) => {
+app.get("/api/cards/deck/:deck_id/due", async (req, res) => {
   try {
-    const { deckId } = req.params;
+    const { deck_id } = req.params;
     const db = await readDB();
     const now = new Date();
     const dueCards = db.cards.filter(
-      (c) => c.deckId === deckId && new Date(c.due) <= now
+      (c) => c.deck_id === deck_id && new Date(c.due) <= now
     );
     res.json({ cards: dueCards });
   } catch (err) {

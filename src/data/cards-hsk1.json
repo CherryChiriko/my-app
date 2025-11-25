@@ -1,7 +1,6 @@
 [
   {
-    "id": 1,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "爱",
     "reading": "ài",
     "back": "to love; to be fond of; to like",
@@ -19,8 +18,7 @@
     "createdAt": "2025-10-28T16:31:08.896412"
   },
   {
-    "id": 2,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "八",
     "reading": "bā",
     "back": "eight; 8",
@@ -38,8 +36,7 @@
     "createdAt": "2025-10-28T16:31:08.896458"
   },
   {
-    "id": 3,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "爸爸",
     "reading": "bà ba",
     "back": "(coll.) father; dad",
@@ -59,8 +56,7 @@
     "createdAt": "2025-10-28T16:31:08.896464"
   },
   {
-    "id": 4,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "杯子",
     "reading": "bēi zi",
     "back": "cup",
@@ -80,8 +76,7 @@
     "createdAt": "2025-10-28T16:31:08.896468"
   },
   {
-    "id": 5,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "北京",
     "reading": "Běi jīng",
     "back": "Beijing, capital of the People's Republic of China",
@@ -101,8 +96,7 @@
     "createdAt": "2025-10-28T16:31:08.896472"
   },
   {
-    "id": 6,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "本",
     "reading": "běn",
     "back": "root",
@@ -120,8 +114,7 @@
     "createdAt": "2025-10-28T16:31:08.896475"
   },
   {
-    "id": 7,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "不",
     "reading": "bù",
     "back": "no; not so",
@@ -139,8 +132,7 @@
     "createdAt": "2025-10-28T16:31:08.896478"
   },
   {
-    "id": 8,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "不客气",
     "reading": "bù kè qi",
     "back": "you're welcome",
@@ -162,8 +154,7 @@
     "createdAt": "2025-10-28T16:31:08.896481"
   },
   {
-    "id": 9,
-    "deckId": 1,
+    "deck_id": 1,
     "front": "菜",
     "reading": "cài",
     "back": "dish (type of food)",
@@ -181,8 +172,7 @@
     "createdAt": "2025-10-28T16:31:08.896486"
   },
   {
-    "id": 10,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "茶",
     "reading": "chá",
     "back": "tea",
@@ -200,8 +190,7 @@
     "createdAt": "2025-10-28T16:31:08.896489"
   },
   {
-    "id": 11,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "吃",
     "reading": "chī",
     "back": "to eat; to consume",
@@ -219,8 +208,7 @@
     "createdAt": "2025-10-28T16:31:08.896492"
   },
   {
-    "id": 12,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "出租车",
     "reading": "chū zū chē",
     "back": "taxi",
@@ -242,8 +230,7 @@
     "createdAt": "2025-10-28T16:31:08.896497"
   },
   {
-    "id": 13,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "打电话",
     "reading": "dǎ diàn huà",
     "back": "to make a telephone call",
@@ -265,8 +252,7 @@
     "createdAt": "2025-10-28T16:31:08.896500"
   },
   {
-    "id": 14,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "大",
     "reading": "dà",
     "back": "big; large; great",
@@ -284,8 +270,7 @@
     "createdAt": "2025-10-28T16:31:08.896502"
   },
   {
-    "id": 15,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "的",
     "reading": "de",
     "back": "of; ~'s (possessive particle)",
@@ -303,8 +288,7 @@
     "createdAt": "2025-10-28T16:31:08.896505"
   },
   {
-    "id": 16,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "点",
     "reading": "diǎn",
     "back": "point",
@@ -322,8 +306,7 @@
     "createdAt": "2025-10-28T16:31:08.896507"
   },
   {
-    "id": 17,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "电脑",
     "reading": "diàn nǎo",
     "back": "computer",
@@ -343,8 +326,7 @@
     "createdAt": "2025-10-28T16:31:08.896510"
   },
   {
-    "id": 18,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "电视",
     "reading": "diàn shì",
     "back": "television; TV",
@@ -364,8 +346,7 @@
     "createdAt": "2025-10-28T16:31:08.896513"
   },
   {
-    "id": 19,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "电影",
     "reading": "diàn yǐng",
     "back": "movie; film",
@@ -385,8 +366,7 @@
     "createdAt": "2025-10-28T16:31:08.896519"
   },
   {
-    "id": 20,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "东西",
     "reading": "dōng xī",
     "back": "east and west",
@@ -406,8 +386,7 @@
     "createdAt": "2025-10-28T16:31:08.896522"
   },
   {
-    "id": 21,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "都",
     "reading": "Dū",
     "back": "surname Du",
@@ -425,8 +404,7 @@
     "createdAt": "2025-10-28T16:31:08.896525"
   },
   {
-    "id": 22,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "读",
     "reading": "dòu",
     "back": "comma",
@@ -444,8 +422,7 @@
     "createdAt": "2025-10-28T16:31:08.896527"
   },
   {
-    "id": 23,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "对不起",
     "reading": "duì bu qǐ",
     "back": "I'm sorry; excuse me; I beg your pardon",
@@ -467,8 +444,7 @@
     "createdAt": "2025-10-28T16:31:08.896530"
   },
   {
-    "id": 24,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "多",
     "reading": "duō",
     "back": "many; much",
@@ -486,8 +462,7 @@
     "createdAt": "2025-10-28T16:31:08.896532"
   },
   {
-    "id": 25,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "多少",
     "reading": "duō shǎo",
     "back": "number",
@@ -507,8 +482,7 @@
     "createdAt": "2025-10-28T16:31:08.896535"
   },
   {
-    "id": 26,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "儿子",
     "reading": "ér zi",
     "back": "son",
@@ -528,8 +502,7 @@
     "createdAt": "2025-10-28T16:31:08.896538"
   },
   {
-    "id": 27,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "二",
     "reading": "èr",
     "back": "two",
@@ -547,8 +520,7 @@
     "createdAt": "2025-10-28T16:31:08.896540"
   },
   {
-    "id": 28,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "饭馆",
     "reading": "fàn guǎn",
     "back": "restaurant",
@@ -568,8 +540,7 @@
     "createdAt": "2025-10-28T16:31:08.896543"
   },
   {
-    "id": 29,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "飞机",
     "reading": "fēi jī",
     "back": "airplane",
@@ -589,8 +560,7 @@
     "createdAt": "2025-10-28T16:31:08.896547"
   },
   {
-    "id": 30,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "分钟",
     "reading": "fēn zhōng",
     "back": "minute",
@@ -610,8 +580,7 @@
     "createdAt": "2025-10-28T16:31:08.896550"
   },
   {
-    "id": 31,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "高兴",
     "reading": "gāo xìng",
     "back": "happy",
@@ -631,8 +600,7 @@
     "createdAt": "2025-10-28T16:31:08.896553"
   },
   {
-    "id": 32,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "个",
     "reading": "gě",
     "back": "used in 自个儿",
@@ -650,8 +618,7 @@
     "createdAt": "2025-10-28T16:31:08.896555"
   },
   {
-    "id": 33,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "工作",
     "reading": "gōng zuò",
     "back": "to work",
@@ -671,8 +638,7 @@
     "createdAt": "2025-10-28T16:31:08.896558"
   },
   {
-    "id": 34,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "狗",
     "reading": "gǒu",
     "back": "dog",
@@ -690,8 +656,7 @@
     "createdAt": "2025-10-28T16:31:08.896560"
   },
   {
-    "id": 35,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "汉语",
     "reading": "Hàn yǔ",
     "back": "Chinese language",
@@ -711,8 +676,7 @@
     "createdAt": "2025-10-28T16:31:08.896563"
   },
   {
-    "id": 36,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "好",
     "reading": "hǎo",
     "back": "good",
@@ -730,8 +694,7 @@
     "createdAt": "2025-10-28T16:31:08.896565"
   },
   {
-    "id": 37,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "喝",
     "reading": "hē",
     "back": "to drink",
@@ -749,8 +712,7 @@
     "createdAt": "2025-10-28T16:31:08.896568"
   },
   {
-    "id": 38,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "和",
     "reading": "hé",
     "back": "old variant of 和",
@@ -768,8 +730,7 @@
     "createdAt": "2025-10-28T16:31:08.896570"
   },
   {
-    "id": 39,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "很",
     "reading": "hěn",
     "back": "(adverb of degree)",
@@ -787,8 +748,7 @@
     "createdAt": "2025-10-28T16:31:08.896575"
   },
   {
-    "id": 40,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "后面",
     "reading": "hòu mian",
     "back": "the back; the rear; the last bit",
@@ -808,8 +768,7 @@
     "createdAt": "2025-10-28T16:31:08.896578"
   },
   {
-    "id": 41,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "回",
     "reading": "huí",
     "back": "to circle",
@@ -827,8 +786,7 @@
     "createdAt": "2025-10-28T16:31:08.896581"
   },
   {
-    "id": 42,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "会",
     "reading": "huì",
     "back": "can; to have the skill; to know how to",
@@ -846,8 +804,7 @@
     "createdAt": "2025-10-28T16:31:08.896583"
   },
   {
-    "id": 43,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "火车站",
     "reading": "huǒ chē zhàn",
     "back": "train station",
@@ -869,8 +826,7 @@
     "createdAt": "2025-10-28T16:31:08.896586"
   },
   {
-    "id": 44,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "几",
     "reading": "jī",
     "back": "small table",
@@ -888,8 +844,7 @@
     "createdAt": "2025-10-28T16:31:08.896591"
   },
   {
-    "id": 45,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "家",
     "reading": "jiā",
     "back": "used in 家伙 and 家俱",
@@ -907,8 +862,7 @@
     "createdAt": "2025-10-28T16:31:08.896594"
   },
   {
-    "id": 46,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "叫",
     "reading": "jiào",
     "back": "to shout",
@@ -926,8 +880,7 @@
     "createdAt": "2025-10-28T16:31:08.896596"
   },
   {
-    "id": 47,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "今天",
     "reading": "jīn tiān",
     "back": "today",
@@ -947,8 +900,7 @@
     "createdAt": "2025-10-28T16:31:08.896598"
   },
   {
-    "id": 48,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "九",
     "reading": "jiǔ",
     "back": "nine",
@@ -966,8 +918,7 @@
     "createdAt": "2025-10-28T16:31:08.896601"
   },
   {
-    "id": 49,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "开",
     "reading": "kāi",
     "back": "to open (transitive or intransitive)",
@@ -985,8 +936,7 @@
     "createdAt": "2025-10-28T16:31:08.896605"
   },
   {
-    "id": 50,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "看",
     "reading": "kān",
     "back": "to look after",
@@ -1004,8 +954,7 @@
     "createdAt": "2025-10-28T16:31:08.896608"
   },
   {
-    "id": 51,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "看见",
     "reading": "kàn jiàn",
     "back": "to see",
@@ -1025,8 +974,7 @@
     "createdAt": "2025-10-28T16:31:08.896610"
   },
   {
-    "id": 52,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "块",
     "reading": "kuài",
     "back": "lump; chunk; piece",
@@ -1044,8 +992,7 @@
     "createdAt": "2025-10-28T16:31:08.896613"
   },
   {
-    "id": 53,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "来",
     "reading": "lái",
     "back": "to come",
@@ -1063,8 +1010,7 @@
     "createdAt": "2025-10-28T16:31:08.896615"
   },
   {
-    "id": 54,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "老师",
     "reading": "lǎo shī",
     "back": "teacher",
@@ -1084,8 +1030,7 @@
     "createdAt": "2025-10-28T16:31:08.896618"
   },
   {
-    "id": 55,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "了",
     "reading": "le",
     "back": "(completed action marker)",
@@ -1103,8 +1048,7 @@
     "createdAt": "2025-10-28T16:31:08.896620"
   },
   {
-    "id": 56,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "冷",
     "reading": "Lěng",
     "back": "surname Leng",
@@ -1122,8 +1066,7 @@
     "createdAt": "2025-10-28T16:31:08.896622"
   },
   {
-    "id": 57,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "里",
     "reading": "lǐ",
     "back": "variant of 里",
@@ -1141,8 +1084,7 @@
     "createdAt": "2025-10-28T16:31:08.896625"
   },
   {
-    "id": 58,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "零",
     "reading": "líng",
     "back": "zero",
@@ -1160,8 +1102,7 @@
     "createdAt": "2025-10-28T16:31:08.896627"
   },
   {
-    "id": 59,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "六",
     "reading": "liù",
     "back": "six",
@@ -1179,8 +1120,7 @@
     "createdAt": "2025-10-28T16:31:08.896632"
   },
   {
-    "id": 60,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "妈妈",
     "reading": "mā ma",
     "back": "mama",
@@ -1200,8 +1140,7 @@
     "createdAt": "2025-10-28T16:31:08.896634"
   },
   {
-    "id": 61,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "吗",
     "reading": "má",
     "back": "(coll.) what?",
@@ -1219,8 +1158,7 @@
     "createdAt": "2025-10-28T16:31:08.896637"
   },
   {
-    "id": 62,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "买",
     "reading": "mǎi",
     "back": "to buy",
@@ -1238,8 +1176,7 @@
     "createdAt": "2025-10-28T16:31:08.896639"
   },
   {
-    "id": 63,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "猫",
     "reading": "māo",
     "back": "cat",
@@ -1257,8 +1194,7 @@
     "createdAt": "2025-10-28T16:31:08.896642"
   },
   {
-    "id": 64,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "没",
     "reading": "méi",
     "back": "(negative prefix for verbs) have not; not",
@@ -1276,8 +1212,7 @@
     "createdAt": "2025-10-28T16:31:08.896644"
   },
   {
-    "id": 65,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "没关系",
     "reading": "méi guān xi",
     "back": "it doesn't matter",
@@ -1299,8 +1234,7 @@
     "createdAt": "2025-10-28T16:31:08.896647"
   },
   {
-    "id": 66,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "米饭",
     "reading": "mǐ fàn",
     "back": "(cooked) rice",
@@ -1320,8 +1254,7 @@
     "createdAt": "2025-10-28T16:31:08.896650"
   },
   {
-    "id": 67,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "名字",
     "reading": "míng zi",
     "back": "name (of a person or thing)",
@@ -1341,8 +1274,7 @@
     "createdAt": "2025-10-28T16:31:08.896653"
   },
   {
-    "id": 68,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "明天",
     "reading": "míng tiān",
     "back": "tomorrow",
@@ -1362,8 +1294,7 @@
     "createdAt": "2025-10-28T16:31:08.896655"
   },
   {
-    "id": 69,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "哪",
     "reading": "nǎ",
     "back": "how",
@@ -1381,8 +1312,7 @@
     "createdAt": "2025-10-28T16:31:08.896661"
   },
   {
-    "id": 70,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "那",
     "reading": "Nā",
     "back": "surname Na",
@@ -1400,8 +1330,7 @@
     "createdAt": "2025-10-28T16:31:08.896664"
   },
   {
-    "id": 71,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "呢",
     "reading": "ne",
     "back": "particle indicating that a previously asked question is to be applied to the preceding word (\"What about ...?\", \"And ...?\")",
@@ -1419,8 +1348,7 @@
     "createdAt": "2025-10-28T16:31:08.896669"
   },
   {
-    "id": 72,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "能",
     "reading": "Néng",
     "back": "surname Neng",
@@ -1438,8 +1366,7 @@
     "createdAt": "2025-10-28T16:31:08.896671"
   },
   {
-    "id": 73,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "你",
     "reading": "nǐ",
     "back": "you (informal, as opposed to courteous 您)",
@@ -1457,8 +1384,7 @@
     "createdAt": "2025-10-28T16:31:08.896674"
   },
   {
-    "id": 74,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "年",
     "reading": "Nián",
     "back": "surname Nian",
@@ -1476,8 +1402,7 @@
     "createdAt": "2025-10-28T16:31:08.896676"
   },
   {
-    "id": 75,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "女儿",
     "reading": "nu:3 ér",
     "back": "daughter",
@@ -1497,8 +1422,7 @@
     "createdAt": "2025-10-28T16:31:08.896679"
   },
   {
-    "id": 76,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "朋友",
     "reading": "péng you",
     "back": "friend",
@@ -1518,8 +1442,7 @@
     "createdAt": "2025-10-28T16:31:08.896683"
   },
   {
-    "id": 77,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "漂亮",
     "reading": "piào liang",
     "back": "pretty",
@@ -1539,8 +1462,7 @@
     "createdAt": "2025-10-28T16:31:08.896686"
   },
   {
-    "id": 78,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "苹果",
     "reading": "píng guǒ",
     "back": "apple",
@@ -1560,8 +1482,7 @@
     "createdAt": "2025-10-28T16:31:08.896689"
   },
   {
-    "id": 79,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "七",
     "reading": "qī",
     "back": "seven",
@@ -1579,8 +1500,7 @@
     "createdAt": "2025-10-28T16:31:08.896698"
   },
   {
-    "id": 80,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "前面",
     "reading": "qián miàn",
     "back": "ahead",
@@ -1600,8 +1520,7 @@
     "createdAt": "2025-10-28T16:31:08.896701"
   },
   {
-    "id": 81,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "钱",
     "reading": "Qián",
     "back": "surname Qian",
@@ -1619,8 +1538,7 @@
     "createdAt": "2025-10-28T16:31:08.896704"
   },
   {
-    "id": 82,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "请",
     "reading": "qǐng",
     "back": "to ask",
@@ -1638,8 +1556,7 @@
     "createdAt": "2025-10-28T16:31:08.896706"
   },
   {
-    "id": 83,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "去",
     "reading": "qù",
     "back": "to go",
@@ -1657,8 +1574,7 @@
     "createdAt": "2025-10-28T16:31:08.896709"
   },
   {
-    "id": 84,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "热",
     "reading": "rè",
     "back": "to warm up",
@@ -1676,8 +1592,7 @@
     "createdAt": "2025-10-28T16:31:08.896712"
   },
   {
-    "id": 85,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "人",
     "reading": "rén",
     "back": "person; people",
@@ -1695,8 +1610,7 @@
     "createdAt": "2025-10-28T16:31:08.896714"
   },
   {
-    "id": 86,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "认识",
     "reading": "rèn shi",
     "back": "to know",
@@ -1716,8 +1630,7 @@
     "createdAt": "2025-10-28T16:31:08.896717"
   },
   {
-    "id": 87,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "日",
     "reading": "Rì",
     "back": "abbr. for 本, Japan",
@@ -1735,8 +1648,7 @@
     "createdAt": "2025-10-28T16:31:08.896719"
   },
   {
-    "id": 88,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "三",
     "reading": "Sān",
     "back": "surname San",
@@ -1754,8 +1666,7 @@
     "createdAt": "2025-10-28T16:31:08.896722"
   },
   {
-    "id": 89,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "商店",
     "reading": "shāng diàn",
     "back": "store; shop",
@@ -1775,8 +1686,7 @@
     "createdAt": "2025-10-28T16:31:08.896726"
   },
   {
-    "id": 90,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "上",
     "reading": "shǎng",
     "back": "used in 上声",
@@ -1794,8 +1704,7 @@
     "createdAt": "2025-10-28T16:31:08.896729"
   },
   {
-    "id": 91,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "上午",
     "reading": "shàng wǔ",
     "back": "morning",
@@ -1815,8 +1724,7 @@
     "createdAt": "2025-10-28T16:31:08.896731"
   },
   {
-    "id": 92,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "少",
     "reading": "shǎo",
     "back": "few",
@@ -1834,8 +1742,7 @@
     "createdAt": "2025-10-28T16:31:08.896734"
   },
   {
-    "id": 93,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "什么",
     "reading": "shén me",
     "back": "what?",
@@ -1855,8 +1762,7 @@
     "createdAt": "2025-10-28T16:31:08.896736"
   },
   {
-    "id": 94,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "十",
     "reading": "shí",
     "back": "ten",
@@ -1874,8 +1780,7 @@
     "createdAt": "2025-10-28T16:31:08.896739"
   },
   {
-    "id": 95,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "时候",
     "reading": "shí hou",
     "back": "time",
@@ -1895,8 +1800,7 @@
     "createdAt": "2025-10-28T16:31:08.896742"
   },
   {
-    "id": 96,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "是",
     "reading": "shì",
     "back": "to be (followed by substantives only)",
@@ -1914,8 +1818,7 @@
     "createdAt": "2025-10-28T16:31:08.896744"
   },
   {
-    "id": 97,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "书",
     "reading": "Shū",
     "back": "abbr. for 书经",
@@ -1933,8 +1836,7 @@
     "createdAt": "2025-10-28T16:31:08.896746"
   },
   {
-    "id": 98,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "谁",
     "reading": "shéi",
     "back": "who",
@@ -1952,8 +1854,7 @@
     "createdAt": "2025-10-28T16:31:08.896749"
   },
   {
-    "id": 99,
-    "deckId": 1,
+     "deck_id": 1,
     "front": "水",
     "reading": "Shuǐ",
     "back": "surname Shui",
@@ -1971,8 +1872,7 @@
     "createdAt": "2025-10-28T16:31:08.896753"
   },
   {
-    "id": 100,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "水果",
     "reading": "shuǐ guǒ",
     "back": "fruit",
@@ -1992,8 +1892,7 @@
     "createdAt": "2025-10-28T16:31:08.896756"
   },
   {
-    "id": 101,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "睡觉",
     "reading": "shuì jiào",
     "back": "to go to bed",
@@ -2013,8 +1912,7 @@
     "createdAt": "2025-10-28T16:31:08.896759"
   },
   {
-    "id": 102,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "说话",
     "reading": "shuō huà",
     "back": "to speak",
@@ -2034,8 +1932,7 @@
     "createdAt": "2025-10-28T16:31:08.896761"
   },
   {
-    "id": 103,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "四",
     "reading": "sì",
     "back": "four",
@@ -2053,8 +1950,7 @@
     "createdAt": "2025-10-28T16:31:08.896763"
   },
   {
-    "id": 104,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "岁",
     "reading": "suì",
     "back": "variant of 岁, year",
@@ -2072,8 +1968,7 @@
     "createdAt": "2025-10-28T16:31:08.896766"
   },
   {
-    "id": 105,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "他",
     "reading": "tā",
     "back": "he; him (used for either sex when the sex is unknown or unimportant)",
@@ -2091,8 +1986,7 @@
     "createdAt": "2025-10-28T16:31:08.896768"
   },
   {
-    "id": 106,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "她",
     "reading": "tā",
     "back": "she",
@@ -2110,8 +2004,7 @@
     "createdAt": "2025-10-28T16:31:08.896770"
   },
   {
-    "id": 107,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "太",
     "reading": "tài",
     "back": "highest",
@@ -2129,8 +2022,7 @@
     "createdAt": "2025-10-28T16:31:08.896773"
   },
   {
-    "id": 108,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "天气",
     "reading": "tiān qì",
     "back": "weather",
@@ -2150,8 +2042,7 @@
     "createdAt": "2025-10-28T16:31:08.896781"
   },
   {
-    "id": 109,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "听",
     "reading": "yǐn",
     "back": "smile (archaic)",
@@ -2169,8 +2060,7 @@
     "createdAt": "2025-10-28T16:31:08.896786"
   },
   {
-    "id": 110,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "同学",
     "reading": "tóng xué",
     "back": "to study at the same school",
@@ -2190,8 +2080,7 @@
     "createdAt": "2025-10-28T16:31:08.896789"
   },
   {
-    "id": 111,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "喂",
     "reading": "wéi",
     "back": "hello (when answering the phone)",
@@ -2209,8 +2098,7 @@
     "createdAt": "2025-10-28T16:31:08.896791"
   },
   {
-    "id": 112,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "我",
     "reading": "wǒ",
     "back": "I; me; my",
@@ -2228,8 +2116,7 @@
     "createdAt": "2025-10-28T16:31:08.896794"
   },
   {
-    "id": 113,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "我们",
     "reading": "wǒ men",
     "back": "we",
@@ -2249,8 +2136,7 @@
     "createdAt": "2025-10-28T16:31:08.896796"
   },
   {
-    "id": 114,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "五",
     "reading": "wǔ",
     "back": "five",
@@ -2268,8 +2154,7 @@
     "createdAt": "2025-10-28T16:31:08.896799"
   },
   {
-    "id": 115,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "喜欢",
     "reading": "xǐ huan",
     "back": "to like; to be fond of",
@@ -2289,8 +2174,7 @@
     "createdAt": "2025-10-28T16:31:08.896801"
   },
   {
-    "id": 116,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "下",
     "reading": "xià",
     "back": "down",
@@ -2308,8 +2192,7 @@
     "createdAt": "2025-10-28T16:31:08.896804"
   },
   {
-    "id": 117,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "下午",
     "reading": "xià wǔ",
     "back": "afternoon",
@@ -2329,8 +2212,7 @@
     "createdAt": "2025-10-28T16:31:08.896806"
   },
   {
-    "id": 118,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "下雨",
     "reading": "xià yǔ",
     "back": "to rain",
@@ -2350,8 +2232,7 @@
     "createdAt": "2025-10-28T16:31:08.896809"
   },
   {
-    "id": 119,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "先生",
     "reading": "xiān sheng",
     "back": "teacher",
@@ -2371,8 +2252,7 @@
     "createdAt": "2025-10-28T16:31:08.896821"
   },
   {
-    "id": 120,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "现在",
     "reading": "xiàn zài",
     "back": "now",
@@ -2392,8 +2272,7 @@
     "createdAt": "2025-10-28T16:31:08.896833"
   },
   {
-    "id": 121,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "想",
     "reading": "xiǎng",
     "back": "to think (about)",
@@ -2411,8 +2290,7 @@
     "createdAt": "2025-10-28T16:31:08.896836"
   },
   {
-    "id": 122,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "小",
     "reading": "xiǎo",
     "back": "small",
@@ -2430,8 +2308,7 @@
     "createdAt": "2025-10-28T16:31:08.896839"
   },
   {
-    "id": 123,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "小姐",
     "reading": "xiǎo jie",
     "back": "young lady",
@@ -2451,8 +2328,7 @@
     "createdAt": "2025-10-28T16:31:08.896841"
   },
   {
-    "id": 124,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "些",
     "reading": "xiē",
     "back": "classifier indicating a small amount or small number greater than 1: some, a few, several",
@@ -2470,8 +2346,7 @@
     "createdAt": "2025-10-28T16:31:08.896844"
   },
   {
-    "id": 125,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "写",
     "reading": "xiě",
     "back": "to write",
@@ -2489,8 +2364,7 @@
     "createdAt": "2025-10-28T16:31:08.896846"
   },
   {
-    "id": 126,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "谢谢",
     "reading": "xiè xie",
     "back": "to thank",
@@ -2510,8 +2384,7 @@
     "createdAt": "2025-10-28T16:31:08.896848"
   },
   {
-    "id": 127,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "星期",
     "reading": "xīng qī",
     "back": "week",
@@ -2531,8 +2404,7 @@
     "createdAt": "2025-10-28T16:31:08.896851"
   },
   {
-    "id": 128,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "学生",
     "reading": "xué sheng",
     "back": "student",
@@ -2552,8 +2424,7 @@
     "createdAt": "2025-10-28T16:31:08.896854"
   },
   {
-    "id": 129,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "学习",
     "reading": "xué xí",
     "back": "to learn",
@@ -2573,8 +2444,7 @@
     "createdAt": "2025-10-28T16:31:08.896859"
   },
   {
-    "id": 130,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "学校",
     "reading": "xué xiào",
     "back": "school",
@@ -2594,8 +2464,7 @@
     "createdAt": "2025-10-28T16:31:08.896864"
   },
   {
-    "id": 131,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "一",
     "reading": "yī",
     "back": "one",
@@ -2613,8 +2482,7 @@
     "createdAt": "2025-10-28T16:31:08.896866"
   },
   {
-    "id": 132,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "衣服",
     "reading": "yī fu",
     "back": "clothes",
@@ -2634,8 +2502,7 @@
     "createdAt": "2025-10-28T16:31:08.896869"
   },
   {
-    "id": 133,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "医生",
     "reading": "yī shēng",
     "back": "doctor",
@@ -2655,8 +2522,7 @@
     "createdAt": "2025-10-28T16:31:08.896871"
   },
   {
-    "id": 134,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "医院",
     "reading": "yī yuàn",
     "back": "hospital",
@@ -2676,8 +2542,7 @@
     "createdAt": "2025-10-28T16:31:08.896874"
   },
   {
-    "id": 135,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "椅子",
     "reading": "yǐ zi",
     "back": "chair",
@@ -2697,8 +2562,7 @@
     "createdAt": "2025-10-28T16:31:08.896876"
   },
   {
-    "id": 136,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "有",
     "reading": "yǒu",
     "back": "to have; there is",
@@ -2716,8 +2580,7 @@
     "createdAt": "2025-10-28T16:31:08.896879"
   },
   {
-    "id": 137,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "月",
     "reading": "yuè",
     "back": "moon",
@@ -2735,8 +2598,7 @@
     "createdAt": "2025-10-28T16:31:08.896881"
   },
   {
-    "id": 138,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "再见",
     "reading": "zài jiàn",
     "back": "goodbye",
@@ -2756,8 +2618,7 @@
     "createdAt": "2025-10-28T16:31:08.896884"
   },
   {
-    "id": 139,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "在",
     "reading": "zài",
     "back": "to exist; to be alive",
@@ -2775,8 +2636,7 @@
     "createdAt": "2025-10-28T16:31:08.896888"
   },
   {
-    "id": 140,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "怎么",
     "reading": "zěn me",
     "back": "how?",
@@ -2796,8 +2656,7 @@
     "createdAt": "2025-10-28T16:31:08.896893"
   },
   {
-    "id": 141,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "怎么样",
     "reading": "zěn me yàng",
     "back": "how?",
@@ -2819,8 +2678,7 @@
     "createdAt": "2025-10-28T16:31:08.896895"
   },
   {
-    "id": 142,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "这",
     "reading": "zhè",
     "back": "(pronoun) this; these",
@@ -2838,8 +2696,7 @@
     "createdAt": "2025-10-28T16:31:08.896898"
   },
   {
-    "id": 143,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "中国",
     "reading": "Zhōng guó",
     "back": "China",
@@ -2859,8 +2716,7 @@
     "createdAt": "2025-10-28T16:31:08.898620"
   },
   {
-    "id": 144,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "中午",
     "reading": "zhōng wǔ",
     "back": "noon",
@@ -2880,8 +2736,7 @@
     "createdAt": "2025-10-28T16:31:08.898659"
   },
   {
-    "id": 145,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "住",
     "reading": "zhù",
     "back": "to live",
@@ -2899,8 +2754,7 @@
     "createdAt": "2025-10-28T16:31:08.898663"
   },
   {
-    "id": 146,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "桌子",
     "reading": "zhuō zi",
     "back": "table",
@@ -2920,8 +2774,7 @@
     "createdAt": "2025-10-28T16:31:08.898667"
   },
   {
-    "id": 147,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "字",
     "reading": "zì",
     "back": "letter",
@@ -2939,8 +2792,7 @@
     "createdAt": "2025-10-28T16:31:08.898669"
   },
   {
-    "id": 148,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "昨天",
     "reading": "zuó tiān",
     "back": "yesterday",
@@ -2960,8 +2812,7 @@
     "createdAt": "2025-10-28T16:31:08.898672"
   },
   {
-    "id": 149,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "坐",
     "reading": "Zuò",
     "back": "surname Zuo",
@@ -2979,8 +2830,7 @@
     "createdAt": "2025-10-28T16:31:08.898686"
   },
   {
-    "id": 150,
-    "deckId": 1,
+      "deck_id": 1,
     "front": "做",
     "reading": "zuò",
     "back": "to make; to produce",

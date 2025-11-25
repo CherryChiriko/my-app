@@ -16,8 +16,8 @@ const decks = [
   },
   {
     id: 12,
-    name: "Japanese Hiragana Basics",
-    description: "Learn basic hiragana characters",
+    name: "Japanese Hiragana",
+    description: "Learn hiragana characters",
     mastered: 20,
     due: 12,
     tags: ["hiragana", "beginner"],

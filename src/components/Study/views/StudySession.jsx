@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import {
-  fetchCardsByDeckId,
-  selectCardsStatus,
-} from "../../../slices/cardSlice";
+import { fetchCards, selectCardsStatus } from "../../../slices/cardSlice";
 import { selectActiveTheme } from "../../../slices/themeSlice";
 import { selectActiveDeck } from "../../../slices/deckSlice";
 import SessionMode from "./SessionMode";
@@ -43,26 +40,25 @@ const StudySession = () => {
 
   // --- Core Logic: Fetch Cards when Deck is Ready ---
   useEffect(() => {
-    // We only fetch cards if a deck is active and the current card data is not for this deck,
-    // or if the card state is 'idle' or 'failed'.
-    if (activeDeck?.id) {
-      console.log(
-        `🚀 Dispatching fetch for cards in Deck ID: ${activeDeck.id}`
-      );
-      // This dispatch will set the card status to 'loading'.
-      dispatch(fetchCardsByDeckId(activeDeck.id));
-    }
-  }, [activeDeck, dispatch]);
+    if (!activeDeck?.id) return;
+
+    dispatch(
+      fetchCards({
+        deck_id: activeDeck.id,
+        studyMode: activeDeck.studyMode,
+      })
+    );
+  }, [activeDeck?.id, navMode, dispatch]);
 
   // --- Render based on loading status and deck availability ---
 
   if (!activeDeck) {
     return (
       <div
-        className={`h-screen flex items-center justify-center ${activeTheme.background.app}`}
+        className={`h-screen flex flex-col items-center justify-center ${activeTheme.background.app}`}
       >
         <p className={`${activeTheme.text.primary} text-xl`}>
-          No active deck selected. Returning to deck list.
+          No active deck selected.
         </p>
         <button
           onClick={() => navigate("/decks")}

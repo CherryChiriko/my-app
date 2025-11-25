@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Header from "../../General/Header";
 import CardRenderer from "../../Study/components/Card/CardRenderer";
-import { selectAllCards, updateCard } from "../../../slices/cardSlice";
-import { recordStudyActivity } from "../../../slices/deckSlice";
+import { selectCards } from "../../../slices/cardSlice";
+// import { recordStudyActivity } from "../../../slices/deckSlice";
 import { getUpdatedCard } from "../../../helpers/getUpdatedCard";
 import SessionComplete from "../components/Modals/SessionComplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,7 +35,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
 
   const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
 
-  const allCards = useSelector(selectAllCards);
+  const allCards = useSelector(selectCards);
   const cards = useMemo(() => allCards.slice(0, limit), [limit, allCards]);
 
   const phases = isReviewMode
@@ -61,13 +61,13 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
 
   const exitStudy = () => {
     // Record study activity and navigate away
-    dispatch(
-      recordStudyActivity({
-        deckId: activeDeck.id,
-        learnCount: sessionLearned,
-        reviewCount: sessionReviewed,
-      })
-    );
+    // dispatch(
+    //   recordStudyActivity({
+    //     deck_id: activeDeck.id,
+    //     learnCount: sessionLearned,
+    //     reviewCount: sessionReviewed,
+    //   })
+    // );
     navigate("/decks");
   };
 
@@ -117,7 +117,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
         console.warn("💡 Offline mode: using local SRS fallback.", err);
       }
 
-      dispatch(updateCard(updatedCard));
+      // dispatch(updateCard(updatedCard));
       setSessionReviewed((c) => c + 1);
     } catch (err) {
       console.error("Failed to rate card", err);

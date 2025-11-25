@@ -3,7 +3,7 @@
 const cards = [
   {
     id: 1,
-    deckId: 1,
+    deck_id: 1,
     front: "あ",
     reading: "a",
     back: "vowel sound a",
@@ -15,7 +15,7 @@ const cards = [
   },
   {
     id: 2,
-    deckId: 1,
+    deck_id: 1,
     front: "い",
     reading: "i",
     back: "vowel sound i",
@@ -27,7 +27,7 @@ const cards = [
   },
   {
     id: 3,
-    deckId: 1,
+    deck_id: 1,
     front: "う",
     reading: "u",
     back: "vowel sound u",
@@ -39,7 +39,7 @@ const cards = [
   },
   {
     id: 4,
-    deckId: 1,
+    deck_id: 1,
     front: "か",
     reading: "ka",
     back: "consonant-vowel ka",
@@ -51,7 +51,7 @@ const cards = [
   },
   {
     id: 5,
-    deckId: 1,
+    deck_id: 1,
     front: "き",
     reading: "ki",
     back: "consonant-vowel ki",
@@ -63,7 +63,7 @@ const cards = [
   },
   {
     id: 6,
-    deckId: 1,
+    deck_id: 1,
     front: "さ",
     reading: "sa",
     back: "consonant-vowel sa",
@@ -75,7 +75,7 @@ const cards = [
   },
   {
     id: 7,
-    deckId: 1,
+    deck_id: 1,
     front: "し",
     reading: "shi",
     back: "consonant-vowel shi",
@@ -87,7 +87,7 @@ const cards = [
   },
   {
     id: 8,
-    deckId: 1,
+    deck_id: 1,
     front: "す",
     reading: "su",
     back: "consonant-vowel su",
@@ -99,7 +99,7 @@ const cards = [
   },
   {
     id: 9,
-    deckId: 2,
+    deck_id: 2,
     front: "avoir",
     reading: "",
     back: "j'ai, tu as, il a, nous avons, vous avez, ils ont",
@@ -111,7 +111,7 @@ const cards = [
   },
   {
     id: 10,
-    deckId: 4,
+    deck_id: 4,
     front: "語",
     reading: "yu3",
     back: "word",
@@ -123,7 +123,7 @@ const cards = [
   },
   {
     id: 11,
-    deckId: 4,
+    deck_id: 4,
     front: "成",
     reading: "cheng2",
     back: "become",

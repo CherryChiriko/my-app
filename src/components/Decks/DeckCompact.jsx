@@ -7,7 +7,7 @@ import {
   faFire,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
-import { selectDeck } from "../../slices/deckSlice";
+import { selectActiveDeck } from "../../slices/deckSlice";
 import ProgressBar from "./ProgressBar";
 
 const DeckCard = ({ deck, activeTheme }) => {
@@ -25,12 +25,12 @@ const DeckCard = ({ deck, activeTheme }) => {
   const showReview = due > 0;
 
   const handleCardClick = () => {
-    navigate(`${id}`); // Navigate to /decks/:deckId
+    navigate(`${id}`); // Navigate to /decks/:deck_id
   };
 
   const handleAction = (e, actionType) => {
     e.stopPropagation(); // Prevent triggering the card click
-    dispatch(selectDeck(deck)); // Dispatch the selected deck
+    dispatch(selectActiveDeck(deck)); // Dispatch the selected deck
 
     // Navigate to a specific study mode
     if (actionType === "learn") {

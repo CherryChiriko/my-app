@@ -32,14 +32,6 @@ export function useCharacterFlow({
     return toneColors[toneIdx];
   }, [card?.tones, currentIndex]);
 
-  console.log("[useCharacterFlow] STATE", {
-    currentCharacter,
-    currentIndex,
-    displayState,
-    revealed,
-    showAnswer,
-  });
-
   // Reset when card changes
   useEffect(() => {
     setCurrentIndex(0);
@@ -115,11 +107,6 @@ export function useCharacterFlow({
   const handleReveal = useCallback(
     (mistakes = null) => {
       const mistakeCount = Number.isFinite(mistakes) ? mistakes : 0;
-      console.log("[useCharacterFlow] handleReveal", {
-        mistakes,
-        currentCharacter,
-        index: currentIndex,
-      });
 
       setShowAnswer(true);
       setRevealed(true);

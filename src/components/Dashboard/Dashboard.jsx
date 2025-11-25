@@ -1,13 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useMemo } from "react";
+import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
 import { selectGlobalStreak } from "../../slices/streakSlice";
-import {
-  fetchDecks,
-  selectAllDecks,
-  selectDecksStatus,
-  selectDecksError,
-} from "../../slices/deckSlice";
+import { selectDecks } from "../../slices/deckSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,19 +21,12 @@ import { XPBar } from "./XPBar";
 import { StatCard } from "./StatCard";
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTheme = useSelector(selectActiveTheme);
 
-  const decks = useSelector(selectAllDecks);
-  const status = useSelector(selectDecksStatus);
-  const error = useSelector(selectDecksError);
+  const decks = useSelector(selectDecks);
 
   const gradient = `bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`;
-
-  useEffect(() => {
-    if (status === "idle") dispatch(fetchDecks());
-  }, [dispatch, status]);
 
   const cards_due_today = decks.reduce((t, d) => t + (d.due || 0), 0);
   const mastered_cards = decks.reduce((t, d) => t + (d.mastered || 0), 0);
@@ -60,27 +48,6 @@ const Dashboard = () => {
     }
     return arr;
   }, []);
-
-  if (status === "loading") {
-    return (
-      <div
-        className={`min-h-screen flex items-center justify-center ${activeTheme.background.app}`}
-      >
-        <p className="text-xl animate-pulse">Loading Dashboard...</p>
-      </div>
-    );
-  }
-
-  if (status === "failed") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="space-y-4 text-center">
-          <p>Error loading dashboard: {error}</p>
-          <button onClick={() => dispatch(fetchDecks())}>Retry</button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
