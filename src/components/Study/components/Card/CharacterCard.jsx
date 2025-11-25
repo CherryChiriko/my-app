@@ -30,7 +30,6 @@ const CharacterCard = ({
     currentCharacter,
     strokeColor,
     revealed,
-    showAnswer,
     handleReveal,
     handleContinue,
     renderWordProgress,
@@ -85,7 +84,6 @@ const CharacterCard = ({
           strokeColor={strokeColor}
           activeTheme={activeTheme}
           onQuizComplete={handleReveal}
-          showAnswer={showAnswer}
         />
       </div>
 

@@ -75,7 +75,7 @@ const StudySession = () => {
       <div
         className={`h-screen flex items-center justify-center ${activeTheme.background.app}`}
       >
-        <p className={`${activeTheme.text.primary} text-xl`}>
+        <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
           Loading cards for "{activeDeck.name}"...
         </p>
         {/*  */}

@@ -1,7 +1,9 @@
 // src/components/Flashcards/FlipCard.jsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import RatingButtons from "../Controls/RatingButtons";
 import RevealButton from "../Controls/RevealButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFastForward } from "@fortawesome/free-solid-svg-icons";
 
 const CardStyles = () => (
   <style jsx>{`
@@ -20,68 +22,119 @@ const CardStyles = () => (
     .rotate-y-0 {
       transform: rotateY(0deg);
     }
+    .slide-out-right {
+      transform: translateX(120%) rotateZ(10deg);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
   `}</style>
 );
 
 const FlipCard = ({
   card,
   activeTheme,
-  showAnswer,
-  onReveal,
+  displayState,
   onRate,
   allowRating = false,
   onPassComplete,
+  autoFlipDelay = 3000,
+  autoAdvanceDelay = 3000,
 }) => {
-  const cardBg = activeTheme?.background?.secondary ?? "bg-white";
-  const primaryText = activeTheme?.text?.primary ?? "text-black";
+  const [showAnswer, setShowAnswer] = useState(false);
 
-  // If we are showing the answer but ratings are NOT allowed, auto-advance after a brief pause
+  // Auto-flip front in animation mode
   useEffect(() => {
-    if (showAnswer && !allowRating) {
-      const t = setTimeout(() => {
-        onPassComplete?.();
-      }, 900);
-      return () => clearTimeout(t);
+    let frontTimer;
+    if (displayState === "animation" && !showAnswer) {
+      frontTimer = setTimeout(() => setShowAnswer(true), autoFlipDelay);
     }
-  }, [showAnswer, allowRating, onPassComplete]);
+    return () => clearTimeout(frontTimer);
+  }, [displayState, showAnswer, autoFlipDelay]);
+
+  // Auto-advance after back
+  useEffect(() => {
+    let backTimer;
+    if ((displayState === "animation" || !allowRating) && showAnswer) {
+      backTimer = setTimeout(() => handleNext(), autoAdvanceDelay);
+    }
+    return () => clearTimeout(backTimer);
+  }, [displayState, showAnswer, allowRating, onPassComplete, autoAdvanceDelay]);
+
+  const handleReveal = () => setShowAnswer(true);
+  const handleNext = () => {
+    setShowAnswer(false);
+    onPassComplete?.();
+  };
+  const handleRate = () => {
+    setShowAnswer(false);
+    onRate?.();
+  };
 
   return (
     <>
       <CardStyles />
       <div className="relative w-full h-full perspective">
         <div
-          className={`relative w-full h-full transition-transform duration-700 preserve-3d ${
+          className={`relative w-full h-full preserve-3d transition-transform duration-700 ${
             showAnswer ? "rotate-y-180" : "rotate-y-0"
           }`}
         >
           {/* FRONT */}
           <div
-            className={`absolute inset-0 backface-hidden rounded-xl ${cardBg} p-8 flex flex-col justify-center items-center shadow-2xl`}
+            className={`absolute inset-0 backface-hidden rounded-xl ${activeTheme.background.secondary} p-8 flex flex-col justify-center items-center shadow-2xl`}
           >
             <span
-              className={`text-6xl font-extrabold ${primaryText} text-center p-4 max-w-full`}
+              className={`text-6xl font-extrabold ${activeTheme.text.primary} text-center p-4 max-w-full`}
             >
               {card?.front}
             </span>
-            {!showAnswer && (
-              <RevealButton onReveal={onReveal} activeTheme={activeTheme} />
+
+            {!showAnswer && displayState === "animation" && (
+              <div className="absolute bottom-8 w-full flex justify-center space-x-4 px-8">
+                <button
+                  onClick={handleReveal}
+                  className={`px-6 py-3 rounded-full font-semibold ${activeTheme.button.primary} ${activeTheme.text.primary} transition-all duration-300 shadow-lg hover:shadow-xl`}
+                >
+                  Show
+                </button>
+              </div>
+            )}
+            {!showAnswer && displayState === "quiz" && (
+              <div className="absolute bottom-8 w-full flex justify-center space-x-4 px-8">
+                <RevealButton
+                  onReveal={handleReveal}
+                  activeTheme={activeTheme}
+                />
+              </div>
             )}
           </div>
 
           {/* BACK */}
           <div
-            className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl ${cardBg} p-8 flex flex-col justify-between items-center shadow-2xl`}
+            className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl ${activeTheme.background.secondary} p-8 flex flex-col justify-between items-center shadow-2xl`}
           >
             {showAnswer && (
               <div className="flex flex-col justify-center items-center h-full pt-8">
                 <p
-                  className={`text-4xl font-semibold ${primaryText} text-center mb-4`}
+                  className={`text-4xl font-semibold ${activeTheme.text.primary} text-center mb-4`}
                 >
                   {card?.back}
                 </p>
               </div>
             )}
-            {showAnswer && allowRating && <RatingButtons onRate={onRate} />}
+            {showAnswer && allowRating && <RatingButtons onRate={handleRate} />}
+            {showAnswer && !allowRating && (
+              <button
+                onClick={handleNext}
+                className={`px-6 py-3 rounded-full font-semibold ${activeTheme.button.accent2} ${activeTheme.text.primary} transition-all duration-300 shadow-lg hover:shadow-xl`}
+              >
+                Next
+                <FontAwesomeIcon
+                  icon={faFastForward}
+                  className="w-4 h-4 ml-2"
+                />
+              </button>
+            )}
           </div>
         </div>
       </div>

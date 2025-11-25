@@ -14,7 +14,6 @@ const CardRenderer = ({
   card,
   studyMode = "A",
   displayState,
-  showAnswer,
   allowRating = false,
   activeTheme,
   onReveal,
@@ -27,8 +26,7 @@ const CardRenderer = ({
         <FlipCard
           card={card}
           activeTheme={activeTheme}
-          showAnswer={showAnswer}
-          onReveal={onReveal}
+          displayState={displayState}
           onRate={onRate}
           allowRating={allowRating}
           onPassComplete={onPassComplete}
@@ -39,11 +37,10 @@ const CardRenderer = ({
         <CharacterCard
           card={card}
           activeTheme={activeTheme}
-          showAnswer={showAnswer}
           displayState={displayState}
-          allowRating={allowRating}
           onReveal={onReveal}
           onRate={onRate}
+          allowRating={allowRating}
           getRatingFromMistakes={getRatingFromMistakes}
           onPassComplete={onPassComplete}
         />

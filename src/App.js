@@ -29,16 +29,24 @@ function App() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl animate-pulse">Loading decks...</p>
+      <div
+        className={`${activeTheme.background.app} min-h-screen flex items-center justify-center`}
+      >
+        <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
+          Loading decks...
+        </p>
       </div>
     );
   }
 
   if (status === "failed") {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="space-y-4 text-center">
+      <div
+        className={`${activeTheme.background.app} min-h-screen flex items-center justify-center`}
+      >
+        <div
+          className={`${activeTheme.text.primary} space-y-4 text-center text-xl`}
+        >
           <p>Error loading decks: {error}</p>
           <button onClick={() => dispatch(fetchDecks())}>Retry</button>
         </div>

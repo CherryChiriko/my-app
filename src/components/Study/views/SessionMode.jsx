@@ -15,7 +15,7 @@ const REVIEW_LIMIT = 10;
 
 const PHASES = {
   A: [
-    { displayState: "reveal", allowRating: false },
+    { displayState: "animation", allowRating: false },
     { displayState: "quiz", allowRating: true },
   ],
   C: [
@@ -26,7 +26,7 @@ const PHASES = {
 };
 
 const SessionMode = ({ mode, activeTheme, activeDeck }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isReviewMode = mode === "review";
@@ -228,7 +228,6 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
             studyMode={activeDeck.studyMode}
             phase={currentPhase}
             activeTheme={activeTheme}
-            showAnswer={true}
             displayState={currentPhase.displayState}
             allowRating={currentPhase.allowRating}
             onRate={handleRate}

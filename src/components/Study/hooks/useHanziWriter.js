@@ -16,7 +16,6 @@ export function useHanziWriter({
   onQuizComplete,
   activeTheme,
   strokeColor,
-  showAnswer,
 }) {
   const outlineColor = activeTheme.isDark
     ? "rgb(212,212,212)"
@@ -94,14 +93,14 @@ export function useHanziWriter({
     }
   }, [displayState, onQuizComplete]);
   useEffect(() => {
-    if (!writerRef.current || !showAnswer) return;
+    if (!writerRef.current) return;
 
     try {
       writerRef.current.showCharacter();
     } catch (error) {
       console.error("[useHanziWriter] Failed to show character", error);
     }
-  }, [showAnswer]);
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {

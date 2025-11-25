@@ -7,7 +7,6 @@ const HanziCanvas = ({
   onQuizComplete,
   activeTheme,
   strokeColor,
-  showAnswer,
 }) => {
   const { containerRef } = useHanziWriter({
     character,
@@ -15,7 +14,6 @@ const HanziCanvas = ({
     onQuizComplete,
     activeTheme,
     strokeColor,
-    showAnswer,
   });
 
   const bgColor = activeTheme?.background?.canvas ?? "bg-white";

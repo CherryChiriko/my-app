@@ -14,7 +14,6 @@ export function useCharacterFlow({
   const [revealed, setRevealed] = useState(false);
   const [mistakeList, setMistakeList] = useState([]);
   const [completedChars, setCompletedChars] = useState([]);
-  const [showAnswer, setShowAnswer] = useState(false);
 
   // Use ref to track timeout for cleanup
   const timeoutRef = useRef(null);
@@ -38,7 +37,6 @@ export function useCharacterFlow({
     setRevealed(false);
     setMistakeList([]);
     setCompletedChars([]);
-    setShowAnswer(false);
     playAudio?.();
   }, [card?.id, playAudio]);
 
@@ -64,7 +62,6 @@ export function useCharacterFlow({
   const handleAdvanceCharacter = useCallback(() => {
     setCurrentIndex((i) => i + 1);
     setRevealed(false);
-    setShowAnswer(false);
   }, []);
 
   const renderWordProgress = () => {
@@ -108,7 +105,6 @@ export function useCharacterFlow({
     (mistakes = null) => {
       const mistakeCount = Number.isFinite(mistakes) ? mistakes : 0;
 
-      setShowAnswer(true);
       setRevealed(true);
       onReveal?.();
 
@@ -126,7 +122,6 @@ export function useCharacterFlow({
 
       timeoutRef.current = setTimeout(() => {
         setRevealed(false);
-        setShowAnswer(false);
 
         if (!isLastCharacter) {
           handleAdvanceCharacter();
@@ -170,7 +165,6 @@ export function useCharacterFlow({
     currentCharacter,
     strokeColor,
     revealed,
-    showAnswer,
     handleReveal,
     handleContinue,
     renderWordProgress,
