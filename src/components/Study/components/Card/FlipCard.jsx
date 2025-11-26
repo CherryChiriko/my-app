@@ -126,7 +126,7 @@ const FlipCard = ({
             {showAnswer && !allowRating && (
               <button
                 onClick={handleNext}
-                className={`px-6 py-3 rounded-full font-semibold ${activeTheme.button.accent2} ${activeTheme.text.primary} transition-all duration-300 shadow-lg hover:shadow-xl`}
+                className={`px-6 py-3 rounded-full font-semibold ${activeTheme.button.secondary} ${activeTheme.text.primary} transition-all duration-300 shadow-lg hover:shadow-xl`}
               >
                 Next
                 <FontAwesomeIcon

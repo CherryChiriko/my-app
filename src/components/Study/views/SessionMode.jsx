@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Header from "../../General/Header";
+import Header from "../../General/ui/Header";
 import CardRenderer from "../../Study/components/Card/CardRenderer";
 import { selectCards } from "../../../slices/cardSlice";
 // import { recordStudyActivity } from "../../../slices/deckSlice";

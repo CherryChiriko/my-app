@@ -6,13 +6,15 @@ import {
   selectDeckError,
   selectDeckStatus,
 } from "./slices/deckSlice";
+import ScrollToTop from "./components/General/routing/ScrollToTop";
+
 import Navbar from "./components/Navbar/Navbar";
-import DeckManager from "./components/Decks/DeckManager";
 import Dashboard from "./components/Dashboard/Dashboard";
+import DeckManager from "./components/Decks/views/DeckManager";
+import DeckListView from "./components/Decks/views/DeckListView";
 import StudySession from "./components/Study/views/StudySession";
 import NotFound404 from "./components/404";
-import DeckListView from "./components/Decks/DeckListView";
-import ScrollToTop from "./helpers/ScrollToTop";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {

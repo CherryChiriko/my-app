@@ -14,7 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import RevuLogo from "../../assets/revu2.png";
 
-import DeckCompact from "../Decks/DeckCompact";
+import DeckCard from "../Decks/components/DeckCard";
 import { Heatmap } from "./Heatmap";
 import { Achievements } from "./Achievements";
 import { XPBar } from "./XPBar";
@@ -142,15 +142,12 @@ const Dashboard = () => {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {decks.slice(0, 4).map((deck) => (
-                  <DeckCompact
-                    key={deck.id}
-                    deck={deck}
-                    activeTheme={activeTheme}
-                  />
-                ))}
-              </div>
+              <DeckCard
+                decks={decks.slice(0, 4)}
+                activeTheme={activeTheme}
+                variant="compact"
+                gridClasses={"grid grid-cols-1 md:grid-cols-2 gap-4"}
+              />
             )}
           </div>
 

@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch } from "react-redux";
 import { setActiveDeck } from "../../slices/deckSlice";
-import { formatDate } from "../General/utils/formatDate";
+import { formatDate } from "./formatDate";
 
 import ProgressBar from "./ProgressBar";
 
