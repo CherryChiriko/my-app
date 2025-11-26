@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import useDeckCardLogic from "../hooks/useDeckCardLogic";
 import FullVariant from "./variants/FullVariant";
 import CompactVariant from "./variants/CompactVariant";
-import MasteredVariant from "./variants/MasteredVariant";
 
 function DeckCardItem({ deck, activeTheme, variant }) {
   const logic = useDeckCardLogic(deck);
@@ -27,10 +26,8 @@ function DeckCardItem({ deck, activeTheme, variant }) {
     case "compact":
       Content = CompactVariant;
       break;
-    case "mastered":
-      Content = MasteredVariant;
-      break;
     default:
+      Content = null;
       break;
   }
 
