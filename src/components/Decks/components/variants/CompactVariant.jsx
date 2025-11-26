@@ -1,15 +1,10 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGraduationCap,
-  faRedo,
-  faFire,
-} from "@fortawesome/free-solid-svg-icons";
 import { ProgressBar } from "../ProgressBar";
+import { DeckActions } from "../DeckActions";
+import { DeckBadges } from "../DeckBadges";
 
 export default function CompactVariant({ deck, activeTheme, logic }) {
-  const { streak, showLearn, showReview, handleCardClick, handleAction } =
-    logic;
+  const { streak, showLearn, showReview, handleAction, isMastered } = logic;
 
   return (
     <>
@@ -18,14 +13,18 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
           {deck.name}
         </span>
 
-        {streak > 0 && (
-          <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold bg-amber-500/10 px-2 py-1 rounded-full">
-            <FontAwesomeIcon icon={faFire} /> {streak}
-          </div>
-        )}
+        <DeckBadges
+          streak={streak}
+          activeTheme={activeTheme}
+          isMastered={isMastered}
+        />
       </div>
 
-      <ProgressBar deck={deck} activeTheme={activeTheme} />
+      <ProgressBar
+        deck={deck}
+        activeTheme={activeTheme}
+        isMastered={isMastered}
+      />
 
       <div
         className={`flex justify-between items-center ${activeTheme.text.secondary} text-xs mt-3`}
@@ -34,29 +33,14 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
           {deck.language} • {deck.cardsCount} cards
         </span>
 
-        <div className="flex space-x-3">
-          {showLearn && (
-            <button
-              onClick={(e) => handleAction(e, "learn")}
-              className={`${activeTheme.button.primary} ${activeTheme.text.activeButton}
-              w-6 h-6 rounded-full flex items-center justify-center`}
-              title="Learn"
-            >
-              <FontAwesomeIcon icon={faGraduationCap} className="h-3 w-3" />
-            </button>
-          )}
-
-          {showReview && (
-            <button
-              onClick={(e) => handleAction(e, "review")}
-              className={`${activeTheme.button.accent} ${activeTheme.text.activeButton}
-              w-6 h-6 rounded-full flex items-center justify-center`}
-              title="Review"
-            >
-              <FontAwesomeIcon icon={faRedo} className="h-3 w-3" />
-            </button>
-          )}
-        </div>
+        <DeckActions
+          activeTheme={activeTheme}
+          showLearn={showLearn}
+          showReview={showReview}
+          handleAction={handleAction}
+          deck={deck}
+          large={false}
+        />
       </div>
     </>
   );

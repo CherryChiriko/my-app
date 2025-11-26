@@ -1,15 +1,11 @@
 import React, { memo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faGraduationCap,
-  faRedo,
-  faFire,
-} from "@fortawesome/free-solid-svg-icons";
 import { ProgressBar } from "../ProgressBar";
+import { DeckActions } from "../DeckActions";
+import { DeckBadges } from "../DeckBadges";
 // import { formatDate } from "../../General/utils/formatDate";
 
 const FullVariant = ({ deck, activeTheme, logic }) => {
-  const { streak, showLearn, showReview, handleAction } = logic;
+  const { streak, showLearn, showReview, handleAction, isMastered } = logic;
 
   return (
     <>
@@ -35,15 +31,19 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
           </span>
         ))}
 
-        {streak > 0 && (
-          <div className="flex items-center gap-1 text-amber-500 text-xs font-semibold bg-amber-500/10 px-2 py-1 rounded-full">
-            <FontAwesomeIcon icon={faFire} /> {streak}
-          </div>
-        )}
+        <DeckBadges
+          streak={streak}
+          activeTheme={activeTheme}
+          isMastered={isMastered}
+        />
       </div>
 
       {/* Progress bar */}
-      <ProgressBar deck={deck} activeTheme={activeTheme} />
+      <ProgressBar
+        deck={deck}
+        activeTheme={activeTheme}
+        isMastered={isMastered}
+      />
 
       {/* Deck info */}
       <div
@@ -56,26 +56,14 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
       </div>
 
       {/* Action buttons */}
-      <div className="mt-3 flex space-x-3">
-        {showLearn && (
-          <button
-            onClick={(e) => handleAction(e, "learn")}
-            className={`${activeTheme.button.primary} ${activeTheme.text.activeButton} flex-1 py-2 rounded-lg font-semibold flex items-center justify-center`}
-          >
-            <FontAwesomeIcon icon={faGraduationCap} className="mr-2" />
-            Learn
-          </button>
-        )}
-        {showReview && (
-          <button
-            onClick={(e) => handleAction(e, "review")}
-            className={`${activeTheme.button.accent} ${activeTheme.text.activeButton} flex-1 py-2 rounded-lg font-semibold flex items-center justify-center`}
-          >
-            <FontAwesomeIcon icon={faRedo} className="mr-2" />
-            Review ({deck.due})
-          </button>
-        )}
-      </div>
+      <DeckActions
+        activeTheme={activeTheme}
+        showLearn={showLearn}
+        showReview={showReview}
+        handleAction={handleAction}
+        deck={deck}
+        large={true}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-export const ProgressBar = ({ deck, activeTheme }) => {
+export const ProgressBar = ({ deck, activeTheme, isMastered }) => {
   const { mastered = 0, due = 0, cardsCount = 0 } = deck;
   const newCards = Math.max(cardsCount - mastered - due, 0);
 
@@ -39,11 +39,13 @@ export const ProgressBar = ({ deck, activeTheme }) => {
         )}
       </div>
 
-      <div className="flex justify-between text-xs mt-2">
-        <span className={activeTheme.text.accent1}>{mastered} mastered</span>
-        <span className={activeTheme.text.accent2}>{due} due</span>
-        <span className={activeTheme.text.muted}>{newCards} new</span>
-      </div>
+      {!isMastered && (
+        <div className="flex justify-between text-xs mt-2">
+          <span className={activeTheme.text.accent1}>{mastered} mastered</span>
+          <span className={activeTheme.text.accent2}>{due} due</span>
+          <span className={activeTheme.text.muted}>{newCards} new</span>
+        </div>
+      )}
     </div>
   );
 };
