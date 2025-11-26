@@ -47,19 +47,17 @@ const CharacterCard = ({
   const showContinueButtons =
     displayState === "animation" || displayState === "outline";
 
-  const bgColor = activeTheme?.background?.secondary ?? "bg-gray-100";
-  const textPrimary = activeTheme?.text?.primary ?? "text-black";
-  const textSecondary = activeTheme?.text?.secondary ?? "text-gray-600";
-
   return (
     <div
-      className={`relative w-full rounded-xl ${bgColor} p-8 flex flex-col justify-start items-center shadow-2xl transition-all duration-300`}
+      className={`relative w-full rounded-xl ${activeTheme.background.secondary} p-8 flex flex-col justify-start items-center shadow-2xl transition-all duration-300`}
     >
       {/* Header with reading and audio button */}
       <div className="w-full flex justify-between items-center mt-2 px-2 text-center gap-4">
         <div className="w-8 flex-shrink-0" />
 
-        <p className={`text-xl font-bold leading-tight ${textPrimary} flex-1`}>
+        <p
+          className={`text-xl font-bold leading-tight ${activeTheme.text.primary} flex-1`}
+        >
           {card?.reading}
         </p>
 
@@ -93,7 +91,9 @@ const CharacterCard = ({
         {renderWordProgress()}
 
         {/* Translation */}
-        <p className={`text-sm italic ${textSecondary}`}>{card?.back}</p>
+        <p className={`text-sm italic ${activeTheme.text.secondary}`}>
+          {card?.back}
+        </p>
 
         {/* Action buttons */}
         <div className="flex items-center justify-center">

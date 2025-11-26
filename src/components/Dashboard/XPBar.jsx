@@ -1,43 +1,44 @@
+import React from "react";
 import { Bar } from "../General/ui/Bar";
 
-export const XPBar = ({ totalXP = 0, activeTheme }) => {
+export const XPBar = ({ totalXP = 100, activeTheme }) => {
   const level = Math.floor(Math.sqrt(totalXP / 10));
   const xpForLevel = (level + 1) ** 2 * 10;
   const xpThisLevel = totalXP - level ** 2 * 10;
-  const pct = Math.min(100, Math.round((xpThisLevel / xpForLevel) * 100));
 
   return (
-    <div>
-      {/* Header */}
-      <div className="flex justify-between mb-2">
+    <>
+      <div className="flex justify-between mb-2 items-center">
         <div className="flex items-center gap-3">
           <div
-            className={`w-10 h-10 rounded-full flex items-center justify-center ${activeTheme.background.accent}`}
+            className={`w-10 h-10 rounded-full flex items-center justify-center ${activeTheme.background.accent3}`}
           >
             <span className="font-semibold">Lv</span>
           </div>
           <div>
-            <div className="text-sm opacity-80">Progress to next level</div>
+            <div className={`text-sm ${activeTheme.text.secondary}`}>
+              Progress to next level
+            </div>
             <div className="text-lg font-bold">Level {level}</div>
           </div>
         </div>
-        <div className="text-sm opacity-70">{totalXP} XP</div>
+        <div className={`text-sm ${activeTheme.text.secondary}`}>
+          {totalXP} XP
+        </div>
       </div>
 
       <Bar
-        trackColor={activeTheme.background.progressTrack}
-        height="h-3"
-        segments={[
-          {
-            widthPct: pct,
-            color: `linear-gradient(90deg, ${activeTheme.gradients.fromHex}, ${activeTheme.gradients.toHex})`,
-          },
-        ]}
+        current={xpThisLevel}
+        total={xpForLevel}
+        activeTheme={activeTheme}
+        isLabelOn={false}
       />
 
-      <div className="mt-2 text-xs opacity-70">
-        {xpThisLevel}/{xpForLevel} XP ({pct}%)
+      <div
+        className={`mt-1 text-xs {activeTheme.text.secondary} text-center w-full max-w-xl`}
+      >
+        {xpThisLevel} / {xpForLevel} XP
       </div>
-    </div>
+    </>
   );
 };

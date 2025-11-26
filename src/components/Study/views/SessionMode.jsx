@@ -9,6 +9,7 @@ import { getUpdatedCard } from "../../../helpers/getUpdatedCard";
 import SessionComplete from "../components/Modals/SessionComplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Bar } from "../../General/ui/Bar";
 
 const LEARN_LIMIT = 5;
 const REVIEW_LIMIT = 10;
@@ -50,6 +51,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
 
   const currentPhase = phases[phaseIndex];
   const currentCard = cards[cardIndex];
+  console.log("Bar parent activeTheme:", activeTheme);
 
   useEffect(() => {
     // Reset indexes when cards change (new deck)
@@ -204,17 +206,11 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
             Exit Study
           </button>
 
-          <div className="flex flex-col items-center flex-grow mx-4">
-            <p className={`${activeTheme.text.muted} text-sm mb-2`}>
-              {currentStep} of {totalSteps}
-            </p>
-            <div className="w-full max-w-xl bg-gray-700 rounded-full h-2.5 overflow-hidden">
-              <div
-                className={`h-2.5 rounded-full bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-          </div>
+          <Bar
+            activeTheme={activeTheme}
+            current={currentStep}
+            total={totalSteps}
+          />
 
           <div className="w-32" />
         </header>

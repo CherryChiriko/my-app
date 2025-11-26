@@ -7,10 +7,12 @@ const themes = [
     background: {
       app: "bg-gray-900",
       secondary: "bg-gray-800",
+      track: "bg-gray-700",
       navbar: "bg-gray-800",
       canvas: "bg-gray-900",
       accent1: "bg-sky-500",
       accent2: "bg-purple-500",
+      accent3: "bg-indigo-500",
     },
 
     text: {
