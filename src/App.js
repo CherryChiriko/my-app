@@ -6,28 +6,47 @@ import {
   selectDeckError,
   selectDeckStatus,
 } from "./slices/deckSlice";
-import ScrollToTop from "./components/General/routing/ScrollToTop";
+import useAuth from "./hooks/useAuth";
 
 import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DeckManager from "./components/Decks/views/DeckManager";
 import DeckListView from "./components/Decks/views/DeckListView";
 import StudySession from "./components/Study/views/StudySession";
+import LoginPage from "./components/LoginPage";
 import NotFound404 from "./components/404";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ScrollToTop from "./components/General/routing/ScrollToTop";
 
 function App() {
   const activeTheme = useSelector(selectActiveTheme);
-  const dispatch = useDispatch();
+  const { session, loading: authLoading } = useAuth();
   const status = useSelector(selectDeckStatus);
   const error = useSelector(selectDeckError);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     if (status === "idle") {
       dispatch(fetchDecks());
     }
   }, [status, dispatch]);
+
+  if (authLoading) {
+    return (
+      <div
+        className={`${activeTheme.background.app} min-h-screen flex items-center justify-center`}
+      >
+        <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
+          Checking session...
+        </p>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <LoginPage activeTheme={activeTheme} />;
+  }
 
   if (status === "loading") {
     return (
@@ -50,32 +69,27 @@ function App() {
           className={`${activeTheme.text.primary} space-y-4 text-center text-xl`}
         >
           <p>Error loading decks: {error}</p>
-          <button onClick={() => dispatch(fetchDecks())}>Retry</button>
+          <button onClick={() => window.location.reload()}>Retry</button>
         </div>
       </div>
     );
   }
 
-  const appContainerStyles = {
-    backgroundColor: activeTheme.bgColor,
-    color: activeTheme.textColor,
-    minHeight: "100vh",
-  };
-
   return (
-    <div style={appContainerStyles}>
+    <div
+      style={{
+        backgroundColor: activeTheme.bgColor,
+        color: activeTheme.textColor,
+        minHeight: "100vh",
+      }}
+    >
       <Navbar />
       <main>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/decks" element={<DeckManager />}>
-            {/* Index route for /decks - shows the main deck list */}
             <Route index element={<DeckListView />} />
-            {/* Nested route for /decks/import - shows the import page */}
-            {/* <Route path="import" element={<Import />} /> */}
-            {/* Nested route for viewing a specific deck */}
-            {/* <Route path=":deck_id" element={<DeckDetails />} /> */}
           </Route>
           <Route path="/study" element={<StudySession />} />
           <Route path="*" element={<NotFound404 activeTheme={activeTheme} />} />
