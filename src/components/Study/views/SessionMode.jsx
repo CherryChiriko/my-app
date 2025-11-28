@@ -1,157 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Header from "../../General/ui/Header";
 import CardRenderer from "../../Study/components/Card/CardRenderer";
-import { selectCards } from "../../../slices/cardSlice";
-// import { recordStudyActivity } from "../../../slices/deckSlice";
-import { getUpdatedCard } from "../../../helpers/getUpdatedCard";
 import SessionComplete from "../components/Modals/SessionComplete";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Bar } from "../../General/ui/Bar";
-
-const LEARN_LIMIT = 5;
-const REVIEW_LIMIT = 10;
-
-const PHASES = {
-  A: [
-    { displayState: "animation", allowRating: false },
-    { displayState: "quiz", allowRating: true },
-  ],
-  C: [
-    { displayState: "animation", allowRating: false },
-    { displayState: "outline", allowRating: false },
-    { displayState: "quiz", allowRating: true },
-  ],
-};
+import useStudySession from "../hooks/useStudySession";
 
 const SessionMode = ({ mode, activeTheme, activeDeck }) => {
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isReviewMode = mode === "review";
-
-  const [sessionFinished, setSessionFinished] = useState(false);
-
-  const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
-
-  const allCards = useSelector(selectCards);
-  const cards = useMemo(() => allCards.slice(0, limit), [limit, allCards]);
-
-  const phases = isReviewMode
-    ? [{ displayState: "quiz", allowRating: true }]
-    : PHASES[activeDeck.studyMode] ?? PHASES.A;
-  const totalPhases = phases.length;
-
-  const [phaseIndex, setPhaseIndex] = useState(0);
-  const [cardIndex, setCardIndex] = useState(0);
-  const [sessionReviewed, setSessionReviewed] = useState(0);
-  const [sessionLearned, setSessionLearned] = useState(0);
-
-  const currentPhase = phases[phaseIndex];
-  const currentCard = cards[cardIndex];
-  console.log("Bar parent activeTheme:", activeTheme);
-
-  useEffect(() => {
-    // Reset indexes when cards change (new deck)
-    setPhaseIndex(0);
-    setCardIndex(0);
-    setSessionReviewed(0);
-    setSessionLearned(0);
-  }, [activeDeck?.id, allCards.length]);
-
-  const exitStudy = () => {
-    // Record study activity and navigate away
-    // dispatch(
-    //   recordStudyActivity({
-    //     deck_id: activeDeck.id,
-    //     learnCount: sessionLearned,
-    //     reviewCount: sessionReviewed,
-    //   })
-    // );
-    navigate("/decks");
-  };
-
-  const advanceCard = () => {
-    // Move to next card in same phase, or next phase if at end
-    if (cardIndex + 1 < limit) {
-      setCardIndex((i) => i + 1);
-    } else if (phaseIndex + 1 < totalPhases) {
-      // next phase: reset card index
-      setPhaseIndex((p) => p + 1);
-      setCardIndex(0);
-    } else {
-      // finished session
-      // exitStudy();
-      setSessionFinished(true);
-    }
-  };
-
-  /**
-   * Called when the child component signals a rating for this card.
-   * Only called in phases where allowRating=true.
-   */
-  const handleRate = async (rating) => {
-    if (!currentCard) return;
-
-    try {
-      const newCardState = getUpdatedCard(currentCard, rating);
-
-      // Backend update attempt
-      let updatedCard = newCardState;
-      try {
-        const res = await fetch(
-          `http://localhost:5000/cards/${currentCard.id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newCardState),
-          }
-        );
-        if (res.ok) {
-          updatedCard = await res.json();
-          console.log("✅ Card updated on backend:", updatedCard);
-        } else {
-          console.warn("⚠️ Backend update failed, using local SRS.");
-        }
-      } catch (err) {
-        console.warn("💡 Offline mode: using local SRS fallback.", err);
-      }
-
-      // dispatch(updateCard(updatedCard));
-      setSessionReviewed((c) => c + 1);
-    } catch (err) {
-      console.error("Failed to rate card", err);
-    } finally {
-      // Move on after rating
-      advanceCard();
-    }
-  };
-
-  /**
-   * Called by a child when a pass over the current card is complete but
-   * ratings are NOT allowed for that phase. We simply advance.
-   */
-  const handlePassComplete = () => {
-    // If this pass is the one that implies "learned", we can increment learned.
-    // We decide that only when final phase had allowRating we will mark learned via rating.
-    // However if you want to mark 'learned' after certain phase, do it here.
-    // For now we only advance.
-    advanceCard();
-  };
-
-  const handleLearnMore = () => {
-    setSessionFinished(false);
-    setPhaseIndex(0);
-    setCardIndex(0);
-    setSessionLearned(0);
-  };
-
-  // Progress calculation: progress through total steps = totalPhases * limit
-  const totalSteps = totalPhases * limit || 1;
-  const currentStep = phaseIndex * limit + cardIndex + 1;
-  const progressPercentage = ((currentStep / totalSteps) * 100).toFixed(1);
+  const {
+    currentCard,
+    currentPhase,
+    progress,
+    cards,
+    sessionFinished,
+    limit,
+    handleRate,
+    handlePassComplete,
+    resetSession,
+    exitSession,
+  } = useStudySession({ deck: activeDeck, navMode: mode });
 
   if (!cards.length) {
     return (
@@ -161,10 +31,10 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
         <h3
           className={`text-2xl font-semibold mb-3 ${activeTheme.text.primary}`}
         >
-          🎉 No cards available for this session
+          No cards available for this session.
         </h3>
         <button
-          onClick={exitStudy}
+          onClick={() => navigate("/decks")}
           className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
         >
           Return to decks
@@ -181,8 +51,8 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
         <SessionComplete
           learnedCount={limit}
           isOpen={true}
-          onGoBack={exitStudy}
-          onLearnMore={handleLearnMore}
+          onGoBack={exitSession}
+          onLearnMore={resetSession}
           activeTheme={activeTheme}
         />
       </div>
@@ -196,10 +66,9 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
       <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-8">
         <Header title={`${activeDeck.name}`} />
 
-        {/* Top bar */}
         <header className="flex justify-between items-center mb-10">
           <button
-            onClick={exitStudy}
+            onClick={exitSession}
             className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
           >
             <FontAwesomeIcon icon={faArrowLeft} className="w-5 h-5 mr-2" />
@@ -208,17 +77,14 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
 
           <Bar
             activeTheme={activeTheme}
-            current={currentStep}
-            total={totalSteps}
+            current={progress.current}
+            total={progress.total}
           />
 
           <div className="w-32" />
         </header>
 
-        {/* Card area */}
-        <div
-          className={`relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8`}
-        >
+        <div className="relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8">
           <CardRenderer
             card={currentCard}
             studyMode={activeDeck.studyMode}

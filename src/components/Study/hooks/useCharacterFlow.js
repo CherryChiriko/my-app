@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect, useRef } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 export function useCharacterFlow({
   card,
@@ -15,9 +15,6 @@ export function useCharacterFlow({
   const [mistakeList, setMistakeList] = useState([]);
   const [completedChars, setCompletedChars] = useState([]);
 
-  // Use ref to track timeout for cleanup
-  const timeoutRef = useRef(null);
-
   const characters = useMemo(
     () => (card?.front || "").split(""),
     [card?.front]
@@ -31,7 +28,6 @@ export function useCharacterFlow({
     return toneColors[toneIdx];
   }, [card?.tones, currentIndex]);
 
-  // Reset when card changes
   useEffect(() => {
     setCurrentIndex(0);
     setRevealed(false);
@@ -40,29 +36,55 @@ export function useCharacterFlow({
     playAudio?.();
   }, [card?.id, playAudio]);
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
   const isLastCharacter = currentIndex === characters.length - 1;
 
   const calculateAverage = useCallback(
     (mistakesForCurrentChar) => {
-      const allMistakes = [...mistakeList, mistakesForCurrentChar];
-      return allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length;
+      const all = [...mistakeList, mistakesForCurrentChar];
+      return all.reduce((a, b) => a + b, 0) / all.length;
     },
     [mistakeList]
   );
 
-  const handleAdvanceCharacter = useCallback(() => {
-    setCurrentIndex((i) => i + 1);
-    setRevealed(false);
-  }, []);
+  const handleReveal = useCallback(
+    (mistakes = 0) => {
+      setRevealed(true);
+      onReveal?.();
+
+      setMistakeList((prev) => [...prev, mistakes]);
+      setCompletedChars((prev) => [...prev, currentCharacter]);
+      playAudio?.();
+    },
+    [currentCharacter, onReveal, playAudio]
+  );
+
+  const handleContinue = useCallback(() => {
+    if (!revealed) return; // user must reveal first
+
+    if (!isLastCharacter) {
+      setCurrentIndex((i) => i + 1);
+      setRevealed(false);
+      return;
+    }
+
+    // LAST CHARACTER
+    if (allowRating) {
+      const avg = calculateAverage(mistakeList[mistakeList.length - 1] ?? 0);
+      const rating = getRatingFromMistakes(Math.round(avg));
+      onRate?.(rating);
+    } else {
+      onPassComplete?.();
+    }
+  }, [
+    revealed,
+    isLastCharacter,
+    allowRating,
+    calculateAverage,
+    mistakeList,
+    onRate,
+    onPassComplete,
+    getRatingFromMistakes,
+  ]);
 
   const renderWordProgress = () => {
     return (
@@ -100,65 +122,6 @@ export function useCharacterFlow({
       </div>
     );
   };
-
-  const handleReveal = useCallback(
-    (mistakes = null) => {
-      const mistakeCount = Number.isFinite(mistakes) ? mistakes : 0;
-
-      setRevealed(true);
-      onReveal?.();
-
-      if (mistakes !== null) {
-        setMistakeList((prev) => [...prev, mistakeCount]);
-      }
-
-      setCompletedChars((prev) => [...prev, currentCharacter]);
-      playAudio?.();
-
-      // Clear any existing timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        setRevealed(false);
-
-        if (!isLastCharacter) {
-          handleAdvanceCharacter();
-          return;
-        }
-
-        // Handle final character
-        if (allowRating) {
-          const avgMistakes = calculateAverage(mistakeCount);
-          const rating = getRatingFromMistakes(Math.round(avgMistakes));
-          onRate?.(rating);
-        } else {
-          onPassComplete?.();
-        }
-      }, 800);
-    },
-    [
-      currentCharacter,
-      isLastCharacter,
-      allowRating,
-      onReveal,
-      playAudio,
-      handleAdvanceCharacter,
-      onRate,
-      onPassComplete,
-      getRatingFromMistakes,
-      calculateAverage,
-    ]
-  );
-
-  const handleContinue = useCallback(() => {
-    if (!isLastCharacter) {
-      handleAdvanceCharacter();
-    } else {
-      onPassComplete?.();
-    }
-  }, [isLastCharacter, handleAdvanceCharacter, onPassComplete]);
 
   return {
     currentIndex,

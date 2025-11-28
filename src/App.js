@@ -7,6 +7,7 @@ import {
   selectDeckStatus,
 } from "./slices/deckSlice";
 import useAuth from "./hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -25,12 +26,13 @@ function App() {
   const status = useSelector(selectDeckStatus);
   const error = useSelector(selectDeckError);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-    if (status === "idle") {
+    if (session && status === "idle") {
       dispatch(fetchDecks());
     }
-  }, [status, dispatch]);
+  }, [session, status, dispatch]);
 
   if (authLoading) {
     return (

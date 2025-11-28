@@ -24,13 +24,10 @@ export function useHanziWriter({
   const containerRef = useRef(null);
   const writerRef = useRef(null);
 
-  // Create/recreate writer when character changes
+  // Init / recreate writer on character change
   useEffect(() => {
-    if (!character || !window.HanziWriter || !containerRef.current) {
-      return;
-    }
+    if (!character || !window.HanziWriter || !containerRef.current) return;
 
-    // Clear previous writer
     containerRef.current.innerHTML = "";
     writerRef.current = null;
 
@@ -45,16 +42,16 @@ export function useHanziWriter({
           highlightColor: strokeColor,
         }
       );
-      writerRef.current = writer;
-    } catch (error) {
-      console.error("[HanziWriter] FAILED to create writer:", error);
-    }
-  }, [character, strokeColor, outlineColor]);
 
-  // Apply mode-specific behavior when displayState changes
+      writerRef.current = writer;
+    } catch (err) {
+      console.error("[HanziWriter] Failed to init:", err);
+    }
+  }, [character, outlineColor, strokeColor]);
+
+  // Apply mode-specific behavior
   useEffect(() => {
     const writer = writerRef.current;
-
     if (!writer) return;
 
     try {
@@ -67,9 +64,7 @@ export function useHanziWriter({
         case "outline":
           writer.hideCharacter();
           writer.quiz({
-            onComplete: () => {
-              onQuizComplete?.(0);
-            },
+            onComplete: () => onQuizComplete?.(0),
           });
           break;
 
@@ -88,29 +83,16 @@ export function useHanziWriter({
         default:
           writer.showCharacter();
       }
-    } catch (error) {
-      console.error(`[useHanziWriter] FAILED IN MODE ${displayState}`, error);
+    } catch (err) {
+      console.error("[useHanziWriter] Mode error:", err);
     }
   }, [displayState, onQuizComplete]);
-  useEffect(() => {
-    if (!writerRef.current) return;
 
-    try {
-      writerRef.current.showCharacter();
-    } catch (error) {
-      console.error("[useHanziWriter] Failed to show character", error);
-    }
-  }, []);
-
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
-      if (writerRef.current) {
-        writerRef.current = null;
-      }
-      if (containerRef.current) {
-        containerRef.current.innerHTML = "";
-      }
+      writerRef.current = null;
+      if (containerRef.current) containerRef.current.innerHTML = "";
     };
   }, []);
 

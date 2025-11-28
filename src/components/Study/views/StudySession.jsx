@@ -1,57 +1,26 @@
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { fetchCards, selectCardsStatus } from "../../../slices/cardSlice";
+import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../../slices/themeSlice";
 import { selectActiveDeck } from "../../../slices/deckSlice";
+import useStudySession from "../hooks/useStudySession";
 import SessionMode from "./SessionMode";
 
 const StudySession = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // Gets 'learn' or 'review' from URL
-  const navMode = searchParams.get("mode");
-
+  const navMode = searchParams.get("mode"); // "learn" or "review"
   const activeTheme = useSelector(selectActiveTheme);
   const activeDeck = useSelector(selectActiveDeck);
-  const status = useSelector(selectCardsStatus); // 'idle', 'loading', 'succeeded', 'failed'
 
-  // --- START: MODE SELECTION LOGIC ---
-  let currentMode = null;
+  // --- Use new hook ---
+  const { status, mode, cards, error } = useStudySession({
+    deck: activeDeck,
+    navMode,
+  });
 
-  if (activeDeck) {
-    // Ensure you use the correct prop name from your deck slice
-    const newCards =
-      activeDeck.cardsCount - activeDeck.mastered - activeDeck.due;
-    const dueCards = activeDeck.due;
-
-    // 1. Explicit mode selection from URL
-    if (navMode === "review" || navMode === "learn") {
-      currentMode = navMode;
-    } else if (newCards > 0) {
-      currentMode = "learn";
-    } else if (dueCards > 0) {
-      currentMode = "review";
-    }
-  }
-  // --- END: MODE SELECTION LOGIC ---
-
-  // --- Core Logic: Fetch Cards when Deck is Ready ---
-  useEffect(() => {
-    if (!activeDeck?.id) return;
-
-    dispatch(
-      fetchCards({
-        deck_id: activeDeck.id,
-        studyMode: activeDeck.studyMode,
-      })
-    );
-  }, [activeDeck?.id, navMode, dispatch]);
-
-  // --- Render based on loading status and deck availability ---
-
+  // --- No active deck ---
   if (!activeDeck) {
     return (
       <div
@@ -70,6 +39,7 @@ const StudySession = () => {
     );
   }
 
+  // --- Loading states ---
   if (status === "loading" || status === "idle") {
     return (
       <div
@@ -78,41 +48,40 @@ const StudySession = () => {
         <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
           Loading cards for "{activeDeck.name}"...
         </p>
-        {/*  */}
       </div>
     );
   }
 
-  if (status === "failed") {
+  if (status === "failed" || error) {
     return (
       <div
         className={`h-screen flex items-center justify-center ${activeTheme.background.app}`}
       >
         <p className={`${activeTheme.text.primary} text-xl`}>
-          Error: Failed to load cards. Please check the network connection.
+          Error: Could not load cards.
         </p>
       </div>
     );
   }
 
-  // --- Render the specific Study Mode ---
-  if (currentMode) {
+  // --- Session Mode ---
+  if (cards.length > 0 && mode) {
     return (
       <SessionMode
-        mode={currentMode}
+        mode={mode}
         activeTheme={activeTheme}
         activeDeck={activeDeck}
       />
     );
   }
 
-  // Fallback if no cards are available for learning or review
+  // --- No cards available fallback ---
   return (
     <div
       className={`h-screen flex flex-col items-center justify-center ${activeTheme.background.app}`}
     >
       <p className={`${activeTheme.text.primary} text-2xl font-bold`}>
-        🎉 All caught up!
+        All caught up!
       </p>
       <p className={`${activeTheme.text.secondary} text-xl mt-2`}>
         "{activeDeck.name}" has no new or due cards.
