@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActiveTheme } from "./slices/themeSlice";
 import {
@@ -7,8 +7,6 @@ import {
   selectDeckStatus,
 } from "./slices/deckSlice";
 import useAuth from "./hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-
 import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DeckManager from "./components/Decks/views/DeckManager";
@@ -16,8 +14,7 @@ import DeckListView from "./components/Decks/views/DeckListView";
 import StudySession from "./components/Study/views/StudySession";
 import LoginPage from "./components/LoginPage";
 import NotFound404 from "./components/404";
-
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/General/routing/ScrollToTop";
 
 function App() {
@@ -26,13 +23,13 @@ function App() {
   const status = useSelector(selectDeckStatus);
   const error = useSelector(selectDeckError);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  React.useEffect(() => {
-    if (session && status === "idle") {
+  // Fetch decks only once when session is available AND loading is done
+  useEffect(() => {
+    if (!authLoading && session && status === "idle") {
       dispatch(fetchDecks());
     }
-  }, [session, status, dispatch]);
+  }, [authLoading, session, status, dispatch]);
 
   if (authLoading) {
     return (
