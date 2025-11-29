@@ -8,16 +8,18 @@ import {
   updateDeckStreak,
 } from "../../../slices/streakSlice";
 import { sm2Update } from "../../../utils/sm2Update";
+import useAuth from "../../../hooks/useAuth";
 import { PHASES, LEARN_LIMIT, REVIEW_LIMIT } from "../constants/constants";
 
 export default function useStudySession({ activeDeck, mode }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { userProfile } = useAuth();
 
   const isReviewMode = mode === "review";
   const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
 
-  const userProfile = useSelector((state) => state.auth.profile); // adjust to your auth slice
+  // const userProfile = useSelector((state) => state.auth.profile); // adjust to your auth slice
   const userId = userProfile?.id;
 
   // --------------------------------------------------------------------------

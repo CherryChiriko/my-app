@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
-import { selectGlobalStreak } from "../../slices/streakSlice";
+import { selectGlobalStreak } from "../../slices/userSlice";
 import { selectDecks } from "../../slices/deckSlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

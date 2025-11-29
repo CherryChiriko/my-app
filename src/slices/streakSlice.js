@@ -2,14 +2,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getLocalISODate, getLocalISODateOffset } from "../utils/localDate";
+import { updateProfileFromStreak } from "./userSlice";
 
-/**
- * updateDeckStreak:
- * payload: { userId, deckId, studiedCount }
- * - increments deck streak if studiedCount >= 1 and last_active was yesterday
- * - sets last_active = today when studiedCount >= 1
- * - create row if missing
- */
 export const updateDeckStreak = createAsyncThunk(
   "streak/updateDeckStreak",
   async ({ userId, deckId, studiedCount }, { rejectWithValue }) => {
@@ -21,7 +15,6 @@ export const updateDeckStreak = createAsyncThunk(
     const yesterday = getLocalISODateOffset(-1);
 
     try {
-      // Fetch existing deck_stats row
       const { data: existing, error: selErr } = await supabase
         .from("deck_stats")
         .select("*")
@@ -34,7 +27,6 @@ export const updateDeckStreak = createAsyncThunk(
       }
 
       if (!existing) {
-        // Create new row
         const initialStreak = studiedCount > 0 ? 1 : 0;
         const row = {
           user_id: userId,
@@ -55,21 +47,17 @@ export const updateDeckStreak = createAsyncThunk(
         return inserted;
       }
 
-      // Existing row present - calculate new streak
       let newStreak = existing.streak ?? 0;
       let newMax = existing.max_streak ?? 0;
       let newLastActive = existing.last_active;
 
       if (studiedCount > 0) {
         if (existing.last_active === today) {
-          // Already active today -> keep values, update daily_cards
           newLastActive = today;
         } else if (existing.last_active === yesterday) {
-          // Consecutive day -> increment streak
           newStreak = (existing.streak ?? 0) + 1;
           newLastActive = today;
         } else {
-          // Gap in streak -> restart from 1
           newStreak = 1;
           newLastActive = today;
         }
@@ -103,15 +91,15 @@ export const updateDeckStreak = createAsyncThunk(
 
 /**
  * updateGlobalStreak:
- * payload: { userId, reviewedCount, learnedCount }
- * - condition: reviewedCount >= 25 || learnedCount >= 5
- * - apply similar streak rules on profiles table (global streak fields)
+ * - Reads from userSlice cache if available (no DB call)
+ * - Only queries DB if profile not in cache
+ * - Updates both Supabase and userSlice
  */
 export const updateGlobalStreak = createAsyncThunk(
   "streak/updateGlobalStreak",
   async (
     { userId, reviewedCount = 0, learnedCount = 0 },
-    { rejectWithValue }
+    { rejectWithValue, dispatch, getState }
   ) => {
     if (!userId) return rejectWithValue("Missing userId");
 
@@ -120,36 +108,40 @@ export const updateGlobalStreak = createAsyncThunk(
     const conditionMet = reviewedCount >= 25 || learnedCount >= 5;
 
     try {
-      // Fetch profile row
-      const { data: profile, error: selErr } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
+      // OPTIMIZATION: Check userSlice first (already in memory, no DB call)
+      const state = getState();
+      let profile = state.user?.profile;
 
-      if (selErr && selErr.code !== "PGRST116") {
-        throw selErr;
-      }
-
+      // If not in userSlice, fetch from DB
       if (!profile) {
-        return rejectWithValue("Profile not found. User must sign up first.");
+        const { data, error: selErr } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userId)
+          .single();
+
+        if (selErr && selErr.code !== "PGRST116") {
+          throw selErr;
+        }
+
+        if (!data) {
+          return rejectWithValue("Profile not found. User must sign up first.");
+        }
+
+        profile = data;
       }
 
-      // Existing profile - calculate new streak
       let newStreak = profile.global_streak ?? 0;
       let newMax = profile.global_max_streak ?? 0;
       let newLastActive = profile.global_last_active;
 
       if (conditionMet) {
         if (profile.global_last_active === today) {
-          // Already active today
           newLastActive = today;
         } else if (profile.global_last_active === yesterday) {
-          // Consecutive day
           newStreak = (profile.global_streak ?? 0) + 1;
           newLastActive = today;
         } else {
-          // Gap in streak
           newStreak = 1;
           newLastActive = today;
         }
@@ -163,6 +155,7 @@ export const updateGlobalStreak = createAsyncThunk(
         global_last_active: newLastActive,
       };
 
+      // Update Supabase
       const { data: updated, error: updateErr } = await supabase
         .from("profiles")
         .update(updates)
@@ -171,6 +164,10 @@ export const updateGlobalStreak = createAsyncThunk(
         .single();
 
       if (updateErr) throw updateErr;
+
+      // Sync back to userSlice (single source of truth)
+      dispatch(updateProfileFromStreak(updated));
+
       return updated;
     } catch (err) {
       console.error("updateGlobalStreak error:", err);
@@ -186,22 +183,19 @@ const streakSlice = createSlice({
     lastProfileUpdate: null,
     status: "idle",
     error: null,
-    deckStatsCache: {},
-    profileCache: {},
+    deckStatsCache: {}, // Keep this for deck stats (not synced to other slices)
   },
   reducers: {
     clearStreak(state) {
       state.lastDeckUpdate = null;
       state.lastProfileUpdate = null;
       state.deckStatsCache = {};
-      state.profileCache = {};
       state.status = "idle";
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Deck Streak Cases
       .addCase(updateDeckStreak.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -218,7 +212,6 @@ const streakSlice = createSlice({
         state.status = "failed";
         state.error = action.payload || "Failed to update deck streak";
       })
-      // Global Streak Cases
       .addCase(updateGlobalStreak.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -227,9 +220,6 @@ const streakSlice = createSlice({
         state.status = "succeeded";
         state.error = null;
         state.lastProfileUpdate = action.payload;
-        if (action.payload?.id) {
-          state.profileCache[action.payload.id] = action.payload;
-        }
       })
       .addCase(updateGlobalStreak.rejected, (state, action) => {
         state.status = "failed";
@@ -244,23 +234,8 @@ export const { clearStreak } = streakSlice.actions;
 export const selectStreakStatus = (state) => state.streak.status;
 export const selectStreakError = (state) => state.streak.error;
 export const selectDeckStatsCache = (state) => state.streak.deckStatsCache;
-export const selectProfileCache = (state) => state.streak.profileCache;
 export const selectLastDeckUpdate = (state) => state.streak.lastDeckUpdate;
 export const selectLastProfileUpdate = (state) =>
   state.streak.lastProfileUpdate;
-
-export const selectGlobalStreak = (state, userId) =>
-  state.streak.profileCache[userId]?.global_streak ?? 0;
-
-export const selectGlobalMaxStreak = (state, userId) =>
-  state.streak.profileCache[userId]?.global_max_streak ?? 0;
-
-export const selectGlobalStreakActive = (state, userId) => {
-  const profile = state.streak.profileCache[userId];
-  if (!profile?.global_last_active) return false;
-
-  const today = new Date().toISOString().split("T")[0];
-  return profile.global_last_active === today;
-};
 
 export default streakSlice.reducer;

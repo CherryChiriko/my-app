@@ -1,7 +1,8 @@
+import React from "react";
+
 export const Bar = ({ current, total, activeTheme, isLabelOn = true }) => {
   const progressPercentage =
     total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
-  console.log("Bar received props:", { current, total, activeTheme });
 
   return (
     <div className="flex flex-col items-center flex-grow mx-4">
@@ -21,3 +22,5 @@ export const Bar = ({ current, total, activeTheme, isLabelOn = true }) => {
     </div>
   );
 };
+
+export default React.memo(Bar);
