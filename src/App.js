@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectActiveTheme } from "./slices/themeSlice";
-import { fetchUserProfile, clearUser } from "./slices/userSlice";
 import {
   fetchDecks,
   selectDeckError,
   selectDeckStatus,
 } from "./slices/deckSlice";
 import useAuth from "./hooks/useAuth";
-
 import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import DeckManager from "./components/Decks/views/DeckManager";
@@ -16,7 +14,6 @@ import DeckListView from "./components/Decks/views/DeckListView";
 import StudySession from "./components/Study/views/StudySession";
 import LoginPage from "./components/LoginPage";
 import NotFound404 from "./components/404";
-
 import { Routes, Route } from "react-router-dom";
 import ScrollToTop from "./components/General/routing/ScrollToTop";
 
@@ -27,27 +24,15 @@ function App() {
   const error = useSelector(selectDeckError);
   const dispatch = useDispatch();
 
-  // Fetch user profile when session exists
-  useEffect(() => {
-    if (session?.user?.id) {
-      dispatch(fetchUserProfile(session.user.id));
-    }
-  }, [session?.user?.id, dispatch]);
-
-  // Clear user data on logout
-  useEffect(() => {
-    if (!session) {
-      dispatch(clearUser());
-    }
-  }, [session, dispatch]);
-
   // Fetch decks only once when session is available AND loading is done
   useEffect(() => {
     if (!authLoading && session && status === "idle") {
+      console.log("App: dispatching fetchDecks because session present");
       dispatch(fetchDecks());
     }
   }, [authLoading, session, status, dispatch]);
 
+  // Don't show anything while checking auth
   if (authLoading) {
     return (
       <div
@@ -60,10 +45,12 @@ function App() {
     );
   }
 
+  // Show login if no session
   if (!session) {
     return <LoginPage activeTheme={activeTheme} />;
   }
 
+  // Show loading only on FIRST load (when status is loading and decks are empty)
   if (status === "loading") {
     return (
       <div
@@ -71,6 +58,19 @@ function App() {
       >
         <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
           Loading decks...
+        </p>
+      </div>
+    );
+  }
+
+  // Don't render app until decks are loaded (succeeded or failed)
+  if (status === "idle") {
+    return (
+      <div
+        className={`${activeTheme.background.app} min-h-screen flex items-center justify-center`}
+      >
+        <p className={`${activeTheme.text.primary} text-xl animate-pulse`}>
+          Preparing...
         </p>
       </div>
     );

@@ -6,12 +6,13 @@ import { setActiveDeck } from "../../../slices/deckSlice";
 export default function useDeckCardLogic(deck) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id, mastered = 0, due = 0, cardsCount = 0, streak = 0 } = deck || {};
+  const { id, mastered = 0, due = 0, cards_count = 0, streak = 0 } = deck || {};
 
-  const newCards = cardsCount - mastered - due;
+  const newCards = cards_count - mastered - due;
   const showLearn = newCards > 0;
   const showReview = Number(due) > 0;
-  const isMastered = !showLearn && !showReview;
+  const isMastered = cards_count === mastered;
+  console.log(newCards, mastered, due, cards_count);
 
   const handleCardClick = useCallback(() => {
     if (!isMastered) navigate(`/deck/${id}`);

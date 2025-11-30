@@ -30,7 +30,7 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
         className={`flex justify-between items-center ${activeTheme.text.secondary} text-xs mt-3`}
       >
         <span>
-          {deck.language} • {deck.cardsCount} cards
+          {deck.language} • {deck.cards_count} cards
         </span>
 
         <DeckActions

@@ -5,6 +5,7 @@ import CompactVariant from "./variants/CompactVariant";
 
 function DeckCardItem({ deck, activeTheme, variant }) {
   const logic = useDeckCardLogic(deck);
+  console.log(deck);
   if (!deck || !logic) return null;
 
   const base = `rounded-xl border shadow-md transition-all duration-300
@@ -38,4 +39,4 @@ function DeckCardItem({ deck, activeTheme, variant }) {
   );
 }
 
-export default memo(DeckCardItem);
+export default DeckCardItem;

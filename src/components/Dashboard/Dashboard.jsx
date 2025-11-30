@@ -26,6 +26,13 @@ const Dashboard = () => {
 
   const decks = useSelector(selectDecks);
 
+  console.log(
+    "Dashboard: selectDecks => length:",
+    decks?.length,
+    "sample:",
+    decks[0]
+  );
+
   const gradient = `bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`;
 
   const cards_due_today = decks.reduce((t, d) => t + (d.due || 0), 0);
@@ -115,7 +122,11 @@ const Dashboard = () => {
         </div>
 
         {/* ===== MAIN GRID (Vertically Centered) ===== */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${
+            decks.length > 2 ? "items-center" : ""
+          }`}
+        >
           {/* Left: Decks */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center justify-between">

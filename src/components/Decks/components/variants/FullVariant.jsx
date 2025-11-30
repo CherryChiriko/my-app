@@ -50,7 +50,7 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
         className={`flex justify-between items-center ${activeTheme.text.secondary} text-sm mt-3`}
       >
         <span>
-          {deck.cardsCount} cards • {deck.language}
+          {deck.cards_count} cards • {deck.language}
         </span>
         {/* <span>Last studied: {formatDate(deck.lastStudied)}</span> */}
       </div>

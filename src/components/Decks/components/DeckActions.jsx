@@ -23,7 +23,7 @@ export function DeckActions({
 
   const sizeClasses = large
     ? "flex-1 py-2 rounded-lg font-semibold flex items-center justify-center"
-    : "w-6 h-6 rounded-full flex items-center justify-center";
+    : "w-24 h-6 rounded-full flex items-center justify-center";
 
   return (
     <div className={large ? "mt-3 flex space-x-3" : "flex space-x-3"}>

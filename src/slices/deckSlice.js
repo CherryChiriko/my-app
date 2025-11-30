@@ -1,62 +1,57 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import localDecks from "../data/decks.js";
 import { supabase } from "../utils/supabaseClient";
 
-const API_BASE = process.env.REACT_APP_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
-
+/** Priority ordering */
 const orderDecksByPriority = (decks) => {
-  // 1️⃣ Decks with due cards first, sorted descending by due
+  if (!decks || decks.length === 0) return [];
+
   const dueDecks = decks.filter((d) => d.due > 0).sort((a, b) => b.due - a.due);
-
-  // 2️⃣ Decks with new cards (unlearned), excluding those already in dueDecks
   const newDecks = decks.filter(
-    (d) => !dueDecks.includes(d) && d.cardsCount - d.mastered - d.due > 0
+    (d) => !dueDecks.includes(d) && d.cards_count - d.mastered - d.due > 0
   );
-
-  // 3️⃣ Remaining decks (all mastered)
   const masteredDecks = decks.filter(
     (d) => !dueDecks.includes(d) && !newDecks.includes(d)
   );
 
-  // Merge them in order
   return [...dueDecks, ...newDecks, ...masteredDecks];
 };
 
-/** Fetch decks with backend + fallback */
+/** Fetch decks */
 export const fetchDecks = createAsyncThunk(
   "decks/fetchDecks",
-  async (_, thunk) => {
+  async (_, { rejectWithValue }) => {
     try {
-      console.log(
-        "🌐 fetchDecks: starting fetch from Supabase...",
-        new Date().toISOString()
-      );
-      const res = await fetch(`${API_BASE}/rest/v1/decks`, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-      });
-      if (!res.ok) throw new Error();
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
 
-      const remoteDecks = await res.json();
+      if (userError || !userData?.user) {
+        throw new Error("Not authenticated");
+      }
 
-      console.log("✅ fetchDecks: fetched decks from Supabase:", remoteDecks);
-      return { remote: remoteDecks, local: localDecks };
-    } catch {
-      console.warn("⚠ Backend unavailable — using local decks only.");
-      return { remote: [], local: localDecks };
+      const { data, error } = await supabase
+        .from("decks")
+        .select("*")
+        .eq("user_id", userData.user.id)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      // Map id to deck_id for consistency
+      return (data || []).map((deck) => ({
+        ...deck,
+        deck_id: deck.id,
+      }));
+    } catch (err) {
+      return rejectWithValue(err.message);
     }
   }
 );
 
-/** Slice */
 const deckSlice = createSlice({
   name: "decks",
   initialState: {
-    decks: localDecks, // temporary until fetch runs
-    activeDeckId: localDecks[0]?.id || null,
+    decks: [],
+    activeDeckId: null,
     status: "idle",
     error: null,
   },
@@ -69,20 +64,29 @@ const deckSlice = createSlice({
     builder
       .addCase(fetchDecks.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
       .addCase(fetchDecks.fulfilled, (state, action) => {
-        const { remote, local } = action.payload;
-        const decks = remote ? remote : local;
-        state.decks = orderDecksByPriority(decks);
+        // action.payload is the array of decks from RPC
+        const decks = action.payload;
 
-        // Recalculate the best active deck
-        state.activeDeckId = orderDecksByPriority(decks)[0]?.id || null;
+        // Normalize: ensure deck_id exists
+        const normalized = decks.map((d) => ({
+          ...d,
+          deck_id: d.deck_id || d.id,
+        }));
 
+        // Sort by priority
+        const sorted = orderDecksByPriority(normalized);
+
+        state.decks = sorted;
+        state.activeDeckId = sorted[0]?.deck_id || null;
         state.status = "succeeded";
+        state.error = null;
       })
       .addCase(fetchDecks.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload || "Failed to load decks";
       });
   },
 });
@@ -90,8 +94,12 @@ const deckSlice = createSlice({
 export const { setActiveDeck } = deckSlice.actions;
 
 export const selectDecks = (state) => state.decks.decks;
-export const selectActiveDeck = (state) =>
-  state.decks.decks.find((d) => d.id === state.decks.activeDeckId) || null;
+export const selectActiveDeck = (state) => {
+  const deck = state.decks.decks.find(
+    (d) => d.deck_id === state.decks.activeDeckId
+  );
+  return deck || null;
+};
 export const selectDeckStatus = (state) => state.decks.status;
 export const selectDeckError = (state) => state.decks.error;
 

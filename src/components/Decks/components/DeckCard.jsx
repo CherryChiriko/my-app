@@ -6,7 +6,7 @@ export default function DeckCard({ decks, activeTheme, variant, gridClasses }) {
     <div className={gridClasses}>
       {decks.map((deck) => (
         <DeckCardItem
-          key={deck.id}
+          key={deck.deck_id}
           deck={deck}
           activeTheme={activeTheme}
           variant={variant}

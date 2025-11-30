@@ -1,10 +1,10 @@
 export const ProgressBar = ({ deck, activeTheme, isMastered }) => {
-  const { mastered = 0, due = 0, cardsCount = 0 } = deck;
-  const newCards = Math.max(cardsCount - mastered - due, 0);
+  const { mastered = 0, due = 0, cards_count = 0 } = deck;
+  const newCards = Math.max(cards_count - mastered - due, 0);
 
-  const masteredPct = cardsCount ? (mastered / cardsCount) * 100 : 0;
-  const duePct = cardsCount ? (due / cardsCount) * 100 : 0;
-  const newPct = cardsCount ? (newCards / cardsCount) * 100 : 0;
+  const masteredPct = cards_count ? (mastered / cards_count) * 100 : 0;
+  const duePct = cards_count ? (due / cards_count) * 100 : 0;
+  const newPct = cards_count ? (newCards / cards_count) * 100 : 0;
 
   // Base classes for the container and segments
   const baseBar = `w-full h-2.5 rounded-full overflow-hidden flex`;
