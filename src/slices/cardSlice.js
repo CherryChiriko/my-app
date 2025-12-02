@@ -8,16 +8,14 @@ const TABLES = {
 };
 
 const PROGRESS = {
-  A: "cards_a_progress",
-  C: "cards_c_progress",
+  A: "card_a_progress",
+  C: "card_c_progress",
 };
 
 export const fetchCards = createAsyncThunk(
   "cards/fetchCards",
   async ({ deck_id, study_mode, user_id }, { rejectWithValue }) => {
     try {
-      console.log("[fetchCards] params:", { deck_id, study_mode, user_id });
-
       if (!deck_id || !study_mode || !user_id) {
         throw new Error("Missing required parameters");
       }
@@ -37,8 +35,6 @@ export const fetchCards = createAsyncThunk(
 
       if (cardsError) throw cardsError;
 
-      console.log(`[fetchCards] Found ${cards?.length || 0} cards`);
-
       if (!cards || cards.length === 0) {
         return [];
       }
@@ -55,10 +51,6 @@ export const fetchCards = createAsyncThunk(
         console.warn("[fetchCards] Progress fetch failed:", progressError);
         // Continue without progress data
       }
-
-      console.log(
-        `[fetchCards] Found ${progressData?.length || 0} progress records`
-      );
 
       // Create a map of card_id -> progress
       const progressMap = {};
@@ -87,7 +79,6 @@ export const fetchCards = createAsyncThunk(
         };
       });
 
-      console.log("[fetchCards] Returning merged cards:", mergedCards.length);
       return mergedCards;
     } catch (err) {
       console.error("[fetchCards] Error:", err);

@@ -3,8 +3,8 @@ import { supabase } from "../utils/supabaseClient";
 import { computeSM2 } from "../utils/srs";
 
 const TABLES = {
-  A: "cards_a_progress",
-  C: "cards_c_progress",
+  A: "card_a_progress",
+  C: "card_c_progress",
 };
 
 export const updateProgress = createAsyncThunk(

@@ -26,13 +26,6 @@ const Dashboard = () => {
 
   const decks = useSelector(selectDecks);
 
-  console.log(
-    "Dashboard: selectDecks => length:",
-    decks?.length,
-    "sample:",
-    decks[0]
-  );
-
   const gradient = `bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`;
 
   const cards_due_today = decks.reduce((t, d) => t + (d.due || 0), 0);

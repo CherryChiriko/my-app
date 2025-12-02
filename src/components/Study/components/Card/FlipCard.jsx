@@ -1,4 +1,3 @@
-// src/components/Flashcards/FlipCard.jsx
 import React, { useEffect, useState } from "react";
 import RatingButtons from "../Controls/RatingButtons";
 import RevealButton from "../Controls/RevealButton";
@@ -37,6 +36,7 @@ const FlipCard = ({
   onRate,
   allowRating = false,
   onPassComplete,
+  autoFlipEnabled = false,
   autoFlipDelay = 3000,
   autoAdvanceDelay = 3000,
 }) => {
@@ -44,21 +44,30 @@ const FlipCard = ({
 
   // Auto-flip front in animation mode
   useEffect(() => {
+    if (!autoFlipEnabled) return;
     let frontTimer;
     if (displayState === "animation" && !showAnswer) {
       frontTimer = setTimeout(() => setShowAnswer(true), autoFlipDelay);
     }
     return () => clearTimeout(frontTimer);
-  }, [displayState, showAnswer, autoFlipDelay]);
+  }, [displayState, showAnswer, autoFlipDelay, autoFlipEnabled]);
 
   // Auto-advance after back
   useEffect(() => {
+    if (!autoFlipEnabled) return;
     let backTimer;
     if ((displayState === "animation" || !allowRating) && showAnswer) {
       backTimer = setTimeout(() => handleNext(), autoAdvanceDelay);
     }
     return () => clearTimeout(backTimer);
-  }, [displayState, showAnswer, allowRating, onPassComplete, autoAdvanceDelay]);
+  }, [
+    displayState,
+    showAnswer,
+    allowRating,
+    onPassComplete,
+    autoAdvanceDelay,
+    autoFlipEnabled,
+  ]);
 
   const handleReveal = () => setShowAnswer(true);
   const handleNext = () => {

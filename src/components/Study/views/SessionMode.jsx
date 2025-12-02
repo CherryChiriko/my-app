@@ -9,7 +9,7 @@ import useStudySession from "../hooks/useStudySession";
 
 const SessionMode = ({ mode, activeTheme, activeDeck }) => {
   const navigate = useNavigate();
-  console.log("session mode", activeDeck);
+
   const {
     currentCard,
     currentPhase,

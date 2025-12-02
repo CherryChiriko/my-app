@@ -25,8 +25,19 @@ export default function useStudySession({ deck, navMode }) {
   const allCards = useSelector(selectCards);
 
   const cards = useMemo(() => {
+    if (!deck?.id) return [];
+
+    // If we have cards in the store, but they belong to a different deck,
+    // treat the list as empty during the transition.
+
+    if (allCards.length > 0 && allCards[0].deck_id !== deck.id) {
+      console.warn(
+        "Card list contains stale data for a different deck. Returning empty list temporarily."
+      );
+      return [];
+    }
     return allCards.slice(0, limit);
-  }, [allCards, limit]);
+  }, [allCards, limit, deck?.id]); // deck?.id to re-memoize on deck switch
 
   // --------------------------------------------------------------------------
   // Phases (A or C)
@@ -59,7 +70,7 @@ export default function useStudySession({ deck, navMode }) {
     setSessionFinished(false);
     setSessionReviewed(0);
     setSessionLearned(0);
-  }, [deck?.id, allCards.length]);
+  }, [deck?.id]);
 
   // --------------------------------------------------------------------------
   // Navigation
@@ -173,7 +184,7 @@ export default function useStudySession({ deck, navMode }) {
     currentPhase,
     sessionFinished,
     progressPercentage,
-    progress: { current: currentStep, total: totalSteps }, // For Bar component
+    progress: { current: currentStep - 1, total: totalSteps }, // For Bar component
     currentStep,
     totalSteps,
     sessionReviewed,

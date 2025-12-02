@@ -31,12 +31,6 @@ export default function CardsLoader({ activeDeck }) {
   useEffect(() => {
     if (!activeDeck?.id || !userId) return;
 
-    console.log(">>> DISPATCHING fetchCards with:", {
-      deck_id: activeDeck.id,
-      study_mode: activeDeck.study_mode,
-      user_id: userId,
-    });
-
     dispatch(
       fetchCards({
         deck_id: activeDeck.id,
