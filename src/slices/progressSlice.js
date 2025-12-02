@@ -9,16 +9,16 @@ const TABLES = {
 
 export const updateProgress = createAsyncThunk(
   "progress/updateProgress",
-  async ({ card, rating, studyMode, user_id }, { rejectWithValue }) => {
-    if (!card?.id || !user_id || !studyMode) {
+  async ({ card, rating, study_mode, user_id }, { rejectWithValue }) => {
+    if (!card?.id || !user_id || !study_mode) {
       return rejectWithValue(
-        "Missing required fields: card, user_id, or studyMode"
+        "Missing required fields: card, user_id, or study_mode"
       );
     }
 
-    const table = TABLES[studyMode];
+    const table = TABLES[study_mode];
     if (!table) {
-      return rejectWithValue(`Invalid study mode: ${studyMode}`);
+      return rejectWithValue(`Invalid study mode: ${study_mode}`);
     }
 
     try {
@@ -34,7 +34,7 @@ export const updateProgress = createAsyncThunk(
 
       if (error) throw error;
 
-      return { cardId: card.id, studyMode, updates };
+      return { cardId: card.id, study_mode, updates };
     } catch (err) {
       console.error("updateProgress error:", err);
       return rejectWithValue(err.message || "Failed to update card progress");

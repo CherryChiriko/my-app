@@ -12,7 +12,7 @@ const getRatingFromMistakes = (mistakes) => {
 
 const CardRenderer = ({
   card,
-  studyMode = "A",
+  study_mode = "A",
   displayState,
   allowRating = false,
   activeTheme,
@@ -20,7 +20,7 @@ const CardRenderer = ({
   onRate,
   onPassComplete,
 }) => {
-  switch (studyMode) {
+  switch (study_mode) {
     case "A":
       return (
         <FlipCard

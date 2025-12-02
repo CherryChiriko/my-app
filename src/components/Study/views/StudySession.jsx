@@ -10,12 +10,15 @@ const StudySession = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const navMode = searchParams.get("mode"); // "learn" or "review"
+  const params = searchParams.get("mode"); // "learn" or "review"
+
   const activeTheme = useSelector(selectActiveTheme);
   const activeDeck = useSelector(selectActiveDeck);
 
+  const navMode = params ?? (activeDeck.due ? "review" : "learn");
+
   // --- Use new hook ---
-  const { status, mode, cards, error } = useStudySession({
+  const { status, cards, error } = useStudySession({
     deck: activeDeck,
     navMode,
   });
@@ -65,10 +68,10 @@ const StudySession = () => {
   }
 
   // --- Session Mode ---
-  if (cards.length > 0 && mode) {
+  if (cards.length > 0 && navMode) {
     return (
       <SessionMode
-        mode={mode}
+        mode={navMode}
         activeTheme={activeTheme}
         activeDeck={activeDeck}
       />

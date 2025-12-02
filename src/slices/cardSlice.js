@@ -6,6 +6,7 @@ const TABLES = {
   A: "cards_a",
   C: "cards_c",
 };
+
 const PROGRESS = {
   A: "cards_a_progress",
   C: "cards_c_progress",
@@ -13,43 +14,85 @@ const PROGRESS = {
 
 export const fetchCards = createAsyncThunk(
   "cards/fetchCards",
-  async ({ deck_id, studyMode, user_id = 1 }) => {
-    const table = TABLES[studyMode];
-    const progressTable = PROGRESS[studyMode];
+  async ({ deck_id, study_mode, user_id }, { rejectWithValue }) => {
+    try {
+      console.log("[fetchCards] params:", { deck_id, study_mode, user_id });
 
-    const { data, error } = await supabase
-      .from(table)
-      .select(
-        `
-        *,
-        progress:${progressTable} (
-          ease_factor,
-          review_interval,
-          repetitions,
-          due_date,
-          last_studied,
-          status,
-          suspended
-        )
-      `
-      )
-      .eq("deckId", deck_id)
-      .eq(`${progressTable}.user_id`, user_id);
+      if (!deck_id || !study_mode || !user_id) {
+        throw new Error("Missing required parameters");
+      }
 
-    if (error) throw error;
+      const table = TABLES[study_mode];
+      const progressTable = PROGRESS[study_mode];
 
-    return data.map((c) => ({
-      ...c,
-      ...(c.progress?.[0] ?? {
-        ease_factor: 2.5,
-        review_interval: 0,
-        repetitions: 0,
-        due_date: null,
-        last_studied: null,
-        status: "new",
-        suspended: false,
-      }),
-    }));
+      if (!table || !progressTable) {
+        throw new Error(`Invalid study mode: ${study_mode}`);
+      }
+
+      // Fetch cards from the appropriate table
+      const { data: cards, error: cardsError } = await supabase
+        .from(table)
+        .select("*")
+        .eq("deck_id", deck_id);
+
+      if (cardsError) throw cardsError;
+
+      console.log(`[fetchCards] Found ${cards?.length || 0} cards`);
+
+      if (!cards || cards.length === 0) {
+        return [];
+      }
+
+      // Fetch progress for these cards
+      const cardIds = cards.map((c) => c.id);
+      const { data: progressData, error: progressError } = await supabase
+        .from(progressTable)
+        .select("*")
+        .in("card_id", cardIds)
+        .eq("user_id", user_id);
+
+      if (progressError) {
+        console.warn("[fetchCards] Progress fetch failed:", progressError);
+        // Continue without progress data
+      }
+
+      console.log(
+        `[fetchCards] Found ${progressData?.length || 0} progress records`
+      );
+
+      // Create a map of card_id -> progress
+      const progressMap = {};
+      if (progressData) {
+        progressData.forEach((p) => {
+          progressMap[p.card_id] = p;
+        });
+      }
+
+      // Merge cards with their progress
+      const mergedCards = cards.map((card) => {
+        const progress = progressMap[card.id] || {
+          ease_factor: 2.5,
+          review_interval: 0,
+          repetitions: 0,
+          due_date: null,
+          last_studied: null,
+          status: "new",
+          suspended: false,
+        };
+
+        return {
+          ...card,
+          ...progress,
+          card_id: card.id, // Keep original card id
+        };
+      });
+
+      console.log("[fetchCards] Returning merged cards:", mergedCards.length);
+      return mergedCards;
+    } catch (err) {
+      console.error("[fetchCards] Error:", err);
+      return rejectWithValue(err.message);
+    }
   }
 );
 
@@ -71,14 +114,16 @@ const cardSlice = createSlice({
     builder
       .addCase(fetchCards.pending, (state) => {
         state.status = "loading";
+        state.error = null;
       })
       .addCase(fetchCards.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.cards = action.payload;
+        state.error = null;
       })
       .addCase(fetchCards.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error.message;
+        state.error = action.payload || "Failed to load cards";
       });
   },
 });
@@ -87,5 +132,6 @@ export const { clearCards } = cardSlice.actions;
 
 export const selectCards = (state) => state.cards.cards;
 export const selectCardsStatus = (state) => state.cards.status;
+export const selectCardsError = (state) => state.cards.error;
 
 export default cardSlice.reducer;

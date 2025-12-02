@@ -3,7 +3,7 @@
     "name": "HSK 1",
     "description": "Beginner Chinese vocabulary (HSK 1)",
     "language": "Chinese",
-    "studyMode": "C",
+    "study_mode": "C",
     "tags": ["old-hsk", "beginner"],
     "mastered": "0",
     "due": 25,
@@ -25,7 +25,7 @@
     "dailyLearned": 0,
     "dailyReviewed": 0,
     "streak": 0,
-    "studyMode": "A"
+    "study_mode": "A"
   },
   {
     "name": "French Verbs",
@@ -38,7 +38,7 @@
     "lastStudied": "2025-10-28T16:31:08.896513",
     "dailyLearned": 0,
     "dailyReviewed": 0,
-    "studyMode": "A",
+    "study_mode": "A",
     "streak": 0
   },
   {
@@ -53,7 +53,7 @@
     "dailyLearned": 0,
     "dailyReviewed": 0,
     "streak": 0,
-    "studyMode": "A"
+    "study_mode": "A"
   },
   {
     "name": "Hanzi characters practice",
@@ -67,7 +67,7 @@
     "dailyLearned": 0,
     "dailyReviewed": 0,
     "streak": 2,
-    "studyMode": "C"
+    "study_mode": "C"
   },
   {
     "name": "French History: 1789",
@@ -81,7 +81,7 @@
     "dailyLearned": 0,
     "dailyReviewed": 0,
     "streak": 0,
-    "studyMode": "B"
+    "study_mode": "B"
   }
 ]
 

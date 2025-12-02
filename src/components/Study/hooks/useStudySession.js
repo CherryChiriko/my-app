@@ -2,25 +2,22 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { selectCards } from "../../../slices/cardSlice";
-// import { updateCardProgress } from "../../../slices/progressSlice";
 import {
   updateGlobalStreak,
   updateDeckStreak,
 } from "../../../slices/streakSlice";
-import { sm2Update } from "../../../utils/sm2Update";
 import useAuth from "../../../hooks/useAuth";
 import { PHASES, LEARN_LIMIT, REVIEW_LIMIT } from "../constants/constants";
 
-export default function useStudySession({ activeDeck, mode }) {
+export default function useStudySession({ deck, navMode }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userProfile } = useAuth();
+  const { session } = useAuth();
 
-  const isReviewMode = mode === "review";
+  const isReviewMode = navMode === "review";
   const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
 
-  // const userProfile = useSelector((state) => state.auth.profile); // adjust to your auth slice
-  const userId = userProfile?.id;
+  const userId = session?.user?.id;
 
   // --------------------------------------------------------------------------
   // Cards
@@ -28,7 +25,7 @@ export default function useStudySession({ activeDeck, mode }) {
   const allCards = useSelector(selectCards);
 
   const cards = useMemo(() => {
-    return allCards.slice(0, limit); // deterministic
+    return allCards.slice(0, limit);
   }, [allCards, limit]);
 
   // --------------------------------------------------------------------------
@@ -36,7 +33,7 @@ export default function useStudySession({ activeDeck, mode }) {
   // --------------------------------------------------------------------------
   const phases = isReviewMode
     ? [{ displayState: "quiz", allowRating: true }]
-    : PHASES[activeDeck.studyMode] ?? PHASES.A;
+    : PHASES[deck?.study_mode] ?? PHASES.A;
 
   const totalPhases = phases.length;
 
@@ -62,7 +59,7 @@ export default function useStudySession({ activeDeck, mode }) {
     setSessionFinished(false);
     setSessionReviewed(0);
     setSessionLearned(0);
-  }, [activeDeck?.id, allCards.length]);
+  }, [deck?.id, allCards.length]);
 
   // --------------------------------------------------------------------------
   // Navigation
@@ -96,24 +93,14 @@ export default function useStudySession({ activeDeck, mode }) {
     async (rating) => {
       if (!currentCard || !currentPhase.allowRating) return;
 
-      //   const updated = sm2Update(currentCard, rating);
-
-      // Supabase update
-      //   dispatch(updateCardProgress(updated));
-
-      // Optimistic local store update
-      //   dispatch(
-      //     updateLocalProgress({
-      //       cardId: currentCard.id,
-      //       updates: updated,
-      //     })
-      //   );
+      // TODO: Implement SM-2 update
+      // const updated = sm2Update(currentCard, rating);
+      // dispatch(updateCardProgress(updated));
 
       setSessionReviewed((c) => c + 1);
-
       advanceCard();
     },
-    [currentCard, currentPhase, dispatch, advanceCard]
+    [currentCard, currentPhase, advanceCard]
   );
 
   // --------------------------------------------------------------------------
@@ -134,23 +121,25 @@ export default function useStudySession({ activeDeck, mode }) {
     setSessionReviewed(0);
   }, []);
 
-  // Run side-effect when sessionFinished becomes true
+  // --------------------------------------------------------------------------
+  // Update streaks when session finishes
+  // --------------------------------------------------------------------------
   useEffect(() => {
     if (!sessionFinished) return;
-    if (!userId || !activeDeck?.id) return;
+    if (!userId || !deck?.id) return;
 
     const studiedCount = sessionReviewed + sessionLearned;
 
-    // dispatch deck streak update (only if at least 1 card from this deck was studied)
+    // Update deck streak
     dispatch(
       updateDeckStreak({
         userId,
-        deckId: activeDeck.id,
+        deckId: deck.id,
         studiedCount,
       })
     );
 
-    // dispatch global streak update (pass reviewed and learned counts)
+    // Update global streak
     dispatch(
       updateGlobalStreak({
         userId,
@@ -158,14 +147,12 @@ export default function useStudySession({ activeDeck, mode }) {
         learnedCount: sessionLearned,
       })
     );
-
-    // optionally you may also dispatch a "recordStudyActivity" to deck slice etc.
   }, [
     sessionFinished,
     sessionReviewed,
     sessionLearned,
     userId,
-    activeDeck?.id,
+    deck?.id,
     dispatch,
   ]);
 
@@ -176,6 +163,9 @@ export default function useStudySession({ activeDeck, mode }) {
   const currentStep = phaseIndex * limit + cardIndex + 1;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
+  // --------------------------------------------------------------------------
+  // Return values matching what components expect
+  // --------------------------------------------------------------------------
   return {
     // State
     cards,
@@ -183,6 +173,7 @@ export default function useStudySession({ activeDeck, mode }) {
     currentPhase,
     sessionFinished,
     progressPercentage,
+    progress: { current: currentStep, total: totalSteps }, // For Bar component
     currentStep,
     totalSteps,
     sessionReviewed,
@@ -191,10 +182,15 @@ export default function useStudySession({ activeDeck, mode }) {
     // API
     handleRate,
     handlePass,
+    handlePassComplete: handlePass, // alias for SessionMode
     restartSession,
+    resetSession: restartSession, // alias for SessionMode
     exitStudy,
+    exitSession: exitStudy, // alias for SessionMode
 
-    // constants
+    // Constants
     limit,
+    mode: navMode, // return mode for components that need it
+    status: "succeeded", // TODO: implement proper loading states
   };
 }

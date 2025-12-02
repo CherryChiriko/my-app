@@ -4,7 +4,7 @@ const decks = [
     name: "HSK 1",
     description: "Beginner Chinese vocabulary (HSK 1)",
     language: "Chinese",
-    studyMode: "C",
+    study_mode: "C",
     tags: ["old-hsk", "beginner"],
     mastered: 0,
     due: 25,
@@ -27,7 +27,7 @@ const decks = [
     dailyLearned: 0,
     dailyReviewed: 0,
     streak: 0,
-    studyMode: "A",
+    study_mode: "A",
   },
   {
     id: 2,
@@ -41,7 +41,7 @@ const decks = [
     lastStudied: "15/02/2025",
     dailyLearned: 0,
     dailyReviewed: 0,
-    studyMode: "A",
+    study_mode: "A",
     streak: 0,
   },
   {
@@ -57,7 +57,7 @@ const decks = [
     dailyLearned: 0,
     dailyReviewed: 0,
     streak: 0,
-    studyMode: "A",
+    study_mode: "A",
   },
   {
     id: 4,
@@ -72,7 +72,7 @@ const decks = [
     dailyLearned: 0,
     dailyReviewed: 0,
     streak: 2,
-    studyMode: "C",
+    study_mode: "C",
   },
   {
     id: 5,
@@ -87,7 +87,7 @@ const decks = [
     dailyLearned: 0,
     dailyReviewed: 0,
     streak: 0,
-    studyMode: "B",
+    study_mode: "B",
   },
 ];
 

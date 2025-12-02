@@ -9,7 +9,7 @@ import useStudySession from "../hooks/useStudySession";
 
 const SessionMode = ({ mode, activeTheme, activeDeck }) => {
   const navigate = useNavigate();
-
+  console.log("session mode", activeDeck);
   const {
     currentCard,
     currentPhase,
@@ -87,7 +87,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
         <div className="relative perspective-1000 w-full max-w-2xl mx-auto h-96 mb-8">
           <CardRenderer
             card={currentCard}
-            studyMode={activeDeck.studyMode}
+            study_mode={activeDeck.study_mode}
             phase={currentPhase}
             activeTheme={activeTheme}
             displayState={currentPhase.displayState}

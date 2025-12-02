@@ -67,13 +67,13 @@ const deckSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchDecks.fulfilled, (state, action) => {
-        // action.payload is the array of decks from RPC
+        // action.payload is the array of decks
         const decks = action.payload;
 
-        // Normalize: ensure deck_id exists
+        // Normalize: map id to deck_id for consistency
         const normalized = decks.map((d) => ({
           ...d,
-          deck_id: d.deck_id || d.id,
+          deck_id: d.id, // Always use id from database as deck_id
         }));
 
         // Sort by priority
