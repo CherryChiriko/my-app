@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 
 export function useCharacterFlow({
   card,
@@ -15,6 +15,8 @@ export function useCharacterFlow({
   const [mistakeList, setMistakeList] = useState([]);
   const [completedChars, setCompletedChars] = useState([]);
 
+  const timeoutRef = useRef(null);
+
   const characters = useMemo(
     () => (card?.front || "").split(""),
     [card?.front]
@@ -28,6 +30,17 @@ export function useCharacterFlow({
     return toneColors[toneIdx];
   }, [card?.tones, currentIndex]);
 
+  const isLastCharacter = currentIndex === characters.length - 1;
+
+  // Cleanup timeout on unmount or card change
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     setCurrentIndex(0);
     setRevealed(false);
@@ -35,8 +48,6 @@ export function useCharacterFlow({
     setCompletedChars([]);
     playAudio?.();
   }, [card?.id, playAudio]);
-
-  const isLastCharacter = currentIndex === characters.length - 1;
 
   const calculateAverage = useCallback(
     (mistakesForCurrentChar) => {
@@ -46,20 +57,57 @@ export function useCharacterFlow({
     [mistakeList]
   );
 
+  // For quiz mode: auto-advance after showing character
   const handleReveal = useCallback(
     (mistakes = 0) => {
       setRevealed(true);
       onReveal?.();
-
       setMistakeList((prev) => [...prev, mistakes]);
       setCompletedChars((prev) => [...prev, currentCharacter]);
       playAudio?.();
+
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Auto-advance after showing the character for 600ms
+      timeoutRef.current = setTimeout(() => {
+        setRevealed(false);
+        if (!isLastCharacter) {
+          // Move to next character
+          setCurrentIndex((i) => i + 1);
+        } else {
+          // Last character - finish the card
+          if (allowRating) {
+            const avg = calculateAverage(mistakes);
+            const rating = getRatingFromMistakes(Math.round(avg));
+            onRate?.(rating);
+          } else {
+            onPassComplete?.();
+          }
+        }
+      }, 2000);
     },
-    [currentCharacter, onReveal, playAudio]
+    [
+      onReveal,
+      playAudio,
+      currentCharacter,
+      isLastCharacter,
+      allowRating,
+      calculateAverage,
+      getRatingFromMistakes,
+      onRate,
+      onPassComplete,
+    ]
   );
 
+  // For outline/animation mode: manual continue
   const handleContinue = useCallback(() => {
-    if (!revealed) return; // user must reveal first
+    if (displayState === "outline") {
+      handleReveal(0);
+      return;
+    }
 
     if (!isLastCharacter) {
       setCurrentIndex((i) => i + 1);
@@ -67,7 +115,7 @@ export function useCharacterFlow({
       return;
     }
 
-    // LAST CHARACTER
+    // Last character
     if (allowRating) {
       const avg = calculateAverage(mistakeList[mistakeList.length - 1] ?? 0);
       const rating = getRatingFromMistakes(Math.round(avg));
@@ -76,7 +124,6 @@ export function useCharacterFlow({
       onPassComplete?.();
     }
   }, [
-    revealed,
     isLastCharacter,
     allowRating,
     calculateAverage,

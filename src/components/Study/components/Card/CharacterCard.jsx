@@ -82,6 +82,7 @@ const CharacterCard = ({
           strokeColor={strokeColor}
           activeTheme={activeTheme}
           onQuizComplete={handleReveal}
+          revealed={revealed}
         />
       </div>
 

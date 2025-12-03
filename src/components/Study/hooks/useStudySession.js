@@ -6,6 +6,7 @@ import {
   updateGlobalStreak,
   updateDeckStreak,
 } from "../../../slices/streakSlice";
+import { logStudySession } from "../../../slices/activitySlice";
 import useAuth from "../../../hooks/useAuth";
 import { PHASES, LEARN_LIMIT, REVIEW_LIMIT } from "../constants/constants";
 
@@ -18,6 +19,7 @@ export default function useStudySession({ deck, navMode }) {
   const limit = isReviewMode ? REVIEW_LIMIT : LEARN_LIMIT;
 
   const userId = session?.user?.id;
+  const [status, setStatus] = useState("idle");
 
   // --------------------------------------------------------------------------
   // Cards
@@ -38,6 +40,31 @@ export default function useStudySession({ deck, navMode }) {
     }
     return allCards.slice(0, limit);
   }, [allCards, limit, deck?.id]); // deck?.id to re-memoize on deck switch
+
+  // --------------------------------------------------------------------------
+  // Detect loading / stale / success states (NEW)
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    if (!deck?.id) {
+      setStatus("idle");
+      return;
+    }
+
+    // A. No cards at all → loading
+    if (allCards.length === 0) {
+      setStatus("loading");
+      return;
+    }
+
+    // B. Stale cards for different deck → loading
+    if (allCards[0].deck_id !== deck.id) {
+      setStatus("loading");
+      return;
+    }
+
+    // C. Valid cards loaded
+    setStatus("succeeded");
+  }, [deck?.id, allCards]);
 
   // --------------------------------------------------------------------------
   // Phases (A or C)
@@ -141,6 +168,16 @@ export default function useStudySession({ deck, navMode }) {
 
     const studiedCount = sessionReviewed + sessionLearned;
 
+    dispatch(
+      logStudySession({
+        cardsStudied: session.totalCards,
+        cardsReviewed: session.reviewCount,
+        cardsLearned: session.learnCount,
+        timeStudiedSeconds: session.totalSeconds,
+        xpEarned: session.xp,
+      })
+    );
+
     // Update deck streak
     dispatch(
       updateDeckStreak({
@@ -202,6 +239,6 @@ export default function useStudySession({ deck, navMode }) {
     // Constants
     limit,
     mode: navMode, // return mode for components that need it
-    status: "succeeded", // TODO: implement proper loading states
+    status: status,
   };
 }

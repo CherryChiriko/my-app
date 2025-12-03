@@ -16,6 +16,7 @@ export function useHanziWriter({
   onQuizComplete,
   activeTheme,
   strokeColor,
+  revealed,
 }) {
   const outlineColor = activeTheme.isDark
     ? "rgb(212,212,212)"
@@ -23,6 +24,8 @@ export function useHanziWriter({
 
   const containerRef = useRef(null);
   const writerRef = useRef(null);
+
+  const state = revealed ? "reveal" : displayState;
 
   // Init / recreate writer on character change
   useEffect(() => {
@@ -55,7 +58,7 @@ export function useHanziWriter({
     if (!writer) return;
 
     try {
-      switch (displayState) {
+      switch (state) {
         case "animation":
           writer.hideCharacter();
           writer.loopCharacterAnimation();
@@ -86,7 +89,7 @@ export function useHanziWriter({
     } catch (err) {
       console.error("[useHanziWriter] Mode error:", err);
     }
-  }, [displayState, onQuizComplete]);
+  }, [state, onQuizComplete]);
 
   // Cleanup
   useEffect(() => {

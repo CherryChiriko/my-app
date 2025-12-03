@@ -68,7 +68,7 @@ const StudySession = () => {
   }
 
   // --- Session Mode ---
-  if (cards.length > 0 && navMode) {
+  if (status === "succeeded" && cards.length > 0 && navMode) {
     return (
       <SessionMode
         mode={navMode}
@@ -78,25 +78,27 @@ const StudySession = () => {
     );
   }
 
-  // --- No cards available fallback ---
-  return (
-    <div
-      className={`h-screen flex flex-col items-center justify-center ${activeTheme.background.app}`}
-    >
-      <p className={`${activeTheme.text.primary} text-2xl font-bold`}>
-        All caught up!
-      </p>
-      <p className={`${activeTheme.text.secondary} text-xl mt-2`}>
-        "{activeDeck.name}" has no new or due cards.
-      </p>
-      <button
-        onClick={() => navigate("/decks")}
-        className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
+  // --- No cards available fallback (only after data has fully loaded) ---
+  if (status === "succeeded") {
+    return (
+      <div
+        className={`h-screen flex flex-col items-center justify-center ${activeTheme.background.app}`}
       >
-        Return to Decks
-      </button>
-    </div>
-  );
+        <p className={`${activeTheme.text.primary} text-2xl font-bold`}>
+          All caught up!
+        </p>
+        <p className={`${activeTheme.text.secondary} text-xl mt-2`}>
+          "{activeDeck.name}" has no new or due cards.
+        </p>
+        <button
+          onClick={() => navigate("/decks")}
+          className={`flex items-center ${activeTheme.text.muted} hover:${activeTheme.text.primary} transition-colors duration-200`}
+        >
+          Return to Decks
+        </button>
+      </div>
+    );
+  }
 };
 
 export default StudySession;

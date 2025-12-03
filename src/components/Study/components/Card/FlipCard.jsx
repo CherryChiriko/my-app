@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFastForward } from "@fortawesome/free-solid-svg-icons";
 
 const CardStyles = () => (
-  <style jsx>{`
+  <style>{`
     .perspective {
       perspective: 1000px;
     }

@@ -11,6 +11,7 @@
     "@reduxjs/toolkit": "^2.8.2",
     "@supabase/supabase-js": "^2.86.0",
     "bootstrap": "^5.3.7",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "framer-motion": "^12.23.12",
     "hanzi-writer": "^3.7.3",

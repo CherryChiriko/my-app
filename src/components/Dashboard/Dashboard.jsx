@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectActiveTheme } from "../../slices/themeSlice";
 import { selectGlobalStreak } from "../../slices/userSlice";
 import { selectDecks } from "../../slices/deckSlice";
+import { selectHeatmapData } from "../../slices/activitySlice";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,7 +16,7 @@ import {
 import RevuLogo from "../../assets/revu2.png";
 
 import DeckCard from "../Decks/components/DeckCard";
-import { Heatmap } from "./Heatmap";
+import { Heatmap } from "./Heatmap2";
 import { Achievements } from "./Achievements";
 import { XPBar } from "./XPBar";
 import { StatCard } from "./StatCard";
@@ -48,6 +49,7 @@ const Dashboard = () => {
     }
     return arr;
   }, []);
+  // const heatmapData = useSelector(selectHeatmapData);
 
   return (
     <div

@@ -36,7 +36,6 @@ export const fetchDecks = createAsyncThunk(
 
       if (error) throw error;
 
-      // Map id to deck_id for consistency
       return (data || []).map((deck) => ({
         ...deck,
         deck_id: deck.id,
@@ -47,17 +46,21 @@ export const fetchDecks = createAsyncThunk(
   }
 );
 
+const initialState = {
+  decks: [],
+  activeDeckId: localStorage.getItem("activeDeckId") || null,
+  status: "idle",
+  error: null,
+};
+
 const deckSlice = createSlice({
   name: "decks",
-  initialState: {
-    decks: [],
-    activeDeckId: null,
-    status: "idle",
-    error: null,
-  },
+  initialState,
   reducers: {
     setActiveDeck(state, action) {
-      state.activeDeckId = action.payload;
+      const id = action.payload;
+      state.activeDeckId = id;
+      localStorage.setItem("activeDeckId", id);
     },
   },
   extraReducers: (builder) => {
@@ -67,20 +70,38 @@ const deckSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchDecks.fulfilled, (state, action) => {
-        // action.payload is the array of decks
         const decks = action.payload;
 
-        // Normalize: map id to deck_id for consistency
         const normalized = decks.map((d) => ({
           ...d,
-          deck_id: d.id, // Always use id from database as deck_id
+          deck_id: d.id,
         }));
 
-        // Sort by priority
         const sorted = orderDecksByPriority(normalized);
-
         state.decks = sorted;
-        state.activeDeckId = sorted[0]?.deck_id || null;
+
+        // Restore persisted active deck
+        const persistedId =
+          state.activeDeckId || localStorage.getItem("activeDeckId");
+
+        if (persistedId) {
+          const match = sorted.find((d) => d.deck_id === persistedId);
+
+          if (match) {
+            state.activeDeckId = persistedId;
+          } else {
+            // Persisted deck no longer exists -> fallback
+            state.activeDeckId = sorted[0]?.deck_id || null;
+            localStorage.setItem("activeDeckId", state.activeDeckId);
+          }
+        } else {
+          // No persisted active deck -> use default first deck
+          state.activeDeckId = sorted[0]?.deck_id || null;
+          if (state.activeDeckId) {
+            localStorage.setItem("activeDeckId", state.activeDeckId);
+          }
+        }
+
         state.status = "succeeded";
         state.error = null;
       })
@@ -95,10 +116,10 @@ export const { setActiveDeck } = deckSlice.actions;
 
 export const selectDecks = (state) => state.decks.decks;
 export const selectActiveDeck = (state) => {
-  const deck = state.decks.decks.find(
-    (d) => d.deck_id === state.decks.activeDeckId
+  return (
+    state.decks.decks.find((d) => d.deck_id === state.decks.activeDeckId) ||
+    null
   );
-  return deck || null;
 };
 export const selectDeckStatus = (state) => state.decks.status;
 export const selectDeckError = (state) => state.decks.error;
