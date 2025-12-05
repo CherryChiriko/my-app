@@ -45,9 +45,9 @@ const themes = [
       accent2: "bg-sky-500 hover:bg-sky-600 active:bg-sky-600 text-white",
     },
     border: {
-      card: "border border-gray-700",
+      card: "border-gray-700",
       accent: "border-indigo-500",
-      bottom: "border-gray-700",
+      muted: "border-gray-700",
     },
     gradients: {
       from: "from-indigo-500",
@@ -107,10 +107,10 @@ const themes = [
       accent2: "bg-sky-500 hover:bg-sky-600 active:bg-sky-600 text-white",
     },
     border: {
-      card: "border border-gray-200",
+      card: "border-gray-200",
       dashed: "border-dashed border-gray-300",
       accent: "border-indigo-500",
-      bottom: "border-gray-200",
+      muted: "border-gray-700",
     },
     gradients: {
       from: "from-indigo-400",

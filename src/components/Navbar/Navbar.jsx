@@ -23,7 +23,7 @@ const Navbar = () => {
         className={`hidden md:flex items-center justify-between p-4 border-b 
             ${activeTheme.background.navbar} backdrop-blur-sm 
             sticky top-0 z-50 w-full
-            border-b ${activeTheme.border.bottom} shadow-md`}
+            border-b ${activeTheme.border.muted} shadow-md`}
       >
         {/* Logo with gradient mask */}
         <Link to="/" className="flex items-center space-x-2">
@@ -57,7 +57,7 @@ const Navbar = () => {
         className={`md:hidden flex items-center justify-between p-4 border-b 
             ${activeTheme.background.navbar} backdrop-blur-sm 
             sticky top-0 z-50 w-full 
-            border-b ${activeTheme.border.bottom}`}
+            border-b ${activeTheme.border.muted}`}
       >
         <Link to="/" className="flex items-center space-x-2">
           <div className="w-8 h-8 relative">
@@ -93,7 +93,7 @@ const Navbar = () => {
           id="mobile-menu"
           className={`md:hidden flex flex-col p-4 space-y-2 
             ${activeTheme.background.navbar} ${activeTheme.text.primary} 
-            border-b ${activeTheme.border.bottom} shadow-md`}
+            border-b ${activeTheme.border.muted} shadow-md`}
         >
           {navigationItems.map((item) => (
             // Assuming NavItem handles the mobile styles like full width links

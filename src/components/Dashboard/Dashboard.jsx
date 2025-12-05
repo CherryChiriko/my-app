@@ -16,7 +16,7 @@ import {
 import RevuLogo from "../../assets/revu2.png";
 
 import DeckCard from "../Decks/components/DeckCard";
-import { Heatmap } from "./Heatmap2";
+import { Heatmap } from "./Heatmap";
 import { Achievements } from "./Achievements";
 import { XPBar } from "./XPBar";
 import { StatCard } from "./StatCard";
@@ -39,17 +39,16 @@ const Dashboard = () => {
     [mastered_cards, currentStreak, cards_due_today]
   );
 
-  const heatmapData = useMemo(() => {
-    const arr = [];
-    for (let i = 0; i < 28; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const iso = d.toISOString().slice(0, 10);
-      arr.push({ date: iso, value: Math.floor(Math.random() * 8) });
-    }
-    return arr;
-  }, []);
-  // const heatmapData = useSelector(selectHeatmapData);
+  // const heatmapData = useMemo(() => {
+  //   const arr = [];
+  //   for (let i = 0; i < 28; i++) {
+  //     const d = new Date();
+  //     d.setDate(d.getDate() - i);
+  //     const iso = d.toISOString().slice(0, 10);
+  //     arr.push({ date: iso, value: Math.floor(Math.random() * 8) });
+  //   }
+  //   return arr;
+  // }, []);
 
   return (
     <div
@@ -161,7 +160,7 @@ const Dashboard = () => {
           <div
             className={`${activeTheme.background.secondary} p-6 rounded-2xl shadow-lg flex flex-col space-y-6`}
           >
-            <Heatmap data={heatmapData} activeTheme={activeTheme} />
+            <Heatmap activeTheme={activeTheme} />
             <Achievements activeTheme={activeTheme} />
           </div>
         </div>
