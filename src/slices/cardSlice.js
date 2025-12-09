@@ -72,10 +72,22 @@ export const fetchCards = createAsyncThunk(
           suspended: false,
         };
 
+        const now = new Date();
+        let status = progress.status;
+
+        if (
+          progress.status === "waiting" &&
+          progress.due_date &&
+          new Date(progress.due_date) <= now
+        ) {
+          status = "due";
+        }
+
         return {
           ...card,
           ...progress,
-          card_id: card.id, // Keep original card id
+          status: status,
+          card_id: card.id,
         };
       });
 

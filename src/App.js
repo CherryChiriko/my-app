@@ -14,17 +14,22 @@ import DeckListView from "./components/Decks/views/DeckListView";
 import StudySession from "./components/Study/views/StudySession";
 import LoginPage from "./components/LoginPage";
 import NotFound404 from "./components/404";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./components/General/routing/ScrollToTop";
 import DecksLoader from "./components/Loaders/DecksLoader";
 import CardsLoader from "./components/Loaders/CardsLoader";
+import ResetPasswordPage from "./components/ResetPasswordPage";
 
 function App() {
+  const location = useLocation();
   const activeTheme = useSelector(selectActiveTheme);
   const { session, loading: authLoading } = useAuth();
   const status = useSelector(selectDeckStatus);
   const error = useSelector(selectDeckError);
   const activeDeck = useSelector(selectActiveDeck);
+
+  const publicPaths = ["/reset-password"];
+  const isPublicPath = publicPaths.includes(location.pathname);
 
   // Auth check
   if (authLoading) {
@@ -39,7 +44,7 @@ function App() {
     );
   }
 
-  if (!session) {
+  if (!session && !isPublicPath) {
     return <LoginPage activeTheme={activeTheme} />;
   }
 
@@ -98,6 +103,11 @@ function App() {
             <Route index element={<DeckListView />} />
           </Route>
           <Route path="/study" element={<StudySession />} />
+          <Route
+            path="/reset-password"
+            element={<ResetPasswordPage activeTheme={activeTheme} />}
+          />
+
           <Route path="*" element={<NotFound404 activeTheme={activeTheme} />} />
         </Routes>
       </main>

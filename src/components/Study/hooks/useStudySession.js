@@ -7,6 +7,7 @@ import {
   updateDeckStreak,
 } from "../../../slices/streakSlice";
 import { logStudySession } from "../../../slices/activitySlice";
+import { updateProgress } from "../../../slices/progressSlice";
 import useAuth from "../../../hooks/useAuth";
 import { PHASES, LEARN_LIMIT, REVIEW_LIMIT } from "../constants/constants";
 
@@ -29,17 +30,29 @@ export default function useStudySession({ deck, navMode }) {
   const cards = useMemo(() => {
     if (!deck?.id) return [];
 
-    // If we have cards in the store, but they belong to a different deck,
-    // treat the list as empty during the transition.
-
     if (allCards.length > 0 && allCards[0].deck_id !== deck.id) {
-      console.warn(
-        "Card list contains stale data for a different deck. Returning empty list temporarily."
-      );
+      console.warn("Stale deck data");
       return [];
     }
-    return allCards.slice(0, limit);
-  }, [allCards, limit, deck?.id]); // deck?.id to re-memoize on deck switch
+
+    const now = new Date();
+
+    let filtered = [];
+
+    if (isReviewMode) {
+      // REVIEW MODE → only DUE cards
+      filtered = allCards.filter((c) => {
+        return c.status === "due" && c.due_date && new Date(c.due_date) <= now;
+      });
+    } else {
+      // LEARN MODE → only NEW or LEARNING cards
+      filtered = allCards.filter((c) => {
+        return c.status === "new";
+      });
+    }
+
+    return filtered.slice(0, limit);
+  }, [allCards, deck?.id, isReviewMode, limit]);
 
   // --------------------------------------------------------------------------
   // Detect loading / stale / success states (NEW)
@@ -110,6 +123,7 @@ export default function useStudySession({ deck, navMode }) {
   // Advance step
   // --------------------------------------------------------------------------
   const advanceCard = useCallback(() => {
+    console.log("advancing card");
     if (cardIndex + 1 < limit) {
       setCardIndex((i) => i + 1);
       return;
@@ -129,16 +143,28 @@ export default function useStudySession({ deck, navMode }) {
   // --------------------------------------------------------------------------
   const handleRate = useCallback(
     async (rating) => {
-      if (!currentCard || !currentPhase.allowRating) return;
-
-      // TODO: Implement SM-2 update
-      // const updated = sm2Update(currentCard, rating);
-      // dispatch(updateCardProgress(updated));
-
+      if (!userId || !currentCard || !currentPhase.allowRating) return;
+      console.log("useStudySession", rating);
+      // 1. Update Redux store
       setSessionReviewed((c) => c + 1);
       advanceCard();
+
+      console.log(currentCard, rating, userId, deck.study_mode);
+      // 2. Update Supabase / server
+      try {
+        await dispatch(
+          updateProgress({
+            card: currentCard,
+            rating,
+            study_mode: deck.study_mode,
+            user_id: userId,
+          })
+        ).unwrap();
+      } catch (err) {
+        console.error("Failed to update card progress:", err);
+      }
     },
-    [currentCard, currentPhase, advanceCard]
+    [currentCard, currentPhase, advanceCard, deck.study_mode, dispatch, userId]
   );
 
   // --------------------------------------------------------------------------
@@ -170,9 +196,9 @@ export default function useStudySession({ deck, navMode }) {
 
     dispatch(
       logStudySession({
-        cardsStudied: session.totalCards,
-        cardsReviewed: session.reviewCount,
-        cardsLearned: session.learnCount,
+        cardsStudied: sessionReviewed + sessionLearned,
+        cardsReviewed: sessionReviewed,
+        cardsLearned: sessionLearned,
         timeStudiedSeconds: session.totalSeconds,
         xpEarned: session.xp,
       })

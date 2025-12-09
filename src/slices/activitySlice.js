@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createSelector } from "@reduxjs/toolkit";
 import startOfToday from "date-fns/startOfToday";
 
 const dateKey = () => {
@@ -13,15 +13,17 @@ const initialState = {
 
 export const selectActivityDays = (state) => state.activity.days;
 
-export const selectHeatmapData = (state) => {
-  const days = state.activity.days;
-  return Object.values(days)
-    .map((d) => ({
-      date: d.date,
-      value: d.cardsStudied || 0,
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-};
+export const selectHeatmapData = createSelector(
+  [selectActivityDays],
+  (days) => {
+    return Object.values(days)
+      .map((d) => ({
+        date: d.date,
+        value: d.cardsStudied || 0,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+);
 
 export const makeSelectHeatmapData =
   (metric = "cardsStudied") =>

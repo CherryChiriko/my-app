@@ -4,10 +4,11 @@ import NotFound404 from "../../../404";
 
 /* Maps mistake count to an SRS rating  */
 const getRatingFromMistakes = (mistakes) => {
-  if (mistakes >= 3) return "again";
+  console.log("mistakes", mistakes);
   if (mistakes === 2) return "hard";
   if (mistakes === 1) return "good";
-  return "easy";
+  if (mistakes === 0) return "easy";
+  return "again";
 };
 
 const CardRenderer = ({

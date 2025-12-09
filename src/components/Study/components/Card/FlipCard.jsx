@@ -74,9 +74,10 @@ const FlipCard = ({
     setShowAnswer(false);
     onPassComplete?.();
   };
-  const handleRate = () => {
+  const handleRate = (rating) => {
+    console.log(rating);
     setShowAnswer(false);
-    onRate?.();
+    onRate?.(rating);
   };
 
   return (

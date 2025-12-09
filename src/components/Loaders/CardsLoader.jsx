@@ -7,12 +7,6 @@ export default function CardsLoader({ activeDeck }) {
   const dispatch = useDispatch();
   const [userId, setUserId] = useState(null);
 
-  console.log("CardsLoader effect triggered:");
-  console.log("activeDeck:", activeDeck);
-  console.log("activeDeck.id:", activeDeck?.id);
-  console.log("activeDeck.study_mode:", activeDeck?.study_mode);
-  console.log("userId:", userId);
-
   // Ensure we always have a real authenticated user
   useEffect(() => {
     let mounted = true;

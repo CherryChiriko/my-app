@@ -16,7 +16,7 @@ export default function useAuth() {
       try {
         const { data } = await supabase.auth.getSession();
         if (mounted) {
-          setSession(data.session ?? null);
+          setSession(data?.session ?? null);
           setLoading(false);
         }
       } catch (err) {
@@ -35,7 +35,7 @@ export default function useAuth() {
       if (!mounted) return;
 
       // Always update session from the callback data first
-      setSession(data.session ?? null);
+      setSession(data?.session ?? null);
 
       // For SIGNED_IN, data.session might be undefined due to timing
       // We'll do a follow-up check if needed
@@ -180,6 +180,36 @@ export default function useAuth() {
     }
   }, []);
 
+  // RESET PASSWORD (send email)
+  const resetPassword = useCallback(async (email) => {
+    setAuthLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      if (!email) {
+        throw new Error("Email is required");
+      }
+
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo: `${window.location.origin}/reset-password`,
+        }
+      );
+
+      if (resetError) throw resetError;
+
+      setSuccessMessage("Password reset email sent. Check your inbox.");
+      return true;
+    } catch (err) {
+      setError(err.message || "Failed to send reset email");
+      return false;
+    } finally {
+      setAuthLoading(false);
+    }
+  }, []);
+
   // LOGOUT
   const logout = useCallback(async () => {
     await supabase.auth.signOut();
@@ -231,5 +261,6 @@ export default function useAuth() {
     signup,
     logout,
     deleteAccount,
+    resetPassword,
   };
 }

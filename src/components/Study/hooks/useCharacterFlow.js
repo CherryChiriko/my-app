@@ -51,13 +51,18 @@ export function useCharacterFlow({
 
   const calculateAverage = useCallback(
     (mistakesForCurrentChar) => {
-      const all = [...mistakeList, mistakesForCurrentChar];
-      return all.reduce((a, b) => a + b, 0) / all.length;
+      console.log(mistakesForCurrentChar);
+      const allMistakes = [...mistakeList, mistakesForCurrentChar];
+      console.log(
+        allMistakes,
+        allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length
+      );
+      return allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length;
     },
     [mistakeList]
   );
 
-  // For quiz mode: auto-advance after showing character
+  // Auto-advance after showing character
   const handleReveal = useCallback(
     (mistakes = 0) => {
       setRevealed(true);
@@ -82,12 +87,13 @@ export function useCharacterFlow({
           if (allowRating) {
             const avg = calculateAverage(mistakes);
             const rating = getRatingFromMistakes(Math.round(avg));
+            console.log("rating", rating);
             onRate?.(rating);
           } else {
             onPassComplete?.();
           }
         }
-      }, 2000);
+      }, 600);
     },
     [
       onReveal,
@@ -105,7 +111,7 @@ export function useCharacterFlow({
   // For outline/animation mode: manual continue
   const handleContinue = useCallback(() => {
     if (displayState === "outline") {
-      handleReveal(0);
+      handleReveal();
       return;
     }
 

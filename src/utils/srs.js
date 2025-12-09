@@ -20,7 +20,7 @@ export const computeSM2 = (card, rating) => {
       EF = Math.max(1.3, EF - 0.15);
     }
     if (rating === "good") {
-      EF = Math.min(2.5, EF + 0.0); // no change
+      EF = Math.min(2.5, EF + 0.0);
     }
     if (rating === "easy") {
       EF = Math.min(2.5, EF + 0.15);

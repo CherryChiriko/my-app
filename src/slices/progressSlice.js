@@ -10,24 +10,29 @@ const TABLES = {
 export const updateProgress = createAsyncThunk(
   "progress/updateProgress",
   async ({ card, rating, study_mode, user_id }, { rejectWithValue }) => {
-    if (!card?.id || !user_id || !study_mode) {
+    console.log("updateProgress");
+    if (!card?.id || !user_id || !study_mode || rating === null) {
       return rejectWithValue(
-        "Missing required fields: card, user_id, or study_mode"
+        "Missing required fields: card, user_id, study_mode or rating"
       );
     }
 
     const table = TABLES[study_mode];
+    console.log("TABLE :", table);
     if (!table) {
       return rejectWithValue(`Invalid study mode: ${study_mode}`);
     }
-
+    console.log("progress slice", table);
     try {
       const updates = computeSM2(card, rating);
-
+      console.log("updates", updates);
       const { error } = await supabase.from(table).upsert([
         {
           card_id: card.id,
           user_id,
+          deck_id: card.deck_id,
+          status: "waiting",
+          suspended: false,
           ...updates,
         },
       ]);

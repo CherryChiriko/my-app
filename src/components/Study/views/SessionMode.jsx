@@ -17,7 +17,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
     cards,
     sessionFinished,
     limit,
-    handleReveal,
+    onReveal,
     handleRate,
     handlePassComplete,
     resetSession,
@@ -93,7 +93,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck }) => {
             activeTheme={activeTheme}
             displayState={currentPhase.displayState}
             allowRating={currentPhase.allowRating}
-            onReveal={handleReveal}
+            onReveal={onReveal}
             onRate={handleRate}
             onPassComplete={handlePassComplete}
           />
