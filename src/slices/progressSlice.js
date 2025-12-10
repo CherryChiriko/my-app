@@ -1,48 +1,79 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
-import { computeSM2 } from "../utils/srs";
 
 const TABLES = {
   A: "card_a_progress",
   C: "card_c_progress",
 };
 
+// export const updateProgress = createAsyncThunk(
+//   "progress/updateProgress",
+//   async ({ updates, study_mode, user_id }, { rejectWithValue }) => {
+//     console.log("updateProgress", updates);
+//     if (!updates?.length || !user_id || !study_mode) {
+//       return rejectWithValue(
+//         "Missing required fields: updates, user_id, or study_mode"
+//       );
+//     }
+
+//     const table = TABLES[study_mode];
+//     if (!table) {
+//       return rejectWithValue(`Invalid study mode: ${study_mode}`);
+//     }
+
+//     try {
+//       console.log("updates ", updates);
+//       // Map each card to the format expected by Supabase
+//       const payload = updates.map(({ card, update }) => ({
+//         card_id: card.id,
+//         user_id: user_id,
+//         deck_id: card.deck_id,
+
+//         ...update,
+//       }));
+
+//       const { error } = await supabase.from(table).upsert(payload, {
+//         onConflict: ["user_id", "card_id"],
+//       });
+
+//       if (error) throw error;
+
+//       return { study_mode, updates: payload };
+//     } catch (err) {
+//       console.error("updateProgress error:", err);
+//       return rejectWithValue(
+//         err.message || "Failed to batch update card progress"
+//       );
+//     }
+//   }
+// );
+
 export const updateProgress = createAsyncThunk(
   "progress/updateProgress",
-  async ({ card, rating, study_mode, user_id }, { rejectWithValue }) => {
-    console.log("updateProgress");
-    if (!card?.id || !user_id || !study_mode || rating === null) {
-      return rejectWithValue(
-        "Missing required fields: card, user_id, study_mode or rating"
-      );
+  async ({ sessionUpdates, study_mode }, { rejectWithValue }) => {
+    console.log("updateProgress", sessionUpdates);
+    if (!sessionUpdates?.length || !study_mode) {
+      return rejectWithValue("Missing required fields: updates or study_mode");
     }
 
     const table = TABLES[study_mode];
-    console.log("TABLE :", table);
     if (!table) {
       return rejectWithValue(`Invalid study mode: ${study_mode}`);
     }
-    console.log("progress slice", table);
+
     try {
-      const updates = computeSM2(card, rating);
-      console.log("updates", updates);
-      const { error } = await supabase.from(table).upsert([
-        {
-          card_id: card.id,
-          user_id,
-          deck_id: card.deck_id,
-          status: "waiting",
-          suspended: false,
-          ...updates,
-        },
-      ]);
+      console.log("updates ", sessionUpdates);
+
+      const { error } = await supabase.from(table).upsert(sessionUpdates, {
+        onConflict: ["user_id", "card_id"],
+      });
 
       if (error) throw error;
-
-      return { cardId: card.id, study_mode, updates };
     } catch (err) {
       console.error("updateProgress error:", err);
-      return rejectWithValue(err.message || "Failed to update card progress");
+      return rejectWithValue(
+        err.message || "Failed to batch update card progress"
+      );
     }
   }
 );

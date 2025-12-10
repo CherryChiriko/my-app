@@ -1,6 +1,7 @@
 // src/slices/cardSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
+import { getCardStatus } from "../utils/cardUtils";
 
 const TABLES = {
   A: "cards_a",
@@ -72,16 +73,7 @@ export const fetchCards = createAsyncThunk(
           suspended: false,
         };
 
-        const now = new Date();
-        let status = progress.status;
-
-        if (
-          progress.status === "waiting" &&
-          progress.due_date &&
-          new Date(progress.due_date) <= now
-        ) {
-          status = "due";
-        }
+        const status = getCardStatus(progress);
 
         return {
           ...card,
@@ -112,6 +104,21 @@ const cardSlice = createSlice({
       state.status = "idle";
       state.error = null;
     },
+    updateCardProgress(state, action) {
+      const { cardId, updates } = action.payload;
+
+      if (cardId !== -1) {
+        // 1. Calculate the final updated card object immutably
+        const updatedCard = {
+          ...state.cards[cardId],
+          ...updates,
+          status: "waiting",
+        };
+
+        // 2. Replace the card immutably and update array reference
+        state.cards[cardId] = updatedCard;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -131,7 +138,7 @@ const cardSlice = createSlice({
   },
 });
 
-export const { clearCards } = cardSlice.actions;
+export const { clearCards, updateCardProgress } = cardSlice.actions;
 
 export const selectCards = (state) => state.cards.cards;
 export const selectCardsStatus = (state) => state.cards.status;

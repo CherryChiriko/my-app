@@ -1,19 +1,21 @@
-import { useEffect, useMemo, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectCards } from "../../../slices/cardSlice";
+import { selectCards, updateCardProgress } from "../../../slices/cardSlice";
 import {
   updateGlobalStreak,
   updateDeckStreak,
 } from "../../../slices/streakSlice";
 import { logStudySession } from "../../../slices/activitySlice";
 import { updateProgress } from "../../../slices/progressSlice";
+import { computeSM2 } from "../../../utils/srs";
 import useAuth from "../../../hooks/useAuth";
 import { PHASES, LEARN_LIMIT, REVIEW_LIMIT } from "../constants/constants";
 
 export default function useStudySession({ deck, navMode }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const sessionUpdatesRef = useRef([]);
   const { session } = useAuth();
 
   const isReviewMode = navMode === "review";
@@ -35,22 +37,17 @@ export default function useStudySession({ deck, navMode }) {
       return [];
     }
 
-    const now = new Date();
-
-    let filtered = [];
-
-    if (isReviewMode) {
-      // REVIEW MODE → only DUE cards
-      filtered = allCards.filter((c) => {
-        return c.status === "due" && c.due_date && new Date(c.due_date) <= now;
-      });
-    } else {
-      // LEARN MODE → only NEW or LEARNING cards
-      filtered = allCards.filter((c) => {
-        return c.status === "new";
-      });
+    const filtered = allCards.filter(
+      (c) => c.status === (isReviewMode ? "due" : "new")
+    );
+    console.log(
+      `[USE_MEMO] Total allCards: ${allCards.length}. Filtered to: ${filtered.length}.`
+    );
+    if (filtered.length > 0) {
+      console.log(
+        `[USE_MEMO] First card ID: ${filtered[0].id}, Status: ${filtered[0].status}`
+      );
     }
-
     return filtered.slice(0, limit);
   }, [allCards, deck?.id, isReviewMode, limit]);
 
@@ -98,8 +95,10 @@ export default function useStudySession({ deck, navMode }) {
   const [sessionReviewed, setSessionReviewed] = useState(0);
   const [sessionLearned, setSessionLearned] = useState(0);
 
+  // const [sessionUpdates, setSessionUpdates] = useState([]);
+
   const currentPhase = phases[phaseIndex];
-  const currentCard = cards[cardIndex];
+  // const currentCard = cards[cardIndex];
 
   // --------------------------------------------------------------------------
   // Reset when deck or available cards change
@@ -113,6 +112,51 @@ export default function useStudySession({ deck, navMode }) {
   }, [deck?.id]);
 
   // --------------------------------------------------------------------------
+  // Reset when deck or available cards change
+  // --------------------------------------------------------------------------
+  const [sessionCards, setSessionCards] = useState([]);
+
+  useEffect(() => {
+    if (!deck?.id) return;
+
+    if (allCards.length > 0 && allCards[0].deck_id === deck.id) {
+      const filtered = allCards.filter(
+        (c) => c.status === (isReviewMode ? "due" : "new")
+      );
+      setSessionCards(filtered.slice(0, limit));
+    }
+  }, [deck?.id, allCards, isReviewMode, limit]);
+
+  // Use sessionCards instead of cards
+  const currentCard = sessionCards[cardIndex];
+  // --------------------------------------------------------------------------
+  // Send batch updates at the end of session
+  // --------------------------------------------------------------------------
+
+  useEffect(() => {
+    console.log("session updates?", sessionUpdatesRef);
+    if (!sessionFinished || sessionUpdatesRef.length === 0) return;
+
+    const sendBatch = async () => {
+      try {
+        await dispatch(
+          updateProgress({
+            sessionUpdates: sessionUpdatesRef.current,
+            study_mode: deck.study_mode,
+          })
+        ).unwrap();
+
+        // setSessionUpdates([]);
+        sessionUpdatesRef.current = [];
+      } catch (err) {
+        console.error("Failed to update card progress in batch:", err);
+      }
+    };
+
+    sendBatch();
+  }, [deck.study_mode, dispatch, sessionFinished, sessionUpdatesRef]);
+
+  // --------------------------------------------------------------------------
   // Navigation
   // --------------------------------------------------------------------------
   const exitStudy = useCallback(() => {
@@ -123,49 +167,118 @@ export default function useStudySession({ deck, navMode }) {
   // Advance step
   // --------------------------------------------------------------------------
   const advanceCard = useCallback(() => {
-    console.log("advancing card");
+    console.log(
+      `[ADVANCE_CARD] Before: Card Index ${cardIndex}, Phase Index ${phaseIndex}. Limit: ${limit}, Total Phases: ${totalPhases}`
+    );
     if (cardIndex + 1 < limit) {
       setCardIndex((i) => i + 1);
+      console.log(`[ADVANCE_CARD] Action: Next Card in Phase.`);
       return;
     }
 
     if (phaseIndex + 1 < totalPhases) {
       setPhaseIndex((p) => p + 1);
       setCardIndex(0);
+      console.log(phaseIndex);
+      console.log(`[ADVANCE_CARD] Action: Next Phase, reset Card Index.`);
       return;
     }
-
+    console.log("Session finished");
     setSessionFinished(true);
   }, [cardIndex, limit, phaseIndex, totalPhases]);
 
   // --------------------------------------------------------------------------
   // Rating (SM-2 + Supabase)
   // --------------------------------------------------------------------------
+  // const handleRate = useCallback(
+  //   async (rating) => {
+  //     if (!userId || !currentCard || !currentPhase.allowRating) return;
+  //     console.log("useStudySession", rating);
+
+  //     // Compute SM2 locally
+  //     const updates = computeSM2(currentCard, rating);
+
+  //     // Add to sessionUpdates
+  //     setSessionUpdates((prev) => [...prev, { card: currentCard, updates }]);
+
+  //     setSessionReviewed((c) => c + 1);
+  //     advanceCard();
+  //   },
+  //   [currentCard, currentPhase, advanceCard, userId]
+  // );
+
   const handleRate = useCallback(
     async (rating) => {
       if (!userId || !currentCard || !currentPhase.allowRating) return;
-      console.log("useStudySession", rating);
-      // 1. Update Redux store
+
+      // 1. Compute SM2 locally
+      const updates = computeSM2(currentCard, rating);
+
+      // 2. Dispatch the new progress to Redux store immediately
+      // This flips the card status to 'waiting' in Redux, removing it from the filtered `cards` list.
+      console.log("Handle Rate");
+      dispatch(
+        updateCardProgress({
+          cardId: currentCard.id,
+          updates: updates,
+        })
+      );
+      console.log(
+        `[HANDLE_RATE] Rated Card ID: ${currentCard.id}. New due_date: ${updates.due_date}. New repetitions: ${updates.repetitions}`
+      );
+
+      const updatedCard = {
+        user_id: userId,
+        deck_id: currentCard.deck_id,
+        card_id: currentCard.card_id,
+        status: "waiting",
+        suspended: false,
+        ...updates,
+      };
+
+      sessionUpdatesRef.current = [...sessionUpdatesRef.current, updatedCard];
+      // 3. Add the card to the batch to post later
+      // setSessionUpdates((prev) => [...prev, updatedCard]);
+
+      // 4. Advance
       setSessionReviewed((c) => c + 1);
       advanceCard();
-
-      console.log(currentCard, rating, userId, deck.study_mode);
-      // 2. Update Supabase / server
-      try {
-        await dispatch(
-          updateProgress({
-            card: currentCard,
-            rating,
-            study_mode: deck.study_mode,
-            user_id: userId,
-          })
-        ).unwrap();
-      } catch (err) {
-        console.error("Failed to update card progress:", err);
-      }
     },
-    [currentCard, currentPhase, advanceCard, deck.study_mode, dispatch, userId]
+    [currentCard, currentPhase, advanceCard, userId, dispatch]
   );
+
+  // --------------------------------------------------------------------------
+  // Rating (SM-2 + Supabase)
+  // --------------------------------------------------------------------------
+  // const handleRate = useCallback(
+  //   async (rating) => {
+  //     if (!userId || !currentCard || !currentPhase.allowRating) return;
+  //     console.log("useStudySession", rating);
+
+  //     // 1. Update Redux store
+  //     setSessionReviewed((c) => c + 1);
+  //     advanceCard();
+
+  //     console.log(currentCard, rating, userId, deck.study_mode);
+  //     // 2. Update Supabase / server
+
+  //     try {
+  //       const result = await dispatch(
+  //         updateProgress({
+  //           card: currentCard,
+  //           rating,
+  //           study_mode: deck.study_mode,
+  //           user_id: userId,
+  //         })
+  //       ).unwrap();
+
+  //       console.log("updateProgress success:", result);
+  //     } catch (err) {
+  //       console.error("Failed to update card progress:", err);
+  //     }
+  //   },
+  //   [currentCard, currentPhase, advanceCard, deck.study_mode, dispatch, userId]
+  // );
 
   // --------------------------------------------------------------------------
   // Pass (no rating)
@@ -183,6 +296,8 @@ export default function useStudySession({ deck, navMode }) {
     setCardIndex(0);
     setSessionLearned(0);
     setSessionReviewed(0);
+    // setSessionUpdates([]);
+    sessionUpdatesRef.current = [];
   }, []);
 
   // --------------------------------------------------------------------------
@@ -226,7 +341,7 @@ export default function useStudySession({ deck, navMode }) {
     sessionReviewed,
     sessionLearned,
     userId,
-    deck?.id,
+    deck.id,
     dispatch,
   ]);
 

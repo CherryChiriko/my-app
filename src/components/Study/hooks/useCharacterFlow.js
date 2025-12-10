@@ -51,12 +51,12 @@ export function useCharacterFlow({
 
   const calculateAverage = useCallback(
     (mistakesForCurrentChar) => {
-      console.log(mistakesForCurrentChar);
+      // console.log(mistakesForCurrentChar);
       const allMistakes = [...mistakeList, mistakesForCurrentChar];
-      console.log(
-        allMistakes,
-        allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length
-      );
+      // console.log(
+      //   allMistakes,
+      //   allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length
+      // );
       return allMistakes.reduce((a, b) => a + b, 0) / allMistakes.length;
     },
     [mistakeList]
@@ -87,7 +87,7 @@ export function useCharacterFlow({
           if (allowRating) {
             const avg = calculateAverage(mistakes);
             const rating = getRatingFromMistakes(Math.round(avg));
-            console.log("rating", rating);
+            // console.log("rating", rating);
             onRate?.(rating);
           } else {
             onPassComplete?.();
@@ -130,13 +130,15 @@ export function useCharacterFlow({
       onPassComplete?.();
     }
   }, [
+    displayState,
     isLastCharacter,
     allowRating,
+    handleReveal,
     calculateAverage,
     mistakeList,
+    getRatingFromMistakes,
     onRate,
     onPassComplete,
-    getRatingFromMistakes,
   ]);
 
   const renderWordProgress = () => {

@@ -4,7 +4,7 @@ import NotFound404 from "../../../404";
 
 /* Maps mistake count to an SRS rating  */
 const getRatingFromMistakes = (mistakes) => {
-  console.log("mistakes", mistakes);
+  // console.log("mistakes", mistakes);
   if (mistakes === 2) return "hard";
   if (mistakes === 1) return "good";
   if (mistakes === 0) return "easy";
