@@ -69,6 +69,7 @@ export const updateProgress = createAsyncThunk(
       });
 
       if (error) throw error;
+      return sessionUpdates;
     } catch (err) {
       console.error("updateProgress error:", err);
       return rejectWithValue(
