@@ -56,13 +56,13 @@ const RatingButtons = ({ onRate, variant = "standard" }) => {
           className={`flex-1 flex items-center justify-center rounded-lg font-semibold text-white transition-colors duration-200 shadow-md active:scale-95 ${color} ${
             isDemo
               ? "px-1 py-1.5 text-[10px]"
-              : "py-2.5 md:px-4 md:py-3 text-[9px] md:text-base"
+              : "py-2.5 text-xs md:px-4 md:py-3 md:text-base"
           }`}
         >
           <FontAwesomeIcon
             icon={icon}
             className={
-              isDemo ? "mr-1 text-[11px]" : "w-5 h-5 md:w-5 md:h-5 md:mr-2"
+              isDemo ? "mr-1 text-[11px]" : "w-4 h-4 md:w-5 md:h-5 md:mr-2"
             }
           />
           <span className={isDemo ? "" : "hidden md:inline"}>{label}</span>

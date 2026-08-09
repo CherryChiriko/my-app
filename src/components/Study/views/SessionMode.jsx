@@ -206,13 +206,11 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
 
   return (
     <div className="w-full h-full flex-1 min-h-0 px-2 md:px-4 select-none flex flex-col">
-      <div className="max-w-screen-xl mx-auto w-full h-full flex flex-col gap-2 md:gap-4 pb-2 md:pb-4">
+      <div className="max-w-screen-xl mx-auto w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 md:gap-4 pb-2 md:pb-4">
         <SessionHeader title={activeDeck.name} progress={progress} />
 
-        {/* 
-            Added p-3 padding so the drop shadow on the card isn't clipped by container edges 
-        */}
-        <div className="flex-1 min-h-0 flex items-center justify-center w-full p-3 md:p-6">
+        {/* Card area takes all remaining height and perfectly centers the card */}
+        <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center px-0 md:px-6 py-2 md:py-4">
           <CardRenderer
             key={currentCard.id}
             card={currentCard}
@@ -236,5 +234,4 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
     </div>
   );
 };
-
 export default SessionMode;

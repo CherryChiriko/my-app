@@ -285,15 +285,20 @@ function App() {
       {shouldLoadStatsData && (
         <StatsLoader session={session} authLoading={authLoading} />
       )}
+
+      {/* 🌟 FIX: Change minHeight: "100vh" to a fixed flex column layout locked to 100dvh */}
       <div
+        className="w-full h-dvh flex flex-col overflow-hidden"
         style={{
           backgroundColor: activeTheme.background.app,
           color: activeTheme.text.primary,
-          minHeight: "100vh",
         }}
       >
+        {/* Navbar takes its natural height (shrink-0) */}
         <Navbar />
-        <main>
+
+        {/* main fills ONLY the remaining space underneath Navbar */}
+        <main className="flex-1 min-h-0 w-full overflow-hidden flex flex-col">
           <ScrollToTop />
           <AppRoutes {...routeProps} />
         </main>

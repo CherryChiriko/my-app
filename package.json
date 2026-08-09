@@ -7,6 +7,7 @@
     "@capacitor/app": "^8.1.1",
     "@capacitor/browser": "^8.0.4",
     "@capacitor/core": "^8.4.2",
+    "@codetrix-studio/capacitor-google-auth": "^3.4.0-rc.4",
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
     "@fortawesome/free-regular-svg-icons": "^7.0.0",
@@ -16,7 +17,6 @@
     "@supabase/supabase-js": "^2.86.0",
     "bootstrap": "^5.3.7",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.3",
     "framer-motion": "^12.23.12",
     "hanzi-writer": "^3.7.3",
     "node-fetch": "^2.7.0",
@@ -63,6 +63,7 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.21"
+    "autoprefixer": "^10.4.21",
+    "dotenv": "^17.4.2"
   }
 }

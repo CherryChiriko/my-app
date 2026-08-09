@@ -1,7 +1,6 @@
-// hooks/useCapacitorBackButton.js
 import { useEffect } from "react";
+import { App } from "@capacitor/app";
 import { useNavigate, useLocation } from "react-router-dom";
-import { App as CapacitorApp } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 
 export function useBackButton() {
@@ -9,26 +8,20 @@ export function useBackButton() {
   const location = useLocation();
 
   useEffect(() => {
-    // Only register listener on native mobile hardware (Android/iOS)
     if (!Capacitor.isNativePlatform()) return;
 
-    const listener = CapacitorApp.addListener("backButton", ({ canGoBack }) => {
-      // 1. If user is on the main root page, minimize the app
-      if (location.pathname === "/") {
-        CapacitorApp.minimizeApp();
-      }
-      // 2. If there is history to go back to, navigate to previous screen
-      else if (canGoBack) {
+    const listener = App.addListener("backButton", ({ canGoBack }) => {
+      // If we are on the root/dashboard page, minimize or exit the app
+      if (location.pathname === "/" || location.pathname === "/login") {
+        App.minimizeApp();
+      } else {
+        // Otherwise, navigate back in browser history
         navigate(-1);
-      }
-      // 3. Fallback: return to home screen
-      else {
-        navigate("/");
       }
     });
 
     return () => {
-      listener.then((handler) => handler.remove());
+      listener.then((l) => l.remove());
     };
-  }, [navigate, location]);
+  }, [navigate, location.pathname]);
 }

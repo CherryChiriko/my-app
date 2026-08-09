@@ -25,31 +25,37 @@ export default function Header({
       />
 
       <div
-        className={`flex ${layout === "col" ? "flex-col" : "flex-row md:items-center"} justify-between gap-2 md:gap-6 relative z-10 w-full`}
+        className={`flex ${
+          layout === "col" ? "flex-col" : "flex-row items-center"
+        } justify-between gap-3 md:gap-6 relative z-10 w-full`}
       >
         {/* Left side */}
-        <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
-          {leftElement && <div className="flex-shrink-0">{leftElement}</div>}
+        <div className="flex items-center gap-3 md:gap-4 shrink-0 min-w-0">
+          {leftElement && <div className="shrink-0">{leftElement}</div>}
 
-          <div className="min-w-0">
-            <p className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight">
-              {title}
-            </p>
-            {description && (
-              <p
-                className={`${activeTheme?.text?.secondary || "text-gray-500"} text-xs md:text-sm mt-1 leading-relaxed`}
-              >
-                {description}
+          {title && (
+            <div className="min-w-0">
+              <p className="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-tight truncate">
+                {title}
               </p>
-            )}
-          </div>
+              {description && (
+                <p
+                  className={`${activeTheme?.text?.secondary || "text-gray-500"} text-xs md:text-sm mt-1 leading-relaxed`}
+                >
+                  {description}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right side */}
         {(rightElement || children) && (
           <div
-            className={`flex flex-wrap items-center gap-2 md:gap-4 flex-shrink-0 w-full md:w-auto ${
-              layout === "col" ? "justify-start" : "justify-end"
+            className={`flex items-center gap-2 md:gap-4 shrink-0 ${
+              layout === "col"
+                ? "w-full md:w-auto justify-start"
+                : "w-auto justify-end flex-1 min-w-0"
             }`}
           >
             {rightElement}

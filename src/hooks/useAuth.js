@@ -6,6 +6,7 @@ import { supabase } from "../utils/supabaseClient";
 import { useDispatch } from "react-redux";
 import { resetAllUserState } from "../app/store";
 import { SETTINGS_STORAGE_KEY } from "../slices/settingsSlice";
+import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
 
 /**
  * Clears all user-specific localStorage entries before Redux reset.
@@ -18,6 +19,14 @@ function clearUserLocalStorage() {
   } catch (e) {
     console.error("[clearUserLocalStorage] failed:", e);
   }
+}
+
+if (Capacitor.isNativePlatform()) {
+  GoogleAuth.initialize({
+    clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+    scopes: ["profile", "email"],
+    grantOfflineAccess: true,
+  });
 }
 
 /**
@@ -178,39 +187,6 @@ export default function useAuth() {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-
-    const listener = App.addListener("appUrlOpen", async ({ url }) => {
-      // url looks like: revu://auth-callback#access_token=...&refresh_token=...
-      if (!url.includes("access_token")) return;
-
-      // Close the in-app browser tab now that we have the tokens
-      await Browser.close();
-
-      const hash = url.split("#")[1];
-      const params = new URLSearchParams(hash);
-      const access_token = params.get("access_token");
-      const refresh_token = params.get("refresh_token");
-
-      if (access_token && refresh_token) {
-        const { error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-        if (error) {
-          console.error("[appUrlOpen] setSession failed:", error);
-          setError("Google sign-in failed");
-        }
-        // onAuthStateChange SIGNED_IN handler picks it up from here
-      }
-    });
-
-    return () => {
-      listener.remove();
-    };
-  }, []);
-
   const signup = useCallback(async (username, email, password) => {
     setAuthLoading(true);
     setError(null);
@@ -304,32 +280,52 @@ export default function useAuth() {
     setAuthLoading(true);
     setError(null);
     setSuccessMessage(null);
+
     try {
       const isNative = Capacitor.isNativePlatform();
-      const redirectTo = isNative
-        ? "revu://auth-callback"
-        : window.location.origin;
 
-      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo,
-          skipBrowserRedirect: isNative, // don't navigate the WebView itself
-        },
-      });
-      if (oauthError) throw oauthError;
+      if (isNative) {
+        // 1. Trigger Native Google Sign-In sheet
+        const googleUser = await GoogleAuth.signIn();
 
-      if (isNative && data?.url) {
-        // Opens Chrome Custom Tab / SFSafariViewController, not an in-app WebView
-        await Browser.open({ url: data.url });
+        if (!googleUser?.authentication?.idToken) {
+          throw new Error("No ID Token received from Google Sign-In");
+        }
+
+        // 2. Pass Native Google idToken directly to Supabase
+        const { data, error: idTokenError } =
+          await supabase.auth.signInWithIdToken({
+            provider: "google",
+            token: googleUser.authentication.idToken,
+          });
+
+        if (idTokenError) throw idTokenError;
+
+        // ensureProfileExists will be automatically triggered by onAuthStateChange
+        return true;
+      } else {
+        // Fallback for Web browser development environment
+        const { error: oauthError } = await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: window.location.origin,
+          },
+        });
+
+        if (oauthError) throw oauthError;
+        return true;
       }
-      // Web: the browser just navigates normally, no extra step needed.
-
-      return true;
     } catch (err) {
+      console.error("[loginWithGoogle] Error:", err);
+      // Don't show error if user simply canceled the native dialog (code 12501 / "popup closed")
+      if (err.message?.includes("12501") || err.message?.includes("canceled")) {
+        setAuthLoading(false);
+        return false;
+      }
       setError(err.message || "Google sign-in failed");
-      setAuthLoading(false);
       return false;
+    } finally {
+      setAuthLoading(false);
     }
   }, []);
 

@@ -122,25 +122,25 @@ const Dashboard = () => {
           title=""
           activeTheme={activeTheme}
           leftElement={
-            <div className="flex items-center w-20 h-12 md:w-32 md:h-20 relative shrink-0">
+            <div className="flex items-center w-24 h-10 md:w-32 md:h-12 relative shrink-0">
               <div
                 className={`absolute inset-0 bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
                 style={{
                   WebkitMaskImage: `url(${RevuLogo})`,
                   WebkitMaskRepeat: "no-repeat",
-                  WebkitMaskPosition: "center",
+                  WebkitMaskPosition: "left center",
                   WebkitMaskSize: "contain",
                   maskImage: `url(${RevuLogo})`,
                   maskRepeat: "no-repeat",
-                  maskPosition: "center",
+                  maskPosition: "left center",
                   maskSize: "contain",
                 }}
               />
             </div>
           }
           rightElement={
-            <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
-              <div ref={xpBarRef} className="w-full md:w-64 lg:w-80">
+            <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto justify-end">
+              <div ref={xpBarRef} className="flex-1 sm:w-64 lg:w-80 min-w-0">
                 <XPBar totalXP={totalXP} activeTheme={activeTheme} />
               </div>
               <button

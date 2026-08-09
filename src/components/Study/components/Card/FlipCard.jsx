@@ -58,10 +58,12 @@ const FlipCard = ({
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-full p-2 md:p-4">
+    <div className="w-full h-full flex-1 min-h-0 flex items-center justify-center p-0 md:p-4">
       <div
-        className={`relative w-full ${
-          isDemo ? "h-full" : "max-w-2xl aspect-[16/9]"
+        className={`relative w-full my-auto ${
+          isDemo
+            ? "h-full"
+            : "max-w-2xl aspect-[4/5] max-h-full md:aspect-[16/9]"
         }`}
         style={{ perspective: "1000px" }}
       >
@@ -75,11 +77,11 @@ const FlipCard = ({
         >
           {/* ─── FRONT ─── */}
           <div
-            className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl ${
+            className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl md:rounded-2xl ${
               activeTheme.background.secondary
             } ${
               activeTheme.border?.secondary || "border border-gray-200"
-            } p-3 md:p-7 shadow-md`}
+            } p-4 md:p-7 shadow-lg md:shadow-md`}
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
@@ -89,7 +91,10 @@ const FlipCard = ({
             <div className="flex justify-center shrink-0">
               <span
                 className={`${
-                  isDemo ? "text-[10px]" : "text-xs md:text-md"
+                  isDemo
+                    ? "text-[10px]"
+                    : "text-[10px] md:text-md px-3 py-1 rounded-full " +
+                      (activeTheme.background.canvas || "bg-black/5")
                 } uppercase tracking-[0.2em] font-bold ${activeTheme.text.muted}`}
               >
                 Question
@@ -100,19 +105,19 @@ const FlipCard = ({
             <div className="flex-1 flex items-center justify-center w-full px-2 pt-4 overflow-y-auto">
               <p
                 className={`font-bold ${activeTheme.text.primary} text-center break-words leading-snug ${
-                  isDemo ? "text-lg md:text-xl" : "text-3xl md:text-5xl"
+                  isDemo ? "text-lg md:text-xl" : "text-2xl md:text-5xl"
                 }`}
               >
                 {card?.front}
               </p>
             </div>
 
-            {/* Controls (Locked height prevents vertical layout reflow) */}
-            <div className="shrink-0 flex items-center justify-center h-14 pt-2">
+            {/* Controls */}
+            <div className="shrink-0 flex items-center justify-center h-12 md:h-14 pt-2">
               {!showAnswer && displayState === "animation" && (
                 <button
                   onClick={handleReveal}
-                  className={`rounded-full font-semibold ${activeTheme.button.primary} ${activeTheme.text.activeButton} transition-all duration-300 shadow-md active:scale-95 px-6 py-2.5 text-xs md:text-base`}
+                  className={`rounded-full font-semibold ${activeTheme.button.primary} ${activeTheme.text.activeButton} transition-all duration-300 shadow-md active:scale-95 px-5 py-2.5 text-xs md:px-6 md:py-3 md:text-base`}
                 >
                   Show Answer
                 </button>
@@ -130,11 +135,11 @@ const FlipCard = ({
 
           {/* ─── BACK ─── */}
           <div
-            className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl ${
+            className={`absolute inset-0 flex flex-col justify-between overflow-hidden rounded-3xl md:rounded-2xl ${
               activeTheme.background.secondary
             } ${
               activeTheme.border?.secondary || "border border-gray-200"
-            } p-3 md:p-7 shadow-md`}
+            } p-4 md:p-7 shadow-lg md:shadow-md`}
             style={{
               backfaceVisibility: "hidden",
               WebkitBackfaceVisibility: "hidden",
@@ -145,7 +150,10 @@ const FlipCard = ({
             <div className="flex justify-center shrink-0">
               <span
                 className={`${
-                  isDemo ? "text-[10px]" : "text-xs md:text-md"
+                  isDemo
+                    ? "text-[10px]"
+                    : "text-[10px] md:text-md px-3 py-1 rounded-full " +
+                      (activeTheme.background.canvas || "bg-black/5")
                 } uppercase tracking-[0.2em] font-bold ${activeTheme.text.muted}`}
               >
                 Answer
@@ -157,7 +165,7 @@ const FlipCard = ({
               {showAnswer && (
                 <p
                   className={`font-semibold ${activeTheme.text.primary} text-center break-words leading-snug ${
-                    isDemo ? "text-lg md:text-xl" : "text-3xl md:text-5xl"
+                    isDemo ? "text-lg md:text-xl" : "text-2xl md:text-5xl"
                   }`}
                 >
                   {card?.back}
@@ -165,20 +173,20 @@ const FlipCard = ({
               )}
             </div>
 
-            {/* Controls (Locked height matches front face) */}
-            <div className="shrink-0 flex items-center justify-center h-14 pt-2">
+            {/* Controls */}
+            <div className="shrink-0 flex items-center justify-center h-12 md:h-14 pt-2">
               {showAnswer &&
                 (allowRating ? (
                   <RatingButtons onRate={handleRate} variant={variant} />
                 ) : (
                   <button
                     onClick={handleNext}
-                    className={`inline-flex items-center rounded-full font-semibold ${activeTheme.button.secondary} ${activeTheme.text.secondary} transition-all duration-300 shadow-md hover:shadow-md active:scale-95 px-6 py-2.5 text-sm md:text-base`}
+                    className={`inline-flex items-center rounded-full font-semibold ${activeTheme.button.secondary} ${activeTheme.text.secondary} transition-all duration-300 hover:shadow-md active:scale-95 px-5 py-2.5 text-xs md:px-6 md:py-3 md:text-base`}
                   >
                     Next
                     <FontAwesomeIcon
                       icon={faFastForward}
-                      className="w-4 h-4 ml-2"
+                      className="w-3.5 h-3.5 ml-1.5 md:w-4 md:h-4 md:ml-2"
                     />
                   </button>
                 ))}

@@ -119,7 +119,7 @@ const StudySession = () => {
   ) {
     return (
       <div
-        className={`h-full flex-1 min-h-0 w-full ${activeTheme.background.app}`}
+        className={`h-[100dvh] w-full flex flex-col flex-1 min-h-0 ${activeTheme.background.app}`}
       >
         <SessionMode
           mode={navMode}
