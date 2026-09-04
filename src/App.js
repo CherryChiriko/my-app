@@ -20,7 +20,7 @@ import { clearStreak } from "./slices/streakSlice";
 import { resetActivity } from "./slices/activitySlice";
 import { hydrateFromProfile } from "./slices/settingsSlice";
 
-import useAuth from "./hooks/useAuth";
+import { useAuthContext } from "./context/AuthContext";
 import useDeckLiveSync from "./hooks/useDeckLiveSync";
 import useGlobalStatsLiveSync from "./hooks/useGlobalStatsLiveSync";
 import useAppBoot from "./hooks/useAppBoot";
@@ -108,7 +108,7 @@ function App() {
   const allThemes = useSelector((state) => state.theme.allThemes);
   const currentThemeName = useSelector((state) => state.theme.currentThemeName);
 
-  const { session, loading: authLoading } = useAuth();
+  const { session, loading: authLoading } = useAuthContext();
   const demoMode = isDemoSession(session);
 
   const status = useSelector(selectDeckStatus);

@@ -10,6 +10,7 @@ import { StudyFlowSection } from "./components/StudyFlowSection";
 import { DisplaySection } from "./components/DisplaySection";
 import { AccountSection } from "./components/AccountSection";
 import { SubscriptionSection } from "./components/SubscriptionSection";
+import { isDemoModeEnabled } from "../../utils/demoMode";
 
 export function SettingsPage({
   profile,
@@ -20,31 +21,36 @@ export function SettingsPage({
   dispatch,
 }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const isDemo = isDemoModeEnabled();
+  console.log(settings);
 
   return (
     <>
       {/* ── Row 3: Avatar · Account · Theme ────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <SubscriptionSection
-          profile={profile}
-          activeTheme={activeTheme}
-          dispatch={dispatch}
-          isMobile={isMobile}
-        />
-        <AccountSection
-          profile={profile}
-          activeTheme={activeTheme}
-          dispatch={dispatch}
-          isMobile={isMobile}
-        />
-
-        <AvatarSection
-          profile={profile}
-          settings={settings}
-          activeTheme={activeTheme}
-          dispatch={dispatch}
-          isMobile={isMobile}
-        />
+        {!isDemo && (
+          <>
+            <SubscriptionSection
+              profile={profile}
+              activeTheme={activeTheme}
+              dispatch={dispatch}
+              isMobile={isMobile}
+            />
+            <AccountSection
+              profile={profile}
+              activeTheme={activeTheme}
+              dispatch={dispatch}
+              isMobile={isMobile}
+            />
+            <AvatarSection
+              profile={profile}
+              settings={settings}
+              activeTheme={activeTheme}
+              dispatch={dispatch}
+              isMobile={isMobile}
+            />
+          </>
+        )}
 
         <ThemeSection
           activeTheme={activeTheme}

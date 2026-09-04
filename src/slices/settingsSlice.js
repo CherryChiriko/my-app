@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { isDemoModeEnabled } from "../utils/demoMode";
 
 export const SETTINGS_STORAGE_KEY = "revuSettings";
 
@@ -29,6 +30,10 @@ const defaultSettings = {
 };
 
 const loadPersistedSettings = () => {
+  // Demo users always get default settings — never read from localStorage,
+  // and never let a real user's persisted overrides leak into the demo.
+  if (isDemoModeEnabled()) return {};
+
   try {
     if (typeof localStorage === "undefined") return {};
     const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
@@ -72,6 +77,11 @@ const settingsSlice = createSlice({
     },
 
     hydrateFromProfile(state, action) {
+      // Demo users keep default settings regardless of what's in their profile row.
+      if (isDemoModeEnabled()) {
+        return;
+      }
+
       const p = action.payload;
 
       // Study limits — respect locally-persisted overrides

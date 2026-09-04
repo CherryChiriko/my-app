@@ -343,14 +343,20 @@ export default function useAuth() {
   }, []);
 
   const startDemo = useCallback(() => {
-    setDemoModeEnabled(true);
+    setAuthLoading(false);
     setError(null);
     setSuccessMessage(null);
-    setAuthLoading(false);
+
+    // Clear stale local storage settings before loading demo state
+    clearUserLocalStorage();
+    dispatch(resetAllUserState());
+
     currentUserIdRef.current = demoSession.user.id;
     setSession(demoSession);
+    setLoading(false);
+
     return true;
-  }, []);
+  }, [dispatch]);
 
   const resetPassword = useCallback(async (email) => {
     setAuthLoading(true);

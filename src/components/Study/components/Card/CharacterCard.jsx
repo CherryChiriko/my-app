@@ -98,7 +98,7 @@ const CharacterCard = ({
         </p>
 
         {/* 🔒 Reserve space so hiding the button never collapses this area */}
-        <div className="flex items-center justify-center pb-1 min-h-[44px] md:min-h-[104px]">
+        <div className="flex items-center justify-center pb-1 min-h-[44px] md:min-h-[52px]">
           {!showContinueButtons && !revealed && (
             <RevealButton onReveal={handleReveal} activeTheme={activeTheme} />
           )}

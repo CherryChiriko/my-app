@@ -111,7 +111,7 @@ const Navbar = () => {
           <Link
             to="/settings"
             title={username}
-            className={`w-9 h-9 rounded-xl shadow-md ring-1 ${activeTheme.border.secondary} overflow-hidden flex-shrink-0`}
+            className={`w-9 h-9 rounded-xl shadow-md ring-1 ${activeTheme.border.secondary} overflow-hidden flex-shrink-0 no-underline`}
           >
             <AvatarDisplay
               settings={settings}

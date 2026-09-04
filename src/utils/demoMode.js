@@ -5,6 +5,54 @@ export const DEMO_MODE_STORAGE_KEY = "revu_demo_mode";
 
 const now = new Date().toISOString();
 
+// Helper: return YYYY-MM-DD for `daysAgo` days before today.
+const dateOffset = (daysAgo) => {
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  return d.toISOString().slice(0, 10);
+};
+
+// 5 most recent days, most recent = today, oldest = 4 days ago.
+// Numbers are hand-picked to look like a plausible, slightly-improving
+// study pattern rather than a flat line.
+export const demoActivityRows = [
+  {
+    date: dateOffset(4),
+    cards_reviewed: 8,
+    cards_learned: 4,
+    time_studied_seconds: 620,
+    total_xp: 140,
+  },
+  {
+    date: dateOffset(3),
+    cards_reviewed: 5,
+    cards_learned: 5,
+    time_studied_seconds: 540,
+    total_xp: 120,
+  },
+  {
+    date: dateOffset(2),
+    cards_reviewed: 9,
+    cards_learned: 2,
+    time_studied_seconds: 610,
+    total_xp: 150,
+  },
+  {
+    date: dateOffset(1),
+    cards_reviewed: 7,
+    cards_learned: 3,
+    time_studied_seconds: 480,
+    total_xp: 110,
+  },
+  {
+    date: dateOffset(0),
+    cards_reviewed: 10,
+    cards_learned: 4,
+    time_studied_seconds: 730,
+    total_xp: 180,
+  },
+];
+
 export const demoProfile = {
   id: DEMO_USER_ID,
   username: "demo",
@@ -218,14 +266,6 @@ export const demoCards = [
     created_at: "2026-08-30T09:03:00.000Z",
     status: "new",
   },
-];
-
-export const demoActivityRows = [
-  { date: "2026-08-30", cards_reviewed: 8, cards_learned: 4, time_studied_seconds: 620, total_xp: 140 },
-  { date: "2026-08-31", cards_reviewed: 5, cards_learned: 5, time_studied_seconds: 540, total_xp: 120 },
-  { date: "2026-09-01", cards_reviewed: 9, cards_learned: 2, time_studied_seconds: 610, total_xp: 150 },
-  { date: "2026-09-02", cards_reviewed: 7, cards_learned: 3, time_studied_seconds: 480, total_xp: 110 },
-  { date: "2026-09-03", cards_reviewed: 10, cards_learned: 4, time_studied_seconds: 730, total_xp: 180 },
 ];
 
 export const demoStreakRows = {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAuth from "../../../hooks/useAuth";
+import { useAuthContext } from "../../../context/AuthContext";
 
 export function useLogin() {
   const [username, setUsername] = useState("");
@@ -17,7 +17,7 @@ export function useLogin() {
     resetPassword,
     loginWithGoogle,
     startDemo,
-  } = useAuth();
+  } = useAuthContext();
 
   const clearInputs = () => {
     setUsername("");

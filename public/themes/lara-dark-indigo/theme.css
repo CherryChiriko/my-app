@@ -2768,9 +2768,9 @@
     color: #818cf8;
     border-color: transparent;
   }
-  .p-button.p-button-link:not(:disabled):hover .p-button-label {
+  /* .p-button.p-button-link:not(:disabled):hover .p-button-label {
     text-decoration: underline;
-  }
+  } */
   .p-button.p-button-link:not(:disabled):focus {
     background: transparent;
     box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.2);

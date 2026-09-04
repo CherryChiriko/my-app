@@ -26,7 +26,7 @@ const NavItem = ({ item, isMobile = false }) => {
     : `${activeTheme.text.primary} ${activeTheme.link.hoverText} ${activeTheme.link.hoverBg}`;
 
   const interactionClasses = isDisabled
-    ? "pointer-events-none"
+    ? "pointer-events-none no-underline"
     : "hover:scale-[1.02] active:scale-100 cursor-pointer";
 
   const finalClasses = `${baseClasses} ${sizeClasses} ${stateClasses} ${interactionClasses}`;

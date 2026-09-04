@@ -44,8 +44,8 @@ const LoginPage = ({ activeTheme }) => {
               {isResetting
                 ? "Reset Password"
                 : isSigningUp
-                  ? "Sign Up"
-                  : "Login"}
+                ? "Sign Up"
+                : "Login"}
             </h2>
 
             {!isResetting && (
@@ -84,11 +84,13 @@ const LoginPage = ({ activeTheme }) => {
 
                 <button
                   type="button"
-                  onClick={startDemo}
+                  onClick={async () => {
+                    await startDemo();
+                  }}
                   disabled={authLoading}
-                  className={`mt-3 w-full flex items-center justify-center gap-2 border py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] disabled:opacity-50 ${activeTheme.border.card} ${activeTheme.button.secondary}`}
+                  className={`mt-3 w-full flex items-center justify-center gap-2 border py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] disabled:opacity-50 ${activeTheme.button.accent} ${activeTheme.text.activeButton}`}
                 >
-                  Try demo mode
+                  Try demo
                 </button>
 
                 <div className="flex items-center gap-3 mt-4">
@@ -114,7 +116,9 @@ const LoginPage = ({ activeTheme }) => {
                     </label>
                     <input
                       type="text"
-                      className={`${inputCls(activeTheme)} text-base md:text-sm`}
+                      className={`${inputCls(
+                        activeTheme,
+                      )} text-base md:text-sm`}
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="Enter your username"
@@ -132,7 +136,9 @@ const LoginPage = ({ activeTheme }) => {
                     </label>
                     <input
                       type="email"
-                      className={`${inputCls(activeTheme)} text-base md:text-sm`}
+                      className={`${inputCls(
+                        activeTheme,
+                      )} text-base md:text-sm`}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
@@ -150,7 +156,9 @@ const LoginPage = ({ activeTheme }) => {
                     </label>
                     <input
                       type="password"
-                      className={`${inputCls(activeTheme)} text-base md:text-sm`}
+                      className={`${inputCls(
+                        activeTheme,
+                      )} text-base md:text-sm`}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
@@ -171,13 +179,15 @@ const LoginPage = ({ activeTheme }) => {
 
               <button
                 type="submit"
-                className={`w-full mt-5 py-2.5 rounded-xl font-bold text-sm shadow transition-all active:scale-[0.98] disabled:opacity-50 ${activeTheme?.button?.accent2 || "bg-indigo-600 text-white"}`}
+                className={`w-full mt-5 py-2.5 rounded-xl font-bold text-sm shadow transition-all active:scale-[0.98] disabled:opacity-50 ${
+                  activeTheme?.button?.accent2 || "bg-indigo-600 text-white"
+                }`}
               >
                 {isResetting
                   ? "Send Reset Email"
                   : isSigningUp
-                    ? "Sign Up"
-                    : "Login"}
+                  ? "Sign Up"
+                  : "Login"}
               </button>
             </form>
 
@@ -212,11 +222,6 @@ const LoginPage = ({ activeTheme }) => {
               )}
             </div>
           </div>
-          <span
-            className={`mt-4 text-xs font-medium opacity-60 tracking-wide ${activeTheme.text.primary} text-center`}
-          >
-            Demo mode uses sample decks and never writes to the database.
-          </span>
         </>
       )}
     </div>
