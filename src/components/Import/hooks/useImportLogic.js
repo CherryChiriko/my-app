@@ -11,6 +11,7 @@ import {
 } from "../../../slices/userSlice";
 import { hasCJKCharacter } from "../../../utils/cjkValidation";
 import { getImportLimitMessage } from "../../../utils/plans";
+import { isDemoUserId } from "../../../utils/demoMode";
 
 export const useImportLogic = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,14 @@ export const useImportLogic = () => {
 
   useEffect(() => {
     const fetchLanguages = async () => {
+      if (isDemoUserId(profile?.id)) {
+        const unique = [...new Set(allDecks.map((d) => d.language))].filter(
+          Boolean,
+        );
+        setExistingLanguages(unique);
+        return;
+      }
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -85,7 +94,7 @@ export const useImportLogic = () => {
       setExistingLanguages(unique);
     };
     fetchLanguages();
-  }, []);
+  }, [allDecks, profile?.id]);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -276,6 +285,16 @@ export const useImportLogic = () => {
     }
     setIsCheckingName(true);
     setUploadError(null);
+    if (isDemoUserId(profile?.id)) {
+      const taken = allDecks.some(
+        (deck) => deck.name?.toLowerCase() === name.toLowerCase(),
+      );
+      setIsCheckingName(false);
+      setIsNameTaken(taken);
+      if (taken) setUploadError("Deck name already in use.");
+      return taken;
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -444,6 +463,10 @@ export const useImportLogic = () => {
     const targetTable = "cards_" + study_mode.toLowerCase();
 
     try {
+      if (isDemoUserId(profile?.id)) {
+        throw new Error("Demo mode does not save imports. Your sample decks stay unchanged.");
+      }
+
       const limitMessage = getImportLimitMessage(profile, allCards.length);
       if (limitMessage) throw new Error(limitMessage);
 
@@ -516,6 +539,10 @@ export const useImportLogic = () => {
     const targetTable = "cards_" + study_mode.toLowerCase();
 
     try {
+      if (isDemoUserId(profile?.id)) {
+        throw new Error("Demo mode does not save imports. Your sample decks stay unchanged.");
+      }
+
       const limitMessage = getImportLimitMessage(profile, allCards.length);
       if (limitMessage) throw new Error(limitMessage);
 

@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getTodayISO } from "../utils/dateHelper";
+import { demoActivityRows, isDemoUserId } from "../utils/demoMode";
 
 export const selectSettingsState = (state) => state.settings;
 
@@ -30,6 +31,8 @@ export const fetchDailyActivity = createAsyncThunk(
   async ({ user_id } = {}, { rejectWithValue }) => {
     try {
       let userId = user_id;
+      if (isDemoUserId(userId)) return demoActivityRows;
+
       if (!userId) {
         const { data: userData, error: userError } =
           await supabase.auth.getUser();

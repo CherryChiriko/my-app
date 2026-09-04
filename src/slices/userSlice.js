@@ -2,11 +2,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getCurrentBillingMonth, normalizeSubscription } from "../utils/plans";
+import { demoProfile, isDemoUserId } from "../utils/demoMode";
 
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
   async (userId, { rejectWithValue }) => {
     if (!userId) return rejectWithValue("No user ID provided");
+    if (isDemoUserId(userId)) return demoProfile;
+
     try {
       const { data: profile, error } = await supabase
         .from("profiles")
@@ -54,6 +57,8 @@ export const completeTutorial = createAsyncThunk(
     // 1. Optimistically update local UI layout frames instantly
     dispatch(updateLocalProfile({ completed_tutorials: updatedTutorials }));
 
+    if (isDemoUserId(userId)) return updatedTutorials;
+
     try {
       const { error } = await supabase
         .from("profiles")
@@ -87,6 +92,8 @@ export const updateSubscriptionPlan = createAsyncThunk(
     };
 
     dispatch(updateLocalProfile(nextProfile));
+
+    if (isDemoUserId(userId)) return nextProfile;
 
     try {
       const { error } = await supabase
@@ -128,6 +135,8 @@ export const recordImportedCards = createAsyncThunk(
     };
 
     dispatch(updateLocalProfile(nextProfile));
+
+    if (isDemoUserId(userId)) return nextProfile;
 
     try {
       const { error } = await supabase

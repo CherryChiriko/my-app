@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import themeReducer from "../slices/themeSlice";
 import deckReducer, { clearDecks } from "../slices/deckSlice";
-import cardReducer from "../slices/cardSlice";
+import cardReducer, { clearCards } from "../slices/cardSlice";
 import streakReducer, { clearStreak } from "../slices/streakSlice";
 import userReducer, { clearUser } from "../slices/userSlice";
 import progressReducer from "../slices/progressSlice";
@@ -44,6 +44,7 @@ checkMidnightReset();
  */
 export const resetAllUserState = () => (dispatch) => {
   dispatch(clearDecks());
+  dispatch(clearCards());
   dispatch(clearStreak());
   dispatch(resetActivity());
   dispatch(clearUser());

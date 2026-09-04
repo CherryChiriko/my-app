@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getCardStatus } from "../utils/cardUtils";
 import { CHUNK_SIZE, PROGRESS, TABLES } from "../utils/constants";
+import { demoCards, isDemoUserId } from "../utils/demoMode";
 
 async function loadCardsForDeck({
   deck_id,
@@ -14,6 +15,21 @@ async function loadCardsForDeck({
 }) {
   if (!deck_id || !study_mode || !user_id) {
     throw new Error("Missing required parameters");
+  }
+
+  if (isDemoUserId(user_id)) {
+    const deckCards = demoCards.filter((card) => card.deck_id === deck_id);
+    const filtered = deckCards.filter((card) => {
+      if (sessionMode === "learn") return card.status === "new";
+      if (sessionMode === "review") return card.status === "due";
+      return true;
+    });
+
+    if (typeof page === "number" && typeof pageSize === "number") {
+      return filtered.slice(page * pageSize, page * pageSize + pageSize);
+    }
+
+    return filtered;
   }
 
   const table = TABLES[study_mode];

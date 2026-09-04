@@ -5,6 +5,7 @@ import { SettingCard } from "../../General/ui/SettingCard";
 import { updateSettings } from "../../../slices/settingsSlice";
 import { updateLocalProfile } from "../../../slices/userSlice";
 import { useSettingSave } from "../hooks/useSettingsSave";
+import { isDemoUserId } from "../../../utils/demoMode";
 import {
   faFire,
   faLayerGroup,
@@ -22,6 +23,16 @@ export function StudyLimitsSection({
 
   const { handleSave, saveState } = useSettingSave(async () => {
     if (!profile?.id) return;
+    if (isDemoUserId(profile.id)) {
+      dispatch(
+        updateLocalProfile({
+          review_limit: settings.reviewLimit,
+          learn_limit: settings.learnLimit,
+        }),
+      );
+      return;
+    }
+
     const { error } = await supabase.rpc("update_user_study_settings", {
       p_user_id: profile.id,
       p_review_limit: settings.reviewLimit,

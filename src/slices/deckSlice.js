@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getTodayISO } from "../utils/dateHelper";
+import { demoDecks, isDemoUserId } from "../utils/demoMode";
 
 /** * Sort helper:
  * If a deck has only new cards (or hasn't been studied yet), it uses created_at.
@@ -97,6 +98,10 @@ export const fetchDecks = createAsyncThunk(
   async ({ user_id } = {}, { rejectWithValue }) => {
     try {
       let userId = user_id;
+      if (isDemoUserId(userId)) {
+        return demoDecks.map(normalizeDeck);
+      }
+
       if (!userId) {
         const { data: userData, error: userError } =
           await supabase.auth.getUser();
@@ -126,6 +131,12 @@ export const fetchDeckCounts = createAsyncThunk(
   "cards/fetchDeckCounts",
   async ({ user_id }, { rejectWithValue }) => {
     try {
+      if (isDemoUserId(user_id)) {
+        return Object.fromEntries(
+          demoDecks.map((deck) => [deck.id, countsFromDeck(deck)]),
+        );
+      }
+
       const { data, error } = await supabase
         .from("decks")
         .select(

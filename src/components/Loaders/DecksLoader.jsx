@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { fetchDecks } from "../../slices/deckSlice";
 import { supabase } from "../../utils/supabaseClient";
+import { isDemoUserId } from "../../utils/demoMode";
 
 export default function DecksLoader({ session, authLoading }) {
   const dispatch = useDispatch();
@@ -16,6 +17,11 @@ export default function DecksLoader({ session, authLoading }) {
 
     if (previousUserIdRef.current === userId) return;
     previousUserIdRef.current = userId;
+
+    if (isDemoUserId(userId)) {
+      dispatch(fetchDecks({ user_id: userId }));
+      return;
+    }
 
     const run = async () => {
       try {

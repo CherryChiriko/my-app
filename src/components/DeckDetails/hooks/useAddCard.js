@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "../../../utils/supabaseClient";
 import { TABLES, PROGRESS } from "../../../utils/constants";
 import { generateReading } from "../../Import/hooks/generateReading";
+import { isDemoModeEnabled, isDemoUserId } from "../../../utils/demoMode";
 
 const INITIAL_FIELDS = { front: "", back: "", reading: "", audioUrl: "" };
 
@@ -33,11 +34,18 @@ export const useAddCard = ({
     setError(null);
 
     try {
+      if (isDemoModeEnabled()) {
+        throw new Error("Demo mode does not save new cards.");
+      }
+
       const {
         data: { user },
         error: userError,
       } = await supabase.auth.getUser();
       if (userError || !user) throw new Error("Not authenticated.");
+      if (isDemoUserId(user.id)) {
+        throw new Error("Demo mode does not save new cards.");
+      }
 
       const targetTable = TABLES[studyMode];
       const progressTable = PROGRESS[studyMode];

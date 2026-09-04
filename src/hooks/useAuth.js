@@ -7,6 +7,12 @@ import { useDispatch } from "react-redux";
 import { resetAllUserState } from "../app/store";
 import { SETTINGS_STORAGE_KEY } from "../slices/settingsSlice";
 import { GoogleAuth } from "@codetrix-studio/capacitor-google-auth";
+import {
+  demoSession,
+  isDemoModeEnabled,
+  isDemoSession,
+  setDemoModeEnabled,
+} from "../utils/demoMode";
 
 /**
  * Clears all user-specific localStorage entries before Redux reset.
@@ -126,6 +132,13 @@ export default function useAuth() {
 
     const init = async () => {
       try {
+        if (isDemoModeEnabled()) {
+          setSession(demoSession);
+          currentUserIdRef.current = demoSession.user.id;
+          setLoading(false);
+          return;
+        }
+
         const { data } = await supabase.auth.getSession();
         if (mounted) {
           const initialSession = data?.session ?? null;
@@ -329,6 +342,16 @@ export default function useAuth() {
     }
   }, []);
 
+  const startDemo = useCallback(() => {
+    setDemoModeEnabled(true);
+    setError(null);
+    setSuccessMessage(null);
+    setAuthLoading(false);
+    currentUserIdRef.current = demoSession.user.id;
+    setSession(demoSession);
+    return true;
+  }, []);
+
   const resetPassword = useCallback(async (email) => {
     setAuthLoading(true);
     setError(null);
@@ -353,13 +376,20 @@ export default function useAuth() {
   }, []);
 
   const logout = useCallback(async () => {
+    const wasDemo = isDemoSession(session);
     setSession(null);
     currentUserIdRef.current = null;
     setLoading(false);
     setAuthLoading(false);
+    setDemoModeEnabled(false);
+    if (wasDemo) {
+      clearUserLocalStorage();
+      dispatch(resetAllUserState());
+      return;
+    }
     await supabase.auth.signOut();
     // onAuthStateChange SIGNED_OUT handler clears localStorage + Redux
-  }, []);
+  }, [dispatch, session]);
 
   const deleteAccount = useCallback(async () => {
     setAuthLoading(true);
@@ -399,5 +429,6 @@ export default function useAuth() {
     deleteAccount,
     resetPassword,
     loginWithGoogle,
+    startDemo,
   };
 }

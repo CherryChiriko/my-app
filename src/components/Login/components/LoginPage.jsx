@@ -18,6 +18,7 @@ const LoginPage = ({ activeTheme }) => {
     error,
     successMessage,
     loginWithGoogle,
+    startDemo,
     handleSubmit,
     switchToResetMode,
     exitResetMode,
@@ -79,6 +80,15 @@ const LoginPage = ({ activeTheme }) => {
                     />
                   </svg>
                   Continue with Google
+                </button>
+
+                <button
+                  type="button"
+                  onClick={startDemo}
+                  disabled={authLoading}
+                  className={`mt-3 w-full flex items-center justify-center gap-2 border py-2.5 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] disabled:opacity-50 ${activeTheme.border.card} ${activeTheme.button.secondary}`}
+                >
+                  Try demo mode
                 </button>
 
                 <div className="flex items-center gap-3 mt-4">
@@ -205,7 +215,7 @@ const LoginPage = ({ activeTheme }) => {
           <span
             className={`mt-4 text-xs font-medium opacity-60 tracking-wide ${activeTheme.text.primary} text-center`}
           >
-            Demo: Username "guest" / Password "guest123"
+            Demo mode uses sample decks and never writes to the database.
           </span>
         </>
       )}

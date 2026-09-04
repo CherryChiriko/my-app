@@ -5,6 +5,7 @@ import { SettingCard } from "../../General/ui/SettingCard";
 import { updateSettings } from "../../../slices/settingsSlice";
 import { updateLocalProfile } from "../../../slices/userSlice"; // If keeping track in user state too
 import { useSettingSave } from "../hooks/useSettingsSave";
+import { isDemoUserId } from "../../../utils/demoMode";
 import {
   faBolt,
   faClock,
@@ -23,6 +24,16 @@ export function StudyFlowSection({
   // 🌟 Connect the exact same saving hook structure for UX consistency
   const { handleSave, saveState } = useSettingSave(async () => {
     if (!profile?.id) return;
+    if (isDemoUserId(profile.id)) {
+      dispatch(
+        updateLocalProfile({
+          autoflip_mode_a: settings.autoflipModeA,
+          autoflip_speed: settings.autoflipSpeed,
+          character_animation_speed: settings.characterAnimationSpeed,
+        }),
+      );
+      return;
+    }
 
     // Update the database layout with current frontend configuration values
     const { error } = await supabase

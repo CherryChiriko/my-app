@@ -5,6 +5,7 @@ import { supabase } from "../../../utils/supabaseClient";
 import { fetchCardsPage } from "../../../slices/cardSlice";
 import { fetchDeckCounts, selectDecks } from "../../../slices/deckSlice";
 import { CHUNK_SIZE } from "../../../utils/constants";
+import { selectUserProfile } from "../../../slices/userSlice";
 
 export function useDeckDetails(deckId) {
   const dispatch = useDispatch();
@@ -17,15 +18,21 @@ export function useDeckDetails(deckId) {
   const deck = useSelector((s) =>
     selectDecks(s).find((d) => d.deck_id === deckId || d.id === deckId),
   );
+  const profile = useSelector(selectUserProfile);
 
   const totalCardCount = Number(deck?.cards_count || 0);
   const totalPages = Math.max(0, Math.ceil(totalCardCount / CHUNK_SIZE));
 
   useEffect(() => {
+    if (profile?.id) {
+      setUserId(profile.id);
+      return;
+    }
+
     supabase.auth
       .getUser()
       .then(({ data }) => setUserId(data?.user?.id ?? null));
-  }, []);
+  }, [profile?.id]);
 
   const fetchPage = useCallback(
     async (pageIndex) => {
@@ -111,7 +118,7 @@ export function useDeckDetails(deckId) {
           return freshState;
         });
 
-        if (deckId) dispatch(fetchDeckCounts());
+        if (deckId) dispatch(fetchDeckCounts({ user_id: userId }));
         return;
       }
 
@@ -158,10 +165,10 @@ export function useDeckDetails(deckId) {
 
       // Fire background count recalculation rules
       if (deckId) {
-        dispatch(fetchDeckCounts());
+        dispatch(fetchDeckCounts({ user_id: userId }));
       }
     },
-    [deckId, dispatch],
+    [deckId, dispatch, userId],
   );
 
   return {

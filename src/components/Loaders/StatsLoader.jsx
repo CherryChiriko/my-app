@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { fetchDailyStreakStats } from "../../slices/streakSlice";
 import { fetchDailyActivity } from "../../slices/activitySlice";
 import { supabase } from "../../utils/supabaseClient";
+import { isDemoUserId } from "../../utils/demoMode";
 
 export default function StatsLoader({ session, authLoading }) {
   const dispatch = useDispatch();
@@ -10,6 +11,12 @@ export default function StatsLoader({ session, authLoading }) {
 
   useEffect(() => {
     if (authLoading || !userId) return;
+
+    if (isDemoUserId(userId)) {
+      dispatch(fetchDailyStreakStats({ user_id: userId }));
+      dispatch(fetchDailyActivity({ user_id: userId }));
+      return;
+    }
 
     const run = async () => {
       try {

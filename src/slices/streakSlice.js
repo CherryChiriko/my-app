@@ -5,6 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getTodayISO, getUserTimezone } from "../utils/dateHelper";
+import { demoStreakRows, isDemoUserId } from "../utils/demoMode";
 
 /* -------------------------------------------
    Thunk: fetch daily streak stats
@@ -14,6 +15,8 @@ export const fetchDailyStreakStats = createAsyncThunk(
   async ({ user_id } = {}, { rejectWithValue }) => {
     try {
       let userId = user_id;
+      if (isDemoUserId(userId)) return demoStreakRows;
+
       if (!userId) {
         const { data: userData, error: userError } =
           await supabase.auth.getUser();

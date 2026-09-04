@@ -16,6 +16,7 @@ export function useLogin() {
     signup,
     resetPassword,
     loginWithGoogle,
+    startDemo,
   } = useAuth();
 
   const clearInputs = () => {
@@ -70,6 +71,7 @@ export function useLogin() {
     error,
     successMessage,
     loginWithGoogle,
+    startDemo,
     handleSubmit,
     switchToResetMode,
     exitResetMode,

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../../../utils/supabaseClient";
 import { updateLocalProfile } from "../../../slices/userSlice";
+import { isDemoUserId } from "../../../utils/demoMode";
 
 export function useAccountSettings(profile, dispatch) {
   // ── Username State ──
@@ -23,6 +24,13 @@ export function useAccountSettings(profile, dispatch) {
     setUsernameError(null);
     setUsernameStatus("saving");
     try {
+      if (isDemoUserId(profile?.id)) {
+        dispatch(updateLocalProfile({ username: clean }));
+        setUsernameStatus("saved");
+        setTimeout(() => setUsernameStatus("idle"), 2000);
+        return;
+      }
+
       const { data: existing } = await supabase
         .from("profiles")
         .select("id")
@@ -65,6 +73,13 @@ export function useAccountSettings(profile, dispatch) {
     setEmailSuccess(null);
     setEmailStatus("saving");
     try {
+      if (isDemoUserId(profile?.id)) {
+        setEmailSuccess("Demo mode keeps account changes local.");
+        setEmailStatus("saved");
+        setTimeout(() => setEmailStatus("idle"), 4000);
+        return;
+      }
+
       const { error } = await supabase.auth.updateUser({ email: clean });
       if (error) throw error;
 
@@ -102,6 +117,19 @@ export function useAccountSettings(profile, dispatch) {
 
     setPasswordStatus("saving");
     try {
+      if (isDemoUserId(profile?.id)) {
+        setPasswordSuccess("Demo mode keeps account changes local.");
+        setPasswordStatus("saved");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setTimeout(() => {
+          setPasswordStatus("idle");
+          setPasswordSuccess(null);
+        }, 3000);
+        return;
+      }
+
       const { error: reAuthError } = await supabase.auth.signInWithPassword({
         email: profile.email,
         password: currentPassword,

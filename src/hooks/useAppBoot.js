@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "../utils/supabaseClient";
+import { isDemoUserId } from "../utils/demoMode";
 
 export default function useAppBoot(session) {
   const previousUserIdRef = useRef(null);
   const userId = session?.user?.id || null;
 
   useEffect(() => {
-    if (!userId) {
+    if (!userId || isDemoUserId(userId)) {
       previousUserIdRef.current = null;
       return;
     }

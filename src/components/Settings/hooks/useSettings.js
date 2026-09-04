@@ -1,4 +1,5 @@
 import { supabase } from "../../../utils/supabaseClient";
+import { isDemoUserId } from "../../../utils/demoMode";
 
 /**
  * Persist the full avatar state to Supabase in one RPC call.
@@ -16,6 +17,8 @@ export async function persistAvatarState(
   icon,
   color,
 ) {
+  if (isDemoUserId(profileId)) return;
+
   await supabase.rpc("update_avatar_state", {
     p_user_id: profileId,
     p_avatar_url: activeUrl ?? null,
@@ -33,6 +36,7 @@ export async function persistAvatarState(
  */
 export async function persistUserTheme(userId, themeId) {
   if (!userId) return;
+  if (isDemoUserId(userId)) return;
 
   const { error } = await supabase
     .from("profiles")

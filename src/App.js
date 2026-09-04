@@ -24,6 +24,7 @@ import useAuth from "./hooks/useAuth";
 import useDeckLiveSync from "./hooks/useDeckLiveSync";
 import useGlobalStatsLiveSync from "./hooks/useGlobalStatsLiveSync";
 import useAppBoot from "./hooks/useAppBoot";
+import { isDemoSession } from "./utils/demoMode";
 
 import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -108,6 +109,7 @@ function App() {
   const currentThemeName = useSelector((state) => state.theme.currentThemeName);
 
   const { session, loading: authLoading } = useAuth();
+  const demoMode = isDemoSession(session);
 
   const status = useSelector(selectDeckStatus);
   const error = useSelector(selectDeckError);
@@ -116,8 +118,8 @@ function App() {
   const publicPaths = ["/reset-password"];
   const isPublicPath = publicPaths.includes(location.pathname);
 
-  useDeckLiveSync(session && status === "succeeded");
-  useGlobalStatsLiveSync(!!session);
+  useDeckLiveSync(session && status === "succeeded" && !demoMode);
+  useGlobalStatsLiveSync(!!session && !demoMode);
   useAppBoot(session);
 
   useEffect(() => {

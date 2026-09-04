@@ -6,6 +6,7 @@ import { updateSettings } from "../../../slices/settingsSlice";
 import { updateLocalProfile } from "../../../slices/userSlice";
 import { supabase } from "../../../utils/supabaseClient";
 import { useSettingSave } from "../hooks/useSettingsSave";
+import { isDemoUserId } from "../../../utils/demoMode";
 import {
   faCalendarDays,
   faLayerGroup,
@@ -23,6 +24,17 @@ export function DisplaySection({
 
   const { handleSave, saveState } = useSettingSave(async () => {
     if (!profile?.id) return;
+    if (isDemoUserId(profile.id)) {
+      dispatch(
+        updateLocalProfile({
+          date_format: settings.dateFormat,
+          default_deck_view: settings.defaultDeckView,
+          heatmap_metric: settings.heatmapMetric,
+        }),
+      );
+      return;
+    }
+
     const { error } = await supabase.rpc("update_user_display_settings", {
       p_user_id: profile.id,
       p_date_format: settings.dateFormat,

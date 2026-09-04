@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
+import { isDemoUserId } from "../utils/demoMode";
 
 const TABLES = {
   A: "card_a_progress",
@@ -20,6 +21,10 @@ export const updateProgress = createAsyncThunk(
 
     try {
       const progressUpdates = sessionUpdates.map(({ xp_earned, ...update }) => update);
+
+      if (progressUpdates.some((update) => isDemoUserId(update.user_id))) {
+        return progressUpdates;
+      }
 
       const { error } = await supabase.from(table).upsert(progressUpdates, {
         onConflict: ["user_id", "card_id"],

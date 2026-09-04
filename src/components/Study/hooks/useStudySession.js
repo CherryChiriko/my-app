@@ -25,6 +25,7 @@ import { getTodayISO, getUserTimezone } from "../../../utils/dateHelper";
 import { PHASES } from "../../../utils/constants";
 import { createSelector } from "@reduxjs/toolkit";
 import { fetchUserProfile } from "../../../slices/userSlice";
+import { isDemoUserId } from "../../../utils/demoMode";
 
 // Helper: Standard Fisher-Yates shuffle
 const shuffleArray = (array) => {
@@ -236,6 +237,25 @@ export default function useStudySession({ deck, navMode, userId }) {
             study_mode: deckSnapshot.study_mode,
           }),
         ).unwrap();
+
+        if (isDemoUserId(resolvedUserId)) {
+          await Promise.all([
+            dispatch(fetchDeckCounts({ user_id: resolvedUserId })).unwrap(),
+            dispatch(
+              updateDeckLocally({
+                id: deckSnapshot.id,
+                last_reviewed: new Date().toISOString().split("T")[0],
+              }),
+            ),
+            dispatch(fetchDailyStreakStats({ user_id: resolvedUserId })).unwrap(),
+            dispatch(fetchDailyActivity({ user_id: resolvedUserId })),
+            dispatch(fetchUserProfile(resolvedUserId)),
+          ]);
+
+          dispatch(logStudySession({ cardsReviewed, cardsLearned }));
+          setSessionUpdates([]);
+          return;
+        }
 
         const userTimezone = getUserTimezone();
         await supabase.rpc("update_streaks_after_session", {
