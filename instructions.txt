@@ -8,6 +8,8 @@ cd ..
 
 How to install it on your phone
 
+    File is in android/app/build/outputs/apk/debug
+    
     Transfer the app-debug.apk file to your phone (via USB, Google Drive, WhatsApp, or email).
 
     Tap the file on your phone to open it.
@@ -17,3 +19,59 @@ How to install it on your phone
     Tap Install, and Revu will show up on your app drawer like any standard app from the Google Play Store!
 
     Note: Debug APKs are meant for personal testing. When you're ready to publish to the Google Play Store later, you'll generate a signed release file (.aab / Signed APK) instead, which requires a developer keystore.
+
+
+
+    ---------------------------
+
+    ICON
+
+    1. Move your icon into the project
+Copy icon-only.png from your Desktop into your app's root folder, inside an assets directory:
+plain
+
+revu-app/
+├── assets/
+│   └── icon-only.png       <-- put it here
+├── src/
+├── android/
+├── ios/
+├── capacitor.config.ts
+└── package.json
+
+2. Install the assets tool
+bash
+
+npm install -D @capacitor/assets
+
+3. Generate icons
+bash
+
+npx capacitor-assets generate
+
+This will:
+
+    Read assets/icon-only.png
+    Generate all required Android icon sizes → android/app/src/main/res/
+    Generate all required iOS icon sizes → ios/App/App/Assets.xcassets/AppIcon.appiconset/
+
+If you also need a splash screen
+If you ever add a splash screen, put these two files in the same assets folder and run the same command:
+plain
+
+assets/
+├── icon-only.png
+├── splash.png           (2732×2732 px, center-safe area)
+└── icon-background.png  (optional, for Android adaptive icons)
+
+Manual fallback (if you don't want the tool)
+Android: Replace the files in
+android/app/src/main/res/mipmap-*/ic_launcher.png and ic_launcher_foreground.png for each density (mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi).
+iOS: Replace the files in
+ios/App/App/Assets.xcassets/AppIcon.appiconset/ and update Contents.json with the correct filenames.
+After generating, rebuild your native apps:
+bash
+
+npx cap sync
+
+Then re-run on your device/emulator. The icon should appear on the home screen.
