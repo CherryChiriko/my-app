@@ -48,7 +48,6 @@ export default function DeckListView() {
     currentDecks,
     totalPages,
   } = controller;
-  console.log(viewMode);
 
   // ── Responsive window check ──
   const [isMobile, setIsMobile] = useState(
@@ -131,9 +130,9 @@ export default function DeckListView() {
 
   return (
     <div
-      className={`min-h-screen ${activeTheme.background.app} ${activeTheme.text.primary} w-full`}
+      className={`w-full ${activeTheme.background.app} ${activeTheme.text.primary}`}
     >
-      <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6">
+      <div className="max-w-screen-xl mx-auto px-4 md:px-8 py-4 md:py-6 space-y-4 md:space-y-6">
         <Header
           title="Deck Manager"
           description="Create, edit, and manage your flashcard decks"
@@ -153,10 +152,15 @@ export default function DeckListView() {
               <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full h-[32px] md:h-[46px] border-1 ${activeTheme.border.secondary} ${activeTheme.isDark ? activeTheme.background.canvas : activeTheme.background.secondary} ${activeTheme.text.primary} placeholder:${activeTheme.text.muted} rounded-xl pl-10 pr-10 md:pr-4 text-sm focus:outline-none focus:ring-2 ${activeTheme.ring.focus} transition-all`}
+                className={`w-full h-[32px] md:h-[46px] border-1 ${activeTheme.border.secondary} ${
+                  activeTheme.isDark
+                    ? activeTheme.background.canvas
+                    : activeTheme.background.secondary
+                } ${activeTheme.text.primary} placeholder:${
+                  activeTheme.text.muted
+                } rounded-xl pl-10 pr-10 md:pr-4 text-sm focus:outline-none focus:ring-2 ${activeTheme.ring.focus} transition-all`}
                 placeholder="Search decks..."
               />
-              {/* Mobile filter toggle — attach sortRef here on mobile */}
               <button
                 type="button"
                 ref={isMobile ? sortRef : null}
@@ -178,9 +182,14 @@ export default function DeckListView() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 md:gap-3 shrink-0">
-              {/* View toggle — desktop only */}
               <div
-                className={`hidden md:inline-flex h-[46px] rounded-xl border-1 ${activeTheme.border.secondary} p-1 ${activeTheme.isDark ? activeTheme.background.canvas : activeTheme.background.secondary}`}
+                className={`hidden md:inline-flex h-[46px] rounded-xl border-1 ${
+                  activeTheme.border.secondary
+                } p-1 ${
+                  activeTheme.isDark
+                    ? activeTheme.background.canvas
+                    : activeTheme.background.secondary
+                }`}
                 ref={viewRef}
               >
                 <button
@@ -217,7 +226,6 @@ export default function DeckListView() {
                 <span>Import</span>
               </button>
 
-              {/* Quick Create */}
               <div ref={createRef}>
                 <QuickCreateMenu
                   activeTheme={activeTheme}
@@ -228,7 +236,6 @@ export default function DeckListView() {
                 />
               </div>
 
-              {/* Help */}
               <button
                 type="button"
                 onClick={handleManualReplayTour}
@@ -247,7 +254,9 @@ export default function DeckListView() {
 
           {/* Row 2: Filters */}
           <div
-            className={`flex flex-wrap items-center gap-2 md:flex ${showMobileFilters ? "flex" : "hidden"}`}
+            className={`flex flex-wrap items-center gap-2 md:flex ${
+              showMobileFilters ? "flex" : "hidden"
+            }`}
           >
             <div className="relative">
               <select
@@ -267,7 +276,6 @@ export default function DeckListView() {
               />
             </div>
 
-            {/* Desktop sortRef placement */}
             <div className="relative" ref={!isMobile ? sortRef : null}>
               <select
                 value={sortBy}
@@ -288,22 +296,47 @@ export default function DeckListView() {
           </div>
         </div>
 
-        {/* ── Deck grid / list ── */}
+        {/* ── Content View Area ── */}
         {currentDecks.length > 0 ? (
-          <DeckCard
-            decks={currentDecks}
-            activeTheme={activeTheme}
-            variant={viewMode}
-            toast={toast}
-            highlightedId={highlightedId}
-            firstCardRef={decksRef}
-          />
+          <div>
+            <DeckCard
+              decks={currentDecks}
+              activeTheme={activeTheme}
+              variant={viewMode}
+              toast={toast}
+              highlightedId={highlightedId}
+              firstCardRef={decksRef}
+            />
+
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <button
+                  onClick={() => setPage(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                  className={`inline-flex items-center text-sm font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-40 ${activeTheme.border.secondary} ${activeTheme.text.secondary} hover:${activeTheme.background.canvas}`}
+                >
+                  Previous
+                </button>
+                <span className={`${activeTheme.text.secondary} text-sm px-2`}>
+                  {currentPage} / {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage(currentPage + 1)}
+                  disabled={currentPage >= totalPages}
+                  className={`inline-flex items-center text-sm font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-40 ${activeTheme.border.secondary} ${activeTheme.text.secondary} hover:${activeTheme.background.canvas}`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
+          /* Empty state block sized compactly to fit on screen without vertical scroll */
           <div
-            className={`p-8 md:p-10 text-center rounded-xl border-2 border-dashed ${activeTheme.border.secondary} ${activeTheme.background.canvas} mt-6 md:mt-10`}
+            className={`p-6 md:p-8 text-center rounded-xl border-2 border-dashed ${activeTheme.border.secondary} ${activeTheme.background.canvas} mt-4`}
           >
             <p
-              className={`text-xl md:text-2xl font-bold mb-2 ${activeTheme.text.primary}`}
+              className={`text-lg md:text-xl font-bold mb-1 ${activeTheme.text.primary}`}
             >
               No decks found
             </p>
@@ -312,7 +345,7 @@ export default function DeckListView() {
                 <p className={`${activeTheme.text.secondary} text-sm`}>
                   Your filters didn't match any decks.
                 </p>
-                <div className="mt-4">
+                <div className="mt-3">
                   <button
                     onClick={() => {
                       setSearchTerm("");
@@ -333,29 +366,6 @@ export default function DeckListView() {
         )}
 
         <Toast ref={toast} position="top-center" />
-
-        {/* ── Pagination ── */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 pt-2">
-            <button
-              onClick={() => setPage(currentPage - 1)}
-              disabled={currentPage <= 1}
-              className={`inline-flex items-center text-sm font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-40 ${activeTheme.border.secondary} ${activeTheme.text.secondary} hover:${activeTheme.background.canvas}`}
-            >
-              Previous
-            </button>
-            <span className={`${activeTheme.text.secondary} text-sm px-2`}>
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={() => setPage(currentPage + 1)}
-              disabled={currentPage >= totalPages}
-              className={`inline-flex items-center text-sm font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-40 ${activeTheme.border.secondary} ${activeTheme.text.secondary} hover:${activeTheme.background.canvas}`}
-            >
-              Next
-            </button>
-          </div>
-        )}
       </div>
 
       <QuickCreateView

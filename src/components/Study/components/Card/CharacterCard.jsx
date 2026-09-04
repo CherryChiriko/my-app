@@ -86,7 +86,9 @@ const CharacterCard = ({
       </div>
 
       {/* Controls — compact, shrink-0 so they don't steal canvas space */}
-      <div className="flex flex-col w-full justify-center items-center shrink-0 px-1 md:px-4 mt-1 md:mt-4 text-center space-y-1.5 md:space-y-3">
+      <div
+        className={`flex flex-col w-full justify-center items-center shrink-0 px-1 md:px-4 mt-1 md:mt-4 text-center space-y-1.5 md:space-y-3 ${activeTheme.text.primary}`}
+      >
         {renderWordProgress()}
 
         <p
@@ -95,7 +97,8 @@ const CharacterCard = ({
           {card?.back}
         </p>
 
-        <div className="flex items-center justify-center pb-1">
+        {/* 🔒 Reserve space so hiding the button never collapses this area */}
+        <div className="flex items-center justify-center pb-1 min-h-[44px] md:min-h-[104px]">
           {!showContinueButtons && !revealed && (
             <RevealButton onReveal={handleReveal} activeTheme={activeTheme} />
           )}

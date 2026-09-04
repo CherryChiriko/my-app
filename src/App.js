@@ -212,11 +212,7 @@ function App() {
         <>
           <StatsLoader session={session} authLoading={authLoading} />
           <div
-            style={{
-              backgroundColor: activeTheme.background.app,
-              color: activeTheme.text.primary,
-              minHeight: "100vh",
-            }}
+            className={`${activeTheme.background.app} min-h-screen flex flex-col`}
           >
             <Navbar />
             <main>
@@ -288,7 +284,7 @@ function App() {
 
       {/* 🌟 FIX: Change minHeight: "100vh" to a fixed flex column layout locked to 100dvh */}
       <div
-        className="w-full h-dvh flex flex-col overflow-hidden"
+        className="w-full h-dvh flex flex-col"
         style={{
           backgroundColor: activeTheme.background.app,
           color: activeTheme.text.primary,
@@ -298,7 +294,9 @@ function App() {
         <Navbar />
 
         {/* main fills ONLY the remaining space underneath Navbar */}
-        <main className="flex-1 min-h-0 w-full overflow-hidden flex flex-col">
+        <main
+          className={`flex-1 min-h-0 w-full overflow-y-auto flex flex-col ${activeTheme.background.app}`}
+        >
           <ScrollToTop />
           <AppRoutes {...routeProps} />
         </main>

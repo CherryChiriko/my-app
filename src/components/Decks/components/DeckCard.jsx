@@ -21,14 +21,15 @@ export default function DeckCard({
   return (
     <div
       className={`
-        grid grid-rows-2 grid-flow-col auto-cols-[85vw] gap-3
-        px-4 pt-2 pb-6 -mx-4
-        overflow-x-auto snap-x snap-mandatory scrollbar-hide
-        
-        md:grid-flow-row md:auto-cols-auto md:overflow-visible md:snap-none
-        md:px-0 md:mx-0
-        ${desktopGrid}
-      `}
+  grid grid-rows-2 grid-flow-col auto-cols-[85vw] gap-3
+  px-4 pt-2 pb-6 -mx-4
+  overflow-x-auto snap-x snap-mandatory scrollbar-hide
+
+  md:grid-rows-none md:grid-flow-row md:auto-cols-auto
+  md:overflow-visible md:snap-none
+  md:px-0 md:mx-0
+  ${desktopGrid}
+`}
     >
       {decks.map((deck, index) => (
         <div
