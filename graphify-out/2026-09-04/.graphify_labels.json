@@ -28,8 +28,5 @@
   "26": "detectColumns.js",
   "27": "useDecks.js",
   "28": "setupTests.js",
-  "29": "tailwind.config.js",
-  "30": "README.md",
-  "31": "capacitor.config.ts",
-  "32": "useCharacter.js"
+  "29": "tailwind.config.js"
 }

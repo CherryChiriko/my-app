@@ -52,6 +52,10 @@
 | `avatar_color` | `text` |  |
 | `has_completed_onboarding` | `bool` |  |
 | `lifetime_xp` | `int4` |  |
+| `plan_id` | `text` |  |
+| `subscription_status` | `text` |  |
+| `import_usage_month` | `text` |  Nullable |
+| `imported_cards_this_month` | `int4` |  |
 
 ## Table `card_a_progress`
 

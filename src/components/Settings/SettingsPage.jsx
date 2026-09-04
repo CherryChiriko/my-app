@@ -9,6 +9,7 @@ import { ThemeSection } from "./components/ThemeSection";
 import { StudyFlowSection } from "./components/StudyFlowSection";
 import { DisplaySection } from "./components/DisplaySection";
 import { AccountSection } from "./components/AccountSection";
+import { SubscriptionSection } from "./components/SubscriptionSection";
 
 export function SettingsPage({
   profile,
@@ -24,9 +25,16 @@ export function SettingsPage({
     <>
       {/* ── Row 3: Avatar · Account · Theme ────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <SubscriptionSection
+          profile={profile}
+          activeTheme={activeTheme}
+          dispatch={dispatch}
+          isMobile={isMobile}
+        />
         <AccountSection
           profile={profile}
           activeTheme={activeTheme}
+          dispatch={dispatch}
           isMobile={isMobile}
         />
 

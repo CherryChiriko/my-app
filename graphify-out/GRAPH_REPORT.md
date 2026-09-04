@@ -1,16 +1,16 @@
-# Graph Report - my-app - Copy  (2026-07-08)
+# Graph Report - revu-app  (2026-09-04)
 
 ## Corpus Check
-- 159 files · ~96,789 words
+- 182 files · ~134,067 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 510 nodes · 1078 edges · 30 communities (28 shown, 2 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 55 edges (avg confidence: 0.72)
+- 582 nodes · 1360 edges · 33 communities (29 shown, 4 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 67 edges (avg confidence: 0.74)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6597c0df`
+- Built from commit: `df014016`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -34,128 +34,135 @@
 - xp.js
 - seed.js
 - README.md
+- Onbo.jsx
 - userProgress.js
+- README.md
+- capacitor.config.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `supabase` - 30 edges
-2. `selectActiveTheme()` - 23 edges
-3. `inputCls()` - 15 edges
-4. `useStudySession()` - 15 edges
-5. `selectDecks()` - 15 edges
-6. `App()` - 13 edges
-7. `selectSettings()` - 13 edges
-8. `fetchDecks` - 11 edges
-9. `hasCJKCharacter()` - 11 edges
-10. `ActivityPage()` - 10 edges
+1. `supabase` - 32 edges
+2. `selectActiveTheme()` - 21 edges
+3. `selectUserProfile()` - 21 edges
+4. `useStudySession()` - 19 edges
+5. `getTodayISO()` - 18 edges
+6. `selectDecks()` - 17 edges
+7. `inputCls()` - 16 edges
+8. `App()` - 15 edges
+9. `selectSettings()` - 15 edges
+10. `useActivityAnalytics()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `TourModal()` --references--> `react`  [EXTRACTED]
+  src/components/General/ui/TourModal.jsx → package.json
+- `AvatarPick()` --references--> `react`  [EXTRACTED]
+  src/components/Settings/components/AvatarPick.jsx → package.json
 - `useImportLogic()` --references--> `xlsx`  [EXTRACTED]
   src/components/Import/hooks/useImportLogic.js → package.json
-- `CharacterCard()` --references--> `react`  [EXTRACTED]
-  src/components/Study/components/Card/CharacterCard.jsx → package.json
-- `NavItem()` --references--> `react`  [EXTRACTED]
-  src/components/Navbar/NavItem.jsx → package.json
-- `SessionMode()` --references--> `react`  [EXTRACTED]
-  src/components/Study/views/SessionMode.jsx → package.json
-- `StudySession()` --references--> `react`  [EXTRACTED]
-  src/components/Study/views/StudySession.jsx → package.json
+- `SpotlightTourModal()` --references--> `@capacitor/app`  [EXTRACTED]
+  src/components/General/ui/SpotlightTourModal.jsx → package.json
+- `TourModal()` --references--> `@capacitor/app`  [EXTRACTED]
+  src/components/General/ui/TourModal.jsx → package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (30 total, 2 thin omitted)
+## Communities (33 total, 4 thin omitted)
 
 ### Community 0 - "activitySlice.js"
-Cohesion: 0.06
-Nodes (40): ActivityPage(), dateKey(), formatDate(), formatDuration(), getRecentDays(), Dashboard(), generateCalendarGrid(), Heatmap() (+32 more)
+Cohesion: 0.10
+Nodes (18): DeckCardItem(), DEFAULT_COUNTS, useDeckLogic(), DecksLoader(), StatsLoader(), fetchDecks, progressSlice, TABLES (+10 more)
 
 ### Community 1 - "App.js"
-Cohesion: 0.09
-Nodes (30): react, App(), resetAllUserState(), themes, ScrollToTop(), Head(), LoginPage(), useLogin() (+22 more)
+Cohesion: 0.08
+Nodes (39): react, App(), resetAllUserState(), themes, Dashboard(), StatCard(), DeckDetails(), DeckCard() (+31 more)
 
 ### Community 2 - "deckSlice.js"
-Cohesion: 0.10
-Nodes (26): useCardDetails(), C_LANGUAGES, DeckMetaEditor(), DeckHeaderSection(), INITIAL_FIELDS, useDeckDetails(), DeckDetails(), generateReading() (+18 more)
+Cohesion: 0.13
+Nodes (23): formatDuration(), getRecentDays(), useActivityAnalytics(), ActivityPage(), useListController(), useDeckLiveSync(), selectActiveDaysCount, selectTotalActivity (+15 more)
 
 ### Community 3 - "dependencies"
-Cohesion: 0.04
-Nodes (45): browserslist, development, production, dependencies, bootstrap, date-fns, dotenv, @fortawesome/fontawesome-svg-core (+37 more)
+Cohesion: 0.06
+Nodes (32): dependencies, bootstrap, @capacitor/android, @capacitor/browser, @capacitor/core, @codetrix-studio/capacitor-google-auth, date-fns, @fortawesome/fontawesome-svg-core (+24 more)
 
 ### Community 4 - "constants.js"
-Cohesion: 0.09
-Nodes (26): CardEdit(), CardDetails(), AddCardMenu(), useAddCard(), ConfirmationDialog(), FormField(), inputCls(), selectCls() (+18 more)
+Cohesion: 0.08
+Nodes (34): CardEdit(), CardDetails(), AddCardMenu(), INITIAL_FIELDS, useAddCard(), FormField(), inputCls(), selectCls() (+26 more)
 
 ### Community 5 - "useStudySession.js"
-Cohesion: 0.09
-Nodes (25): checkMidnightReset(), previousPersistedSettings, IMPORTANT: useAuth clears localStorage BEFORE dispatching this, so that, store, StatsLoader(), selectCardsForDeck, useStudySession(), root (+17 more)
+Cohesion: 0.05
+Nodes (55): checkMidnightReset(), previousPersistedSettings, IMPORTANT: useAuth clears localStorage BEFORE dispatching this, so that, store, useCardDetails(), generateCalendarGrid(), Heatmap(), useBulkCardActions() (+47 more)
 
 ### Community 6 - "SettingsPage.jsx"
-Cohesion: 0.14
-Nodes (14): AvatarDisplay(), AccountSection(), AvatarSection(), DisplaySection(), StudyFlowSection(), StudyLimitsSection(), ThemeSection(), useAccountSettings() (+6 more)
+Cohesion: 0.11
+Nodes (18): AvatarDisplay(), SettingCard(), AccountSection(), AvatarPick(), PALETTE, PRESET_AVATARS, AvatarSection(), DisplaySection() (+10 more)
 
 ### Community 7 - "settingsSlice.js"
-Cohesion: 0.10
-Nodes (17): XPBar(), DeckCard(), DeckCardItem(), useListController(), DeckListView(), Bar(), Header(), FinalStep() (+9 more)
+Cohesion: 0.12
+Nodes (18): @capacitor/app, SpotlightTourModal(), TourModal(), FlipCard(), DashboardTutorial(), DeckDetailsTutorial(), DeckPageTutorial(), StudyTutorial() (+10 more)
 
 ### Community 8 - "userSlice.js"
-Cohesion: 0.11
-Nodes (11): AvatarPick(), PALETTE, PRESET_AVATARS, persistAvatarState(), ONBOARDING_STEPS, useTutorial(), OnboardingModal(), STEPS (+3 more)
+Cohesion: 0.18
+Nodes (15): xlsx, useImportLogic(), SubscriptionSection(), PLAN_IDS, plans, recordImportedCards, selectSubscription(), updateSubscriptionPlan (+7 more)
 
 ### Community 9 - "CompactVariant.jsx"
-Cohesion: 0.16
-Nodes (10): DeckDelete(), DeckMenu(), QuickCreateMenu(), DeckActions(), DeckBadges(), ProgressBar(), CompactVariant(), Menu() (+2 more)
+Cohesion: 0.12
+Nodes (15): C_LANGUAGES, DeckMetaEditor(), DeckHeaderSection(), DeckMenu(), QuickCreateMenu(), DeckActions(), DeckBadges(), ProgressBar() (+7 more)
 
 ### Community 10 - "ImportView.jsx"
-Cohesion: 0.13
-Nodes (13): CharacterCanvas(), CharacterDemo(), Step0(), Step1(), Step2(), Step3(), Step4(), EXISTING_STEPS (+5 more)
+Cohesion: 0.09
+Nodes (20): XPBar(), Bar(), CharacterCanvas(), CharacterDemo(), FinalStep(), Step0(), Step1(), Step2() (+12 more)
 
 ### Community 11 - "CardRenderer.jsx"
 Cohesion: 0.18
-Nodes (8): NotFound404(), CharacterCard(), FlipCard(), ContinueButton(), buttons, RatingButtons(), RevealButton(), useCharacterFlow()
+Nodes (8): NotFound404(), CardRenderer(), CharacterCard(), ContinueButton(), buttons, RatingButtons(), RevealButton(), useCharacterFlow()
 
 ### Community 12 - "CardGridSection.jsx"
-Cohesion: 0.18
-Nodes (9): CardInfo(), getCardStrengthLabel(), CardGridSection(), DeckStatsSection(), STATUS_FILTERS, STATUS_TILE, AddCardTile(), CardTile() (+1 more)
+Cohesion: 0.11
+Nodes (17): CardInfo(), getCardStrengthLabel(), CardGridSection(), DeckStatsSection(), STATUS_FILTERS, STATUS_TILE, AddCardTile(), CardTile() (+9 more)
 
 ### Community 13 - "Learn More"
-Cohesion: 0.14
-Nodes (13): Advanced Configuration, Analyzing the Bundle Size, Available Scripts, Code Splitting, Deployment, Getting Started with Create React App, Learn More, Making a Progressive Web App (+5 more)
+Cohesion: 0.12
+Nodes (16): Columns, Columns, Columns, Columns, Columns, Columns, Columns, Columns (+8 more)
 
 ### Community 14 - "manifest.json"
 Cohesion: 0.25
 Nodes (7): background_color, display, icons, name, short_name, start_url, theme_color
 
 ### Community 15 - "cardMastery.js"
-Cohesion: 0.29
-Nodes (4): STAGE_OPACITY, MASTERY_STAGES, MASTERY_THRESHOLDS, STAGE_LABELS
+Cohesion: 0.14
+Nodes (13): Advanced Configuration, Analyzing the Bundle Size, Available Scripts, Code Splitting, Deployment, Getting Started with Create React App, Learn More, Making a Progressive Web App (+5 more)
 
 ### Community 16 - "xp.js"
-Cohesion: 0.33
-Nodes (5): getLevelProgress(), RATING_XP, STAGE_TRANSITION_XP, XP_EVENTS, xpForLevel()
+Cohesion: 0.22
+Nodes (8): browserslist, development, production, eslintConfig, extends, name, private, version
 
 ### Community 18 - "seed.js"
-Cohesion: 0.67
-Nodes (3): fetch, fs, seedTable()
+Cohesion: 0.40
+Nodes (5): scripts, build, eject, start, test
+
+### Community 19 - "README.md"
+Cohesion: 0.50
+Nodes (4): devDependencies, autoprefixer, @capacitor/assets, dotenv
 
 ## Knowledge Gaps
-- **106 isolated node(s):** `name`, `version`, `private`, `@fortawesome/fontawesome-svg-core`, `@fortawesome/free-brands-svg-icons` (+101 more)
+- **122 isolated node(s):** `config`, `name`, `version`, `private`, `@capacitor/android` (+117 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **2 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `App.js`?**
-  _High betweenness centrality (0.145) - this node is a cross-community bridge._
-- **Why does `react` connect `App.js` to `CardRenderer.jsx`, `dependencies`?**
-  _High betweenness centrality (0.106) - this node is a cross-community bridge._
+- **Why does `dependencies` connect `dependencies` to `xp.js`, `App.js`, `userSlice.js`, `settingsSlice.js`?**
+  _High betweenness centrality (0.142) - this node is a cross-community bridge._
+- **Why does `react` connect `App.js` to `dependencies`, `SettingsPage.jsx`, `settingsSlice.js`?**
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
 - **Why does `StudySession()` connect `App.js` to `deckSlice.js`, `useStudySession.js`?**
-  _High betweenness centrality (0.077) - this node is a cross-community bridge._
-- **Are the 11 inferred relationships involving `selectActiveTheme()` (e.g. with `App()` and `ActivityPage()`) actually correct?**
-  _`selectActiveTheme()` has 11 INFERRED edges - model-reasoned connections that need verification._
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **Are the 10 inferred relationships involving `selectActiveTheme()` (e.g. with `App()` and `useActivityAnalytics()`) actually correct?**
+  _`selectActiveTheme()` has 10 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 10 inferred relationships involving `selectUserProfile()` (e.g. with `App()` and `useActivityAnalytics()`) actually correct?**
+  _`selectUserProfile()` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 3 inferred relationships involving `useStudySession()` (e.g. with `selectCardsStatus()` and `selectLearnLimit()`) actually correct?**
   _`useStudySession()` has 3 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `name`, `version`, `private` to the rest of the system?**
-  _107 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `activitySlice.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.05639097744360902 - nodes in this community are weakly interconnected._
+- **What connects `config`, `name`, `version` to the rest of the system?**
+  _123 weakly-connected nodes found - possible documentation gaps or missing edges._

@@ -6,6 +6,7 @@ import {
   faArrowLeft,
   faEye,
   faLayerGroup,
+  faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 
 const Step4 = ({ activeTheme, logic, onNext, onBack }) => {
@@ -71,6 +72,16 @@ const Step4 = ({ activeTheme, logic, onNext, onBack }) => {
           </div>
         </div>
 
+        {logic.importLimitMessage && (
+          <div className="flex items-start gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-500">
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="mt-0.5 shrink-0"
+            />
+            <span>{logic.importLimitMessage}</span>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
           <button
             onClick={onBack}
@@ -81,7 +92,7 @@ const Step4 = ({ activeTheme, logic, onNext, onBack }) => {
           </button>
           <button
             onClick={onNext}
-            disabled={logic.allCards.length === 0}
+            disabled={logic.allCards.length === 0 || Boolean(logic.importLimitMessage)}
             className={`px-4 py-3.5 sm:py-2 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed min-h-12 sm:min-h-0 text-base sm:text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform
               bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to} text-white`}
           >
@@ -302,6 +313,16 @@ const Step4 = ({ activeTheme, logic, onNext, onBack }) => {
           </div>
         </div>
 
+        {logic.importLimitMessage && (
+          <div className="flex items-start gap-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-500">
+            <FontAwesomeIcon
+              icon={faTriangleExclamation}
+              className="mt-0.5 shrink-0"
+            />
+            <span>{logic.importLimitMessage}</span>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row justify-between gap-3 mt-6">
           <button
             onClick={onBack}
@@ -315,7 +336,8 @@ const Step4 = ({ activeTheme, logic, onNext, onBack }) => {
             disabled={
               logic.isCheckingName ||
               logic.isNameTaken ||
-              !logic.deckSettings.name
+              !logic.deckSettings.name ||
+              Boolean(logic.importLimitMessage)
             }
             className={`px-4 py-3.5 sm:py-2 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed min-h-12 sm:min-h-0 text-base sm:text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform`}
           >

@@ -5,11 +5,17 @@ import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDecks, selectDecks } from "../../../slices/deckSlice";
+import {
+  recordImportedCards,
+  selectUserProfile,
+} from "../../../slices/userSlice";
 import { hasCJKCharacter } from "../../../utils/cjkValidation";
+import { getImportLimitMessage } from "../../../utils/plans";
 
 export const useImportLogic = () => {
   const dispatch = useDispatch();
   const allDecks = useSelector(selectDecks);
+  const profile = useSelector(selectUserProfile);
 
   const [importMode, setImportMode] = useState("new");
   const [targetDeckId, setTargetDeckId] = useState("");
@@ -438,6 +444,9 @@ export const useImportLogic = () => {
     const targetTable = "cards_" + study_mode.toLowerCase();
 
     try {
+      const limitMessage = getImportLimitMessage(profile, allCards.length);
+      if (limitMessage) throw new Error(limitMessage);
+
       const {
         data: { user },
         error: userError,
@@ -485,6 +494,9 @@ export const useImportLogic = () => {
       }
 
       await dispatch(fetchDecks()).unwrap();
+      dispatch(recordImportedCards(allCards.length)).unwrap().catch((err) => {
+        console.error("Failed to record import usage:", err);
+      });
       setImportResultDeckId(newDeck.id);
       return newDeck.id;
     } catch (err) {
@@ -504,8 +516,14 @@ export const useImportLogic = () => {
     const targetTable = "cards_" + study_mode.toLowerCase();
 
     try {
+      const limitMessage = getImportLimitMessage(profile, allCards.length);
+      if (limitMessage) throw new Error(limitMessage);
+
       await uploadCards(targetDeckId, targetTable);
       await dispatch(fetchDecks()).unwrap();
+      dispatch(recordImportedCards(allCards.length)).unwrap().catch((err) => {
+        console.error("Failed to record import usage:", err);
+      });
       setImportResultDeckId(targetDeckId);
       return targetDeckId;
     } catch (err) {
@@ -553,6 +571,7 @@ export const useImportLogic = () => {
     isProcessing,
     processingProgress,
     allCards,
+    importLimitMessage: getImportLimitMessage(profile, allCards.length),
     cjkWarning,
     createDeck,
     createdDeckId,

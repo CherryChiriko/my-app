@@ -1,6 +1,7 @@
 // src/slices/userSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
+import { getCurrentBillingMonth, normalizeSubscription } from "../utils/plans";
 
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
@@ -71,6 +72,83 @@ export const completeTutorial = createAsyncThunk(
   },
 );
 
+export const updateSubscriptionPlan = createAsyncThunk(
+  "user/updateSubscriptionPlan",
+  async (planId, { getState, dispatch, rejectWithValue }) => {
+    const profile = getState().users?.profile;
+    const userId = profile?.id;
+
+    if (!userId) return rejectWithValue("No user profile loaded");
+
+    const previous = normalizeSubscription(profile);
+    const nextProfile = {
+      plan_id: planId,
+      subscription_status: "active",
+    };
+
+    dispatch(updateLocalProfile(nextProfile));
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update(nextProfile)
+        .eq("id", userId);
+
+      if (error) throw error;
+      return nextProfile;
+    } catch (err) {
+      dispatch(
+        updateLocalProfile({
+          plan_id: previous.planId,
+          subscription_status: previous.status,
+        }),
+      );
+      return rejectWithValue(err.message || "Failed to update plan");
+    }
+  },
+);
+
+export const recordImportedCards = createAsyncThunk(
+  "user/recordImportedCards",
+  async (cardCount, { getState, dispatch, rejectWithValue }) => {
+    const profile = getState().users?.profile;
+    const userId = profile?.id;
+
+    if (!userId) return rejectWithValue("No user profile loaded");
+    if (!cardCount) return normalizeSubscription(profile);
+
+    const subscription = normalizeSubscription(profile);
+    const importUsageMonth = getCurrentBillingMonth();
+    const importedCardsThisMonth =
+      subscription.importedCardsThisMonth + Number(cardCount);
+
+    const nextProfile = {
+      import_usage_month: importUsageMonth,
+      imported_cards_this_month: importedCardsThisMonth,
+    };
+
+    dispatch(updateLocalProfile(nextProfile));
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update(nextProfile)
+        .eq("id", userId);
+
+      if (error) throw error;
+      return nextProfile;
+    } catch (err) {
+      dispatch(
+        updateLocalProfile({
+          import_usage_month: subscription.importUsageMonth,
+          imported_cards_this_month: subscription.importedCardsThisMonth,
+        }),
+      );
+      return rejectWithValue(err.message || "Failed to update import usage");
+    }
+  },
+);
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -120,5 +198,8 @@ export const selectUserError = (state) => state.users?.error;
 // 🌟 Updated Selector maps to evaluate individual structural keys
 export const selectCompletedTutorials = (state) =>
   state.users?.profile?.completed_tutorials || {};
+
+export const selectSubscription = (state) =>
+  normalizeSubscription(state.users?.profile);
 
 export default userSlice.reducer;
