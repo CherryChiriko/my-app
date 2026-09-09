@@ -1,8 +1,26 @@
 // src/slices/userSlice.js
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createSelector,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import { supabase } from "../utils/supabaseClient";
 import { getCurrentBillingMonth, normalizeSubscription } from "../utils/plans";
 import { demoProfile, isDemoUserId } from "../utils/demoMode";
+
+const selectUserState = (state) => state.users;
+
+export const selectExpiryStatus = createSelector(
+  [selectUserState],
+  (usersState) => {
+    const profile = usersState?.profile;
+    return {
+      status: profile?.subscription_status || "free",
+      isExpired: profile?.subscription_status === "expired",
+      cancelAtPeriodEnd: profile?.pro_cancel_at_period_end || false,
+    };
+  },
+);
 
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
@@ -73,44 +91,6 @@ export const completeTutorial = createAsyncThunk(
       // Rollback to prior clean backup structural definitions if connection drops
       dispatch(updateLocalProfile({ completed_tutorials: currentTutorials }));
       return rejectWithValue(err.message || "Failed to save tutorial status");
-    }
-  },
-);
-
-export const updateSubscriptionPlan = createAsyncThunk(
-  "user/updateSubscriptionPlan",
-  async (planId, { getState, dispatch, rejectWithValue }) => {
-    const profile = getState().users?.profile;
-    const userId = profile?.id;
-
-    if (!userId) return rejectWithValue("No user profile loaded");
-
-    const previous = normalizeSubscription(profile);
-    const nextProfile = {
-      plan_id: planId,
-      subscription_status: "active",
-    };
-
-    dispatch(updateLocalProfile(nextProfile));
-
-    if (isDemoUserId(userId)) return nextProfile;
-
-    try {
-      const { error } = await supabase
-        .from("profiles")
-        .update(nextProfile)
-        .eq("id", userId);
-
-      if (error) throw error;
-      return nextProfile;
-    } catch (err) {
-      dispatch(
-        updateLocalProfile({
-          plan_id: previous.planId,
-          subscription_status: previous.status,
-        }),
-      );
-      return rejectWithValue(err.message || "Failed to update plan");
     }
   },
 );

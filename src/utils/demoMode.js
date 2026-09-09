@@ -71,12 +71,7 @@ export const demoProfile = {
   default_deck_view: "large",
   heatmap_metric: "consistency",
   has_completed_onboarding: true,
-  completed_tutorials: {
-    general: true,
-    dashboard: true,
-    decks: true,
-    study: true,
-  },
+  completed_tutorials: {},
   lifetime_xp: 1280,
   plan_id: "pro",
   subscription_status: "active",

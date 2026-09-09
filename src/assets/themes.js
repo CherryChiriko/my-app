@@ -23,6 +23,7 @@ const themes = [
       secondary: "text-gray-300",
       muted: "text-gray-500",
       activeButton: "text-white",
+      ok: "text-emerald-500",
       danger: "text-red-300",
       warning: "text-amber-500",
       accent1: "text-sky-500",
@@ -56,6 +57,7 @@ const themes = [
       muted: "border-gray-700",
       secondary: "border-gray-600",
       danger: "border-red-700",
+      accent: "border-purple-500",
     },
     gradients: {
       from: "from-indigo-500",
@@ -88,6 +90,7 @@ const themes = [
       secondary: "text-gray-700",
       muted: "text-gray-500",
       activeButton: "text-white",
+      ok: "text-emerald-500",
       danger: "text-red-600",
       warning: "text-amber-500",
       accent1: "text-sky-500",
@@ -123,6 +126,7 @@ const themes = [
       muted: "border-gray-100",
       secondary: "border-gray-300",
       danger: "border-red-300",
+      accent: "border-purple-400",
     },
     gradients: {
       from: "from-indigo-400",

@@ -12,6 +12,12 @@ import { AccountSection } from "./components/AccountSection";
 import { SubscriptionSection } from "./components/SubscriptionSection";
 import { isDemoModeEnabled } from "../../utils/demoMode";
 
+import { SubscriptionExpiryView } from "./views/SubscriptionExpiryView";
+import { useUpgradeToPro } from "../../hooks/useUpgradeToPro";
+
+import { useSelector } from "react-redux";
+import { selectExpiryStatus } from "../../slices/userSlice";
+
 export function SettingsPage({
   profile,
   settings,
@@ -22,21 +28,31 @@ export function SettingsPage({
 }) {
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const isDemo = isDemoModeEnabled();
-  console.log(settings);
+  const { startCheckout, openBillingPortal } = useUpgradeToPro();
+  const expiry = useSelector(selectExpiryStatus);
+
+  const handleManageBilling = () => {
+    if (expiry.state === "expired") {
+      startCheckout("pro", "monthly"); // or open the plans modal instead
+    } else {
+      openBillingPortal();
+    }
+  };
 
   return (
     <>
       {/* ── Row 3: Avatar · Account · Theme ────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {!isDemo && (
           <>
-            <SubscriptionSection
+            <AccountSection
               profile={profile}
               activeTheme={activeTheme}
               dispatch={dispatch}
               isMobile={isMobile}
             />
-            <AccountSection
+
+            <SubscriptionSection
               profile={profile}
               activeTheme={activeTheme}
               dispatch={dispatch}
@@ -84,6 +100,8 @@ export function SettingsPage({
           isMobile={isMobile}
         />
       </div>
+
+      <SubscriptionExpiryView onManageBilling={handleManageBilling} />
     </>
   );
 }

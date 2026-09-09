@@ -44,7 +44,7 @@ export const plans = [
       "Custom daily goal profiles",
     ],
     ctaText: "Upgrade to Pro",
-    ctaVariant: "primary",
+    ctaVariant: "accent",
     highlighted: true,
   },
   {
@@ -64,7 +64,7 @@ export const plans = [
       "Support an independent app you like",
     ],
     ctaText: "Become a Founding Member",
-    ctaVariant: "secondary",
+    ctaVariant: "primary",
     highlighted: false,
   },
 ];
