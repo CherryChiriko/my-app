@@ -47,7 +47,9 @@ function DeckCountsSummary({ counts, activeTheme }) {
             </span>
             {!isLast && (
               <span
-                className={`font-normal ${activeTheme?.text?.muted || "text-slate-500"}`}
+                className={`font-normal ${
+                  activeTheme?.text?.muted || "text-slate-500"
+                }`}
               >
                 ·
               </span>
@@ -73,6 +75,7 @@ export default function ListVariant({ deck, activeTheme, logic }) {
 
   // Safe theme fallbacks
   const titleClass = activeTheme?.text?.primary || "text-white";
+  const isCharacterMode = deck.study_mode === "C";
 
   return (
     <div className="flex flex-col gap-2 min-w-0 w-full h-full justify-between">
@@ -123,8 +126,8 @@ export default function ListVariant({ deck, activeTheme, logic }) {
             showReview={showReview}
             handleAction={handleAction}
             compact
-            newCount={counts.new}
             due={counts.due}
+            isCharacterMode={isCharacterMode}
           />
         </div>
       </div>

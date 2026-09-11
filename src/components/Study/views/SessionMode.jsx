@@ -1,5 +1,4 @@
-// src/components/Study/views/SessionMode.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import CardRenderer from "../../Study/components/Card/CardRenderer";
@@ -43,10 +42,6 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
     dispatch(completeTutorial("decks"));
   };
 
-  const handleManualReplayTour = () => {
-    setShowTutorial(true);
-  };
-
   const {
     currentCard,
     currentPhase,
@@ -57,34 +52,36 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
     handleRate,
     handlePassComplete,
     exitSession,
+    status,
   } = session;
 
-  const [previousCardId, setPreviousCardId] = React.useState(currentCard?.id);
-  const [isTransitioning, setIsTransitioning] = React.useState(false);
-  const transitionTimeoutRef = React.useRef(null);
+  const cardIdentifier = currentCard?.card_id || currentCard?.id;
+  const [previousCardId, setPreviousCardId] = useState(cardIdentifier);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const transitionTimeoutRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isTransitioning) return;
     if (transitionTimeoutRef.current) {
-      window.clearTimeout(transitionTimeoutRef.current);
+      clearTimeout(transitionTimeoutRef.current);
       transitionTimeoutRef.current = null;
     }
-    if (currentCard?.id && currentCard?.id !== previousCardId) {
+    if (cardIdentifier && cardIdentifier !== previousCardId) {
       setIsTransitioning(false);
-      setPreviousCardId(currentCard.id);
+      setPreviousCardId(cardIdentifier);
       return;
     }
-    transitionTimeoutRef.current = window.setTimeout(() => {
+    transitionTimeoutRef.current = setTimeout(() => {
       setIsTransitioning(false);
       transitionTimeoutRef.current = null;
     }, 1000);
+
     return () => {
       if (transitionTimeoutRef.current) {
-        window.clearTimeout(transitionTimeoutRef.current);
-        transitionTimeoutRef.current = null;
+        clearTimeout(transitionTimeoutRef.current);
       }
     };
-  }, [isTransitioning, currentCard?.id, previousCardId]);
+  }, [isTransitioning, cardIdentifier, previousCardId]);
 
   function SessionHeader({ title, progress }) {
     const gradientFrom = activeTheme?.gradients?.from || "from-indigo-500";
@@ -141,7 +138,7 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
 
         <button
           type="button"
-          onClick={handleManualReplayTour}
+          onClick={() => setShowTutorial(true)}
           title="Show me around"
           aria-label="Show me around"
           className={`absolute right-3 md:right-4 top-1/2 -translate-y-1/2 group inline-flex items-center justify-center w-10 h-10 ${activeTheme.text.secondary}`}
@@ -158,31 +155,30 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
         className={`h-full flex-1 flex flex-col items-center justify-center ${activeTheme.background.app} text-center px-4`}
       >
         <SessionComplete
-          isOpen={session.sessionFinished}
+          isOpen={sessionFinished}
           learnedCount={session.sessionSummary?.learned || 0}
           onGoBack={session.exitStudy}
           onLearnMore={session.restartSession}
           activeTheme={activeTheme}
-          isLoading={session.status === "loading"}
+          isLoading={status === "loading"}
+          isCharacterLearn={activeDeck?.study_mode === "C" && mode === "learn"}
         />
       </div>
     );
   }
 
-  if (isTransitioning) {
+  if (status === "loading" || isTransitioning) {
     return (
       <div
         className={`h-full flex-1 ${activeTheme.background.app} ${activeTheme.text.primary} w-full px-0 md:px-4`}
       >
         <div className="max-w-screen-xl mx-auto h-full flex flex-col justify-center space-y-4 md:space-y-6">
-          <SessionHeader title={activeDeck.name} />
-          <LoadingSpinner label="Loading next card…" />
+          <SessionHeader title={activeDeck?.name || "Session"} />
+          <LoadingSpinner label="Loading cards…" />
         </div>
       </div>
     );
   }
-
-  if (!currentCard) return null;
 
   if (!cards.length) {
     return (
@@ -204,21 +200,22 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
     );
   }
 
+  if (!currentCard) return null;
+
   return (
     <div className="w-full h-full flex-1 min-h-0 px-2 md:px-4 select-none flex flex-col">
       <div className="max-w-screen-xl mx-auto w-full h-full flex-1 min-h-0 flex flex-col justify-between gap-2 md:gap-4 pb-2 md:pb-4">
         <SessionHeader title={activeDeck.name} progress={progress} />
 
-        {/* Card area takes all remaining height and perfectly centers the card */}
         <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center px-0 md:px-6 py-2 md:py-4">
           <CardRenderer
-            key={currentCard.id}
+            key={cardIdentifier}
             card={currentCard}
             study_mode={activeDeck.study_mode}
             phase={currentPhase}
             activeTheme={activeTheme}
-            displayState={currentPhase.displayState}
-            allowRating={currentPhase.allowRating}
+            displayState={currentPhase?.displayState}
+            allowRating={currentPhase?.allowRating}
             onReveal={onReveal}
             onRate={handleRate}
             onPassComplete={handlePassComplete}
@@ -234,4 +231,5 @@ const SessionMode = ({ mode, activeTheme, activeDeck, session }) => {
     </div>
   );
 };
+
 export default SessionMode;

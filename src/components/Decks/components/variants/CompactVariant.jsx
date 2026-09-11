@@ -14,6 +14,8 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
     showReview,
   } = logic;
 
+  const isCharacterMode = deck.study_mode === "C";
+
   return (
     <div className="relative">
       {/* Top Row: Name on the left, Badges & Menu on the right */}
@@ -53,8 +55,8 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
           showReview={showReview}
           handleAction={handleAction}
           large={false}
-          newCount={counts.new}
           due={counts.due}
+          isCharacterMode={isCharacterMode}
         />
       </div>
     </div>

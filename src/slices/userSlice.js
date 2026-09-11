@@ -191,4 +191,9 @@ export const selectCompletedTutorials = (state) =>
 export const selectSubscription = (state) =>
   normalizeSubscription(state.users?.profile);
 
+export const selectIsProUser = (state) => {
+  const sub = normalizeSubscription(state.users?.profile);
+  return sub?.planId !== "free" || false;
+};
+
 export default userSlice.reducer;

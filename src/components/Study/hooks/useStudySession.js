@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { createSelector } from "@reduxjs/toolkit";
 import {
   selectCards,
   selectCardsStatus,
@@ -23,11 +24,12 @@ import { getReviewXP } from "../../../utils/xp";
 import { supabase } from "../../../utils/supabaseClient";
 import { getTodayISO, getUserTimezone } from "../../../utils/dateHelper";
 import { PHASES } from "../../../utils/constants";
-import { createSelector } from "@reduxjs/toolkit";
-import { fetchUserProfile } from "../../../slices/userSlice";
+import { fetchUserProfile, selectIsProUser } from "../../../slices/userSlice";
 import { isDemoUserId } from "../../../utils/demoMode";
+import { TIER_LIMITS } from "../../../utils/tierLimits";
 
-// Helper: Standard Fisher-Yates shuffle
+const REVIEW_PHASE = [{ displayState: "quiz", allowRating: true }];
+
 const shuffleArray = (array) => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -37,9 +39,6 @@ const shuffleArray = (array) => {
   return shuffled;
 };
 
-// ----------------------
-// Memoized selector: Gets ALL cards matching mode criteria once
-// ----------------------
 const selectFilteredCardsForDeck = createSelector(
   [selectCards, (_, deckId) => deckId, (_, __, sessionMode) => sessionMode],
   (allCards, deckId, sessionMode) => {
@@ -62,30 +61,35 @@ export default function useStudySession({ deck, navMode, userId }) {
   const isReviewMode = navMode === "review";
   const sessionMode = isReviewMode ? "review" : "learn";
 
-  const reviewLimit = useSelector(selectReviewLimit);
-  const learnLimit = useSelector(selectLearnLimit);
-  const chunkSize = isReviewMode ? reviewLimit : learnLimit;
-
-  // Track state
   const [startIndex, setStartIndex] = useState(0);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
   const [sessionFinished, setSessionFinished] = useState(false);
   const [sessionUpdates, setSessionUpdates] = useState([]);
   const [sessionSummary, setSessionSummary] = useState(null);
-
-  // Store shuffled order for the current active phase
   const [shuffledPhaseCards, setShuffledPhaseCards] = useState([]);
 
   const sessionStartedAtRef = useRef(Date.now());
   const userIdRef = useRef(userId || null);
   const fetchedKeyRef = useRef(null);
 
+  const isPro = useSelector(selectIsProUser);
+  const reviewLimit = useSelector(selectReviewLimit);
+  const learnLimit = useSelector(selectLearnLimit);
+
+  const isCharacterPractice = deck?.study_mode === "C";
+  const isCharacterLearn = isCharacterPractice && !isReviewMode;
+
+  const chunkSize = isReviewMode ? reviewLimit : learnLimit;
+  const effectiveChunkSize =
+    isCharacterLearn && !isPro
+      ? Math.min(chunkSize, TIER_LIMITS.FREE.MAX_CHARACTER_PRACTICE_CARDS)
+      : chunkSize;
+
   useEffect(() => {
     if (userId) userIdRef.current = userId;
   }, [userId]);
 
-  // Initial Fetch
   useEffect(() => {
     if (!deck?.id || !userId) return;
 
@@ -102,7 +106,7 @@ export default function useStudySession({ deck, navMode, userId }) {
         page: 0,
       }),
     );
-  }, [deck?.id, sessionMode, userId, dispatch, deck?.study_mode]);
+  }, [deck?.id, sessionMode, userId, dispatch]);
 
   const allFilteredCards = useSelector((state) =>
     selectFilteredCardsForDeck(state, deck?.id || -1, sessionMode),
@@ -115,12 +119,10 @@ export default function useStudySession({ deck, navMode, userId }) {
     }
   }, [allFilteredCards]);
 
-  // Base 5-card linear window
   const rawCards = useMemo(() => {
-    return allFilteredCards.slice(startIndex, startIndex + chunkSize);
-  }, [allFilteredCards, startIndex, chunkSize]);
+    return allFilteredCards.slice(startIndex, startIndex + effectiveChunkSize);
+  }, [allFilteredCards, startIndex, effectiveChunkSize]);
 
-  // Shuffle card order every time phaseIndex or rawCards batch changes
   useEffect(() => {
     if (rawCards.length > 0) {
       setShuffledPhaseCards(shuffleArray(rawCards));
@@ -133,12 +135,10 @@ export default function useStudySession({ deck, navMode, userId }) {
   const status = cardsStatus === "idle" ? "loading" : cardsStatus;
 
   const phases = useMemo(
-    () =>
-      isReviewMode
-        ? [{ displayState: "quiz", allowRating: true }]
-        : (PHASES[deck?.study_mode] ?? PHASES.A),
+    () => (isReviewMode ? REVIEW_PHASE : PHASES[deck?.study_mode] ?? PHASES.A),
     [isReviewMode, deck?.study_mode],
   );
+
   const totalPhases = phases.length;
   const currentPhase = useMemo(() => phases[phaseIndex], [phases, phaseIndex]);
   const currentCard = shuffledPhaseCards[cardIndex];
@@ -147,16 +147,15 @@ export default function useStudySession({ deck, navMode, userId }) {
   const currentStep = phaseIndex * limit + cardIndex;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
-  // "Learn More" / Restart with Next Batch
   const restartSession = useCallback(() => {
     setSessionFinished(false);
     setPhaseIndex(0);
     setCardIndex(0);
     setSessionUpdates([]);
     setSessionSummary(null);
-    setStartIndex((prev) => prev + chunkSize);
+    setStartIndex((prev) => prev + effectiveChunkSize);
     sessionStartedAtRef.current = Date.now();
-  }, [chunkSize]);
+  }, [effectiveChunkSize]);
 
   const prevDeckIdRef = useRef(null);
   useEffect(() => {
@@ -180,7 +179,7 @@ export default function useStudySession({ deck, navMode, userId }) {
       return;
     }
     if (phaseIndex + 1 < totalPhases) {
-      setPhaseIndex((p) => p + 1); // Phase change triggers useEffect -> reshuffles rawCards for next phase
+      setPhaseIndex((p) => p + 1);
       setCardIndex(0);
       return;
     }
@@ -210,15 +209,11 @@ export default function useStudySession({ deck, navMode, userId }) {
     [currentCard, currentPhase?.allowRating, advanceCard],
   );
 
-  // Batch update database on session finish
   useEffect(() => {
     if (!sessionFinished || sessionUpdates.length === 0) return;
 
     const resolvedUserId = userIdRef.current;
-    if (!resolvedUserId) {
-      console.error("[runUpdates] No userId available, aborting.");
-      return;
-    }
+    if (!resolvedUserId) return;
 
     const updatesSnapshot = [...sessionUpdates];
     const deckSnapshot = deck;
@@ -228,6 +223,9 @@ export default function useStudySession({ deck, navMode, userId }) {
         const cardsStudied = updatesSnapshot.length;
         const cardsReviewed = isReviewMode ? cardsStudied : 0;
         const cardsLearned = isReviewMode ? 0 : cardsStudied;
+
+        const userTimezone = getUserTimezone();
+        const today = getTodayISO(userTimezone);
 
         setSessionSummary({ learned: cardsLearned, reviewed: cardsReviewed });
 
@@ -247,7 +245,9 @@ export default function useStudySession({ deck, navMode, userId }) {
                 last_reviewed: new Date().toISOString().split("T")[0],
               }),
             ),
-            dispatch(fetchDailyStreakStats({ user_id: resolvedUserId })).unwrap(),
+            dispatch(
+              fetchDailyStreakStats({ user_id: resolvedUserId }),
+            ).unwrap(),
             dispatch(fetchDailyActivity({ user_id: resolvedUserId })),
             dispatch(fetchUserProfile(resolvedUserId)),
           ]);
@@ -257,7 +257,6 @@ export default function useStudySession({ deck, navMode, userId }) {
           return;
         }
 
-        const userTimezone = getUserTimezone();
         await supabase.rpc("update_streaks_after_session", {
           p_user_id: resolvedUserId,
           p_deck_results: [
@@ -276,11 +275,18 @@ export default function useStudySession({ deck, navMode, userId }) {
           p_user_timezone: userTimezone,
         });
 
+        if (isCharacterLearn) {
+          await supabase.rpc("log_character_practice_session", {
+            p_user_id: resolvedUserId,
+            p_date: today,
+          });
+        }
+
         const studiedSeconds = Math.max(
           1,
           Math.round((Date.now() - sessionStartedAtRef.current) / 1000),
         );
-        const today = getTodayISO(userTimezone);
+
         const { data: dailyStats } = await supabase
           .from("daily_user_stats")
           .select("time_studied_seconds")
@@ -321,6 +327,7 @@ export default function useStudySession({ deck, navMode, userId }) {
   }, [
     deck,
     dispatch,
+    isCharacterLearn,
     isReviewMode,
     learnLimit,
     reviewLimit,

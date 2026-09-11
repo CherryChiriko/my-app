@@ -15,6 +15,8 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
     showReview,
   } = logic;
 
+  const isCharacterMode = deck.study_mode === "C";
+
   return (
     <div className="relative flex flex-col h-full min-h-[200px]">
       {/* Header Section: Title & Menu */}
@@ -86,6 +88,7 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
           handleAction={handleAction}
           large={true}
           due={counts.due}
+          isCharacterMode={isCharacterMode}
         />
       </div>
     </div>

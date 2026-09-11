@@ -13,14 +13,15 @@ export const selectSettingsState = (state) => state.settings;
    Helper Functions
 -------------------------------------------- */
 const dateKey = () => getTodayISO();
+
 /* -------------------------------------------
    Initial State
 -------------------------------------------- */
 const initialState = {
-  days: {}, // keyed by YYYY-MM-DD
-  lastUpdated: null,
-  status: "idle", // idle | loading | succeeded | failed
+  days: {},
+  status: "idle",
   error: null,
+  lastUpdated: null,
 };
 
 /* -------------------------------------------
@@ -31,16 +32,22 @@ export const fetchDailyActivity = createAsyncThunk(
   async ({ user_id } = {}, { rejectWithValue }) => {
     try {
       let userId = user_id;
-      if (isDemoUserId(userId)) return demoActivityRows;
+
+      if (isDemoUserId(userId)) {
+        return demoActivityRows;
+      }
 
       if (!userId) {
         const { data: userData, error: userError } =
           await supabase.auth.getUser();
+
         if (userError || !userData?.user) {
           throw new Error("Not authenticated");
         }
+
         userId = userData.user.id;
       }
+
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - 60);
       const cutoffStr = cutoffDate.toISOString().slice(0, 10);
@@ -48,11 +55,15 @@ export const fetchDailyActivity = createAsyncThunk(
       const { data, error } = await supabase
         .from("daily_user_stats")
         .select(
-          "date, cards_reviewed, cards_learned, time_studied_seconds, total_xp",
+          "date, cards_reviewed, cards_learned, time_studied_seconds, total_xp, has_practiced_character",
         )
         .eq("user_id", userId)
         .gte("date", cutoffStr);
-      if (error) return rejectWithValue(error.message);
+
+      if (error) {
+        return rejectWithValue(error.message);
+      }
+
       return data;
     } catch (err) {
       return rejectWithValue(err.message);
@@ -66,26 +77,38 @@ export const fetchDailyActivity = createAsyncThunk(
 export const activitySlice = createSlice({
   name: "activity",
   initialState,
+
   reducers: {
     logStudySession: (state, action) => {
       const {
         cardsReviewed = 0,
         cardsLearned = 0,
+        isCharacterLearn = false,
         forcedDateKey,
       } = action.payload;
-      const key = forcedDateKey || dateKey();
 
-      // Merge with existing data if present
+      const key = forcedDateKey || dateKey();
       const existing = state.days[key] || {};
+
       state.days[key] = {
         date: key,
+
         cardsReviewed: (existing.cardsReviewed || 0) + cardsReviewed,
+
         cardsLearned: (existing.cardsLearned || 0) + cardsLearned,
+
         timeStudiedSeconds: existing.timeStudiedSeconds || 0,
+
         totalXP: existing.totalXP || 0,
+
         cardsStudied:
           (existing.cardsStudied || 0) + cardsReviewed + cardsLearned,
+
+        // Character LEARN mode triggers the daily flag lock
+        hasPracticedCharacter:
+          Boolean(existing.hasPracticedCharacter) || Boolean(isCharacterLearn),
       };
+
       state.lastUpdated = new Date().toISOString();
     },
 
@@ -103,7 +126,9 @@ export const activitySlice = createSlice({
         cards_learned,
         time_studied_seconds,
         total_xp,
+        has_practiced_character,
       } = action.payload;
+
       state.days[date] = {
         date,
         cardsReviewed: cards_reviewed || 0,
@@ -111,7 +136,10 @@ export const activitySlice = createSlice({
         timeStudiedSeconds: time_studied_seconds || 0,
         totalXP: total_xp || 0,
         cardsStudied: (cards_reviewed || 0) + (cards_learned || 0),
+
+        hasPracticedCharacter: Boolean(has_practiced_character),
       };
+
       state.lastUpdated = new Date().toISOString();
     },
   },
@@ -122,24 +150,36 @@ export const activitySlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
+
       .addCase(fetchDailyActivity.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.days = {};
+
         action.payload.forEach((d) => {
           state.days[d.date] = {
             date: d.date,
+
             cardsReviewed: d.cards_reviewed || 0,
+
             cardsLearned: d.cards_learned || 0,
+
             timeStudiedSeconds: d.time_studied_seconds || 0,
+
             totalXP: d.total_xp || 0,
+
             cardsStudied: (d.cards_reviewed || 0) + (d.cards_learned || 0),
+
+            hasPracticedCharacter: Boolean(d.has_practiced_character),
           };
         });
+
         state.lastUpdated = new Date().toISOString();
       })
+
       .addCase(fetchDailyActivity.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload || "Failed to fetch daily activity";
+
         console.error("fetchDailyActivity failed:", action.payload);
       });
   },
@@ -148,16 +188,17 @@ export const activitySlice = createSlice({
 /* -------------------------------------------
    Base Selectors
 -------------------------------------------- */
-// const selectActivityState = (state) => state.activity;
-export const selectActivityDays = (state) => state.activity.days;
-const selectActivityStatus = (state) => state.activity.status;
-const selectActivityError = (state) => state.activity.error;
+
+export const selectActivityDays = (state) => state.activity?.days || {};
+
+const selectActivityStatus = (state) => state.activity?.status;
+
+const selectActivityError = (state) => state.activity?.error;
 
 /* -------------------------------------------
    Memoized Selectors
 -------------------------------------------- */
 
-// Status selectors
 export const selectIsActivityLoading = createSelector(
   [selectActivityStatus],
   (status) => status === "loading",
@@ -168,11 +209,15 @@ export const selectActivityLoadError = createSelector(
   (error) => error,
 );
 
-// Today's activity
+/* -------------------------------------------
+   Today's Activity
+-------------------------------------------- */
+
 export const selectTodayActivity = createSelector(
   [selectActivityDays],
   (days) => {
     const today = dateKey();
+
     return (
       days[today] || {
         date: today,
@@ -181,12 +226,53 @@ export const selectTodayActivity = createSelector(
         timeStudiedSeconds: 0,
         cardsStudied: 0,
         totalXP: 0,
+        hasPracticedCharacter: false,
       }
     );
   },
 );
 
-// Activity for a specific date
+/* -------------------------------------------
+   Character Practice Entitlement
+-------------------------------------------- */
+
+export const selectHasPracticedCharacterToday = createSelector(
+  [selectTodayActivity],
+  (todayActivity) => Boolean(todayActivity.hasPracticedCharacter),
+);
+
+// Backward-compatibility alias for components expecting a numeric count
+export const selectCharacterSessionsToday = createSelector(
+  [selectHasPracticedCharacterToday],
+  (hasPracticed) => (hasPracticed ? 1 : 0),
+);
+
+/* -------------------------------------------
+   Activity Days
+-------------------------------------------- */
+
+export const selectSortedActivityDays = createSelector(
+  [selectActivityDays],
+  (days) => {
+    return Object.values(days).sort((a, b) => a.date.localeCompare(b.date));
+  },
+);
+
+/* -------------------------------------------
+   Active Days
+-------------------------------------------- */
+
+export const selectActiveDaysCount = createSelector(
+  [selectActivityDays],
+  (days) => {
+    return Object.values(days).filter((d) => (d.cardsStudied || 0) > 0).length;
+  },
+);
+
+/* -------------------------------------------
+   Activity For Specific Date
+-------------------------------------------- */
+
 export const selectActivityByDate = (date) =>
   createSelector([selectActivityDays], (days) => {
     return (
@@ -197,22 +283,31 @@ export const selectActivityByDate = (date) =>
         timeStudiedSeconds: 0,
         cardsStudied: 0,
         totalXP: 0,
+        hasPracticedCharacter: false,
       }
     );
   });
 
-// Total stats across all days
+/* -------------------------------------------
+   Total Stats
+-------------------------------------------- */
+
 export const selectTotalActivity = createSelector(
   [selectActivityDays],
   (days) => {
     return Object.values(days).reduce(
       (acc, day) => ({
         cardsReviewed: acc.cardsReviewed + day.cardsReviewed,
+
         cardsLearned: acc.cardsLearned + day.cardsLearned,
+
         timeStudiedSeconds:
           acc.timeStudiedSeconds + (day.timeStudiedSeconds || 0),
+
         cardsStudied: acc.cardsStudied + day.cardsStudied,
+
         totalXP: acc.totalXP + (day.totalXP || 0),
+
         totalDays: acc.totalDays + 1,
       }),
       {
@@ -227,12 +322,15 @@ export const selectTotalActivity = createSelector(
   },
 );
 
-// Heatmap data (original implementation)
+/* -------------------------------------------
+   Heatmap Data
+-------------------------------------------- */
+
 export const selectHeatmapData = createSelector(
   [selectActivityDays, selectSettingsState],
   (days, settings) => {
-    // Graceful fallback defaults if settings are still hydrating
     const reviewLimit = settings?.reviewLimit || 10;
+
     const learnLimit = settings?.learnLimit || 5;
 
     return Object.values(days)
@@ -241,7 +339,9 @@ export const selectHeatmapData = createSelector(
           Math.max(d.cardsReviewed / reviewLimit, d.cardsLearned / learnLimit) *
             100,
         );
+
         const percent = Math.min(100, objective);
+
         return {
           date: d.date,
           value: percent,
@@ -251,57 +351,10 @@ export const selectHeatmapData = createSelector(
   },
 );
 
-// Flexible heatmap data by metric (memoized version)
-export const selectHeatmapDataByMetric = (metric = "cardsStudied") =>
-  createSelector([selectActivityDays], (days) => {
-    return Object.values(days)
-      .map((d) => ({
-        date: d.date,
-        value: d[metric] ?? 0,
-      }))
-      .sort((a, b) => a.date.localeCompare(b.date));
-  });
-
-// Activity days sorted by date
-export const selectSortedActivityDays = createSelector(
-  [selectActivityDays],
-  (days) => {
-    return Object.values(days).sort((a, b) => a.date.localeCompare(b.date));
-  },
-);
-
-// Recent activity (last N days)
-export const selectRecentActivity = (numDays = 7) =>
-  createSelector([selectSortedActivityDays], (days) => {
-    return days.slice(-numDays);
-  });
-
-// Check if user studied today
-export const selectHasStudiedToday = createSelector(
-  [selectTodayActivity],
-  (today) => today.cardsStudied > 0,
-);
-
-// Average cards per day
-export const selectAverageCardsPerDay = createSelector(
-  [selectTotalActivity],
-  (total) => {
-    if (total.totalDays === 0) return 0;
-    return Math.round(total.cardsStudied / total.totalDays);
-  },
-);
-
-// Days with activity (count)
-export const selectActiveDaysCount = createSelector(
-  [selectActivityDays],
-  (days) => {
-    return Object.values(days).filter((d) => d.cardsStudied > 0).length;
-  },
-);
-
 /* -------------------------------------------
    Actions
 -------------------------------------------- */
+
 export const { logStudySession, resetActivity, updateDayFromRealtime } =
   activitySlice.actions;
 
