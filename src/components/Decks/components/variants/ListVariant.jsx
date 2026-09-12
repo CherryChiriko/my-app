@@ -61,7 +61,7 @@ function DeckCountsSummary({ counts, activeTheme }) {
   );
 }
 
-export default function ListVariant({ deck, activeTheme, logic }) {
+export default function ListVariant({ deck, activeTheme, logic, onOpenPlans }) {
   const {
     handleAction,
     streak,
@@ -128,6 +128,7 @@ export default function ListVariant({ deck, activeTheme, logic }) {
             compact
             due={counts.due}
             isCharacterMode={isCharacterMode}
+            onOpenPlans={onOpenPlans}
           />
         </div>
       </div>

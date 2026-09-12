@@ -28,11 +28,8 @@ export function useCharacterPracticeAccess() {
 
     // Free Character Learn = 5 cards/words per session.
     // Pro = no additional Character-specific cap here;
-    // useStudySession's normal Learn/Review slider determines the batch size.
-    maxCardsPerSession: isPro ? Infinity : 5,
 
+    maxCardsPerSession: isPro ? Infinity : 5,
     maxAllowedSessions: isPro ? Infinity : 1,
-    characterSessionsToday: hasPracticedToday ? 1 : 0,
-    remainingSessions: isPro ? Infinity : hasPracticedToday ? 0 : 1,
   };
 }

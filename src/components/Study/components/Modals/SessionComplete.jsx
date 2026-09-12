@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useCharacterPracticeAccess } from "../../../../hooks/useCharacterPracticeAccess";
-import PaywallModal from "../../../Paywall/PaywallModal"; // Adjust path if needed
+import PaywallModal from "../../../Paywall/PaywallModal";
 
 export default function SessionComplete({
   isOpen,
@@ -15,12 +15,14 @@ export default function SessionComplete({
   isCharacterLearn = false,
 }) {
   const [showPaywall, setShowPaywall] = useState(false);
+
+  // Destructure canStartPractice directly from the hook
   const { canStartPractice } = useCharacterPracticeAccess();
 
   const handleLearnMoreClick = () => {
     if (isLoading) return;
 
-    // Block starting another session if in character practice mode and limit is reached
+    // Block only if it's Character Learn mode AND the user cannot start another practice
     if (isCharacterLearn && !canStartPractice) {
       setShowPaywall(true);
       return;
@@ -118,6 +120,7 @@ export default function SessionComplete({
       <PaywallModal
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
+        activeTheme={activeTheme}
         title="Daily Limit Reached"
         description="You've used your free Character Practice session for today. Upgrade to Pro for unlimited sessions and larger practice batches."
       />

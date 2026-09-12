@@ -8,6 +8,7 @@ export default function DeckCard({
   toast,
   highlightedId,
   firstCardRef,
+  onOpenPlans,
 }) {
   // Desktop grid maps directly from the view mode
   const desktopGrid =
@@ -43,6 +44,7 @@ export default function DeckCard({
             variant={variant}
             toast={toast}
             highlightedId={highlightedId}
+            onOpenPlans={onOpenPlans}
           />
         </div>
       ))}

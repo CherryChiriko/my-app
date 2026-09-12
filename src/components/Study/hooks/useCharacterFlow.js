@@ -16,6 +16,7 @@ export function useCharacterFlow({
   onReveal,
   playAudio,
   displayState,
+  onCharacterComplete,
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);

@@ -4,7 +4,7 @@ import { DeckActions } from "../DeckActions";
 import { DeckBadges } from "../DeckBadges";
 import { DeckMenu } from "../../../DeckMenu/components/DeckMenu";
 
-const FullVariant = ({ deck, activeTheme, logic }) => {
+const FullVariant = ({ deck, activeTheme, logic, onOpenPlans }) => {
   const {
     handleAction,
     streak,
@@ -89,6 +89,7 @@ const FullVariant = ({ deck, activeTheme, logic }) => {
           large={true}
           due={counts.due}
           isCharacterMode={isCharacterMode}
+          onOpenPlans={onOpenPlans}
         />
       </div>
     </div>

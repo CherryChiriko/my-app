@@ -9,13 +9,20 @@ import DeckDelete from "../../DeckMenu/components/DeckDelete";
 import { supabase } from "../../../utils/supabaseClient";
 import { updateDeckLocally } from "../../../slices/deckSlice";
 
-function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
-  const logic = useDeckLogic(deck.id, deck.cards_count || 0, {
+function DeckCardItem({
+  deck,
+  activeTheme,
+  variant,
+  toast,
+  highlightedId,
+  onOpenPlans,
+}) {
+  const logic = useDeckLogic(deck?.id, deck?.cards_count || 0, {
     toast,
     activeTheme,
   });
 
-  // Local state for all editable deck fields
+  // Local state for editable fields
   const [editName, setEditName] = useState(deck?.name || "");
   const [editDescription, setEditDescription] = useState(
     deck?.description || "",
@@ -25,7 +32,17 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
   const [tagInput, setTagInput] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
-  // Keep state synced if deck changes externally
+  // 👈 2. Responsive mobile state with event listener
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile(); // Check on mount
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Sync edit state if deck prop updates
   useEffect(() => {
     if (deck) {
       setEditName(deck.name || "");
@@ -37,36 +54,39 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
 
   if (!deck || !logic) return null;
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  if (isMobile) {
-    variant = "list";
-  }
+  const currentVariant = isMobile ? "list" : variant;
+  const isList = currentVariant === "list";
 
   const isHighlighted =
     highlightedId &&
     (String(deck.id) === String(highlightedId) ||
       String(deck.deck_id) === String(highlightedId));
 
-  const glowColor = activeTheme.gradients?.colors?.[4] || "#6366f1";
-  const isList = variant === "list";
+  const glowColor = activeTheme?.gradients?.colors?.[4] || "#6366f1";
 
   const base = `
     rounded-xl border shadow-md transition-all duration-300
-    ${activeTheme.border.card}
-    ${activeTheme.background.secondary}
-    ${activeTheme.text.primary}
-    ${isList ? "p-3.5 w-[82vw] max-w-[320px] shrink-0 snap-center select-none" : "p-4 hover:shadow-xl"}
+    ${activeTheme?.border?.card || "border-gray-200"}
+    ${activeTheme?.background?.secondary || "bg-white"}
+    ${activeTheme?.text?.primary || "text-gray-900"}
+    ${
+      isList
+        ? "p-3.5 w-[82vw] max-w-[320px] shrink-0 snap-center select-none"
+        : "p-4 hover:shadow-xl"
+    }
     ${!logic.isEditing ? "cursor-pointer hover:-translate-y-1" : ""}
     ${
       isHighlighted && !isList
-        ? `ring-4 ${activeTheme.ring?.focus || "ring-indigo-500"} shadow-[0_0_35px_${glowColor}80] scale-[1.03] -translate-y-1 animate-pulse`
+        ? `ring-4 ${
+            activeTheme?.ring?.focus || "ring-indigo-500"
+          } shadow-[0_0_35px_${glowColor}80] scale-[1.03] -translate-y-1 animate-pulse`
         : isHighlighted && isList
-          ? `ring-2 ${activeTheme.ring?.focus || "ring-indigo-500"}`
-          : ""
+        ? `ring-2 ${activeTheme?.ring?.focus || "ring-indigo-500"}`
+        : ""
     }
   `;
 
-  // Tag helper
+  // Tag Handlers
   const handleAddTag = (e) => {
     if (e.key === "Enter" && tagInput.trim()) {
       e.preventDefault();
@@ -107,13 +127,15 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
 
       if (error) throw error;
 
-      // Update Redux immediately
-      logic.dispatch(
-        updateDeckLocally({
-          id: deck.id,
-          ...updatedFields,
-        }),
-      );
+      // Safe dispatch execution
+      if (logic.dispatch) {
+        logic.dispatch(
+          updateDeckLocally({
+            id: deck.id,
+            ...updatedFields,
+          }),
+        );
+      }
 
       logic.setIsEditing(false);
       toast?.current?.show({
@@ -146,7 +168,7 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
   };
 
   let Content;
-  switch (variant) {
+  switch (currentVariant) {
     case "large":
       Content = FullVariant;
       break;
@@ -165,16 +187,14 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
     <>
       <div className={base} onClick={logic.handleCardClick}>
         {logic.isEditing ? (
-          /* Card-Native Inline Editor with All Fields */
           <div
             className="flex flex-col gap-2 text-left w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Title & Language side-by-side to save vertical space */}
             <div className="grid grid-cols-3 gap-2">
               <div className="col-span-2">
                 <label
-                  className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme.text.muted}`}
+                  className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme?.text?.muted}`}
                 >
                   Name
                 </label>
@@ -183,13 +203,13 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   autoFocus
-                  className={`w-full mt-0.5 px-2 py-1 text-xs font-semibold rounded-lg border bg-transparent outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme.border.secondary} ${activeTheme.text.primary}`}
+                  className={`w-full mt-0.5 px-2 py-1 text-xs font-semibold rounded-lg border bg-transparent outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme?.border?.secondary} ${activeTheme?.text?.primary}`}
                   placeholder="Deck name..."
                 />
               </div>
               <div>
                 <label
-                  className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme.text.muted}`}
+                  className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme?.text?.muted}`}
                 >
                   Language
                 </label>
@@ -197,16 +217,15 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
                   type="text"
                   value={editLanguage}
                   onChange={(e) => setEditLanguage(e.target.value)}
-                  className={`w-full mt-0.5 px-2 py-1 text-xs rounded-lg border bg-transparent outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme.border.secondary} ${activeTheme.text.primary}`}
+                  className={`w-full mt-0.5 px-2 py-1 text-xs rounded-lg border bg-transparent outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme?.border?.secondary} ${activeTheme?.text?.primary}`}
                   placeholder="e.g. Spanish"
                 />
               </div>
             </div>
 
-            {/* Description */}
             <div>
               <label
-                className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme.text.muted}`}
+                className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme?.text?.muted}`}
               >
                 Description
               </label>
@@ -214,20 +233,19 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
                 rows={1}
-                className={`w-full mt-0.5 px-2 py-1 text-xs rounded-lg border bg-transparent resize-none outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme.border.secondary} ${activeTheme.text.primary}`}
+                className={`w-full mt-0.5 px-2 py-1 text-xs rounded-lg border bg-transparent resize-none outline-none focus:ring-1 focus:ring-indigo-500/50 ${activeTheme?.border?.secondary} ${activeTheme?.text?.primary}`}
                 placeholder="Brief description..."
               />
             </div>
 
-            {/* Tags Input */}
             <div>
               <label
-                className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme.text.muted}`}
+                className={`text-[9px] font-bold uppercase tracking-wider ${activeTheme?.text?.muted}`}
               >
                 Tags (Press Enter)
               </label>
               <div
-                className={`mt-0.5 flex flex-wrap gap-1 p-1.5 rounded-lg border min-h-[32px] ${activeTheme.border.secondary}`}
+                className={`mt-0.5 flex flex-wrap gap-1 p-1.5 rounded-lg border min-h-[32px] ${activeTheme?.border?.secondary}`}
               >
                 {editTags.map((tag) => (
                   <span
@@ -258,13 +276,12 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
               </div>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex items-center justify-end gap-1.5 pt-1">
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={isSaving}
-                className={`px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ${activeTheme.border.secondary} ${activeTheme.text.secondary} hover:bg-white/5`}
+                className={`px-2.5 py-1 text-xs font-medium rounded-lg border transition-colors ${activeTheme?.border?.secondary} ${activeTheme?.text?.secondary} hover:bg-white/5`}
               >
                 Cancel
               </button>
@@ -272,7 +289,7 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving || !editName.trim()}
-                className={`px-3 py-1 text-xs font-medium text-white rounded-lg transition-all disabled:opacity-50 bg-gradient-to-r ${activeTheme.gradients.from} ${activeTheme.gradients.to}`}
+                className={`px-3 py-1 text-xs font-medium text-white rounded-lg transition-all disabled:opacity-50 bg-gradient-to-r ${activeTheme?.gradients?.from} ${activeTheme?.gradients?.to}`}
               >
                 {isSaving ? "Saving..." : "Save"}
               </button>
@@ -280,7 +297,12 @@ function DeckCardItem({ deck, activeTheme, variant, toast, highlightedId }) {
           </div>
         ) : (
           Content && (
-            <Content deck={deck} activeTheme={activeTheme} logic={logic} />
+            <Content
+              deck={deck}
+              activeTheme={activeTheme}
+              logic={logic}
+              onOpenPlans={onOpenPlans}
+            />
           )
         )}
       </div>

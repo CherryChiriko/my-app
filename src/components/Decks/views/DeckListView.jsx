@@ -1,9 +1,11 @@
+// src/pages/DeckListView.jsx (or appropriate path)
 import { useRef, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { selectActiveTheme } from "../../../slices/themeSlice";
 import useListController from "../hooks/useListController";
 import DeckCard from "../components/DeckCard";
+import PlansModal from "../../Paywall/PlansModal"; // 👈 Import PlansModal
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
@@ -32,6 +34,9 @@ export default function DeckListView() {
   const toast = useRef(null);
   const dispatch = useDispatch();
   const profile = useSelector(selectUserProfile);
+
+  // ── Page-level Plans Modal State ──
+  const [showPlansModal, setShowPlansModal] = useState(false);
 
   const {
     searchTerm,
@@ -152,13 +157,17 @@ export default function DeckListView() {
               <input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`w-full h-[32px] md:h-[46px] border-1 ${activeTheme.border.secondary} ${
+                className={`w-full h-[32px] md:h-[46px] border-1 ${
+                  activeTheme.border.secondary
+                } ${
                   activeTheme.isDark
                     ? activeTheme.background.canvas
                     : activeTheme.background.secondary
                 } ${activeTheme.text.primary} placeholder:${
                   activeTheme.text.muted
-                } rounded-xl pl-10 pr-10 md:pr-4 text-sm focus:outline-none focus:ring-2 ${activeTheme.ring.focus} transition-all`}
+                } rounded-xl pl-10 pr-10 md:pr-4 text-sm focus:outline-none focus:ring-2 ${
+                  activeTheme.ring.focus
+                } transition-all`}
                 placeholder="Search decks..."
               />
               <button
@@ -306,6 +315,7 @@ export default function DeckListView() {
               toast={toast}
               highlightedId={highlightedId}
               firstCardRef={decksRef}
+              onOpenPlans={() => setShowPlansModal(true)}
             />
 
             {totalPages > 1 && (
@@ -331,7 +341,6 @@ export default function DeckListView() {
             )}
           </div>
         ) : (
-          /* Empty state block sized compactly to fit on screen without vertical scroll */
           <div
             className={`p-6 md:p-8 text-center rounded-xl border-2 border-dashed ${activeTheme.border.secondary} ${activeTheme.background.canvas} mt-4`}
           >
@@ -381,6 +390,13 @@ export default function DeckListView() {
           onClose={closeSpotlight}
         />
       )}
+
+      {/* ── Global Full-Page Subscription Plans Modal ── */}
+      <PlansModal
+        activeTheme={activeTheme}
+        isOpenOverride={showPlansModal}
+        onCloseOverride={() => setShowPlansModal(false)}
+      />
     </div>
   );
 }

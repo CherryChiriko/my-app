@@ -1,11 +1,11 @@
+// src/components/DeckActions.jsx
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGraduationCap, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { useCharacterPracticeAccess } from "../../../hooks/useCharacterPracticeAccess";
-import PaywallModal from "../../Paywall/PaywallModal"; // Adjust path to where PaywallModal resides
+import PaywallModal from "../../Paywall/PaywallModal";
 
 export function DeckActions({
-  deck,
   showLearn,
   showReview,
   handleAction,
@@ -13,18 +13,12 @@ export function DeckActions({
   due = 0,
   large = false,
   isCharacterMode,
+  onOpenPlans,
 }) {
   const [showPaywall, setShowPaywall] = useState(false);
   const { canStartPractice } = useCharacterPracticeAccess();
 
   const onButtonClick = (e, actionType) => {
-    // Intercept action if character practice limit is reached
-    console.log(
-      "isCharacterMode:",
-      isCharacterMode,
-      "canStartPractice:",
-      canStartPractice,
-    );
     if (isCharacterMode && actionType === "learn" && !canStartPractice) {
       e.stopPropagation();
       e.preventDefault();
@@ -35,10 +29,13 @@ export function DeckActions({
     handleAction(e, actionType);
   };
 
+  const handleUpgrade = () => {
+    setShowPaywall(false); // Close paywall modal first
+    onOpenPlans();
+  };
+
   const largeClasses =
     "flex-1 py-2 rounded-lg font-semibold flex items-center justify-center";
-
-  // Compact: pill badge with icon + count
   const compactClasses =
     "h-7 px-2.5 rounded-full flex items-center gap-1.5 text-xs font-semibold";
 
@@ -78,6 +75,8 @@ export function DeckActions({
       <PaywallModal
         isOpen={showPaywall}
         onClose={() => setShowPaywall(false)}
+        onUpgrade={handleUpgrade}
+        activeTheme={activeTheme}
         title="Daily Limit Reached"
         description="You've used your 1 free Character Practice session for today. Upgrade to Pro for unlimited daily sessions and custom batch sizes!"
       />

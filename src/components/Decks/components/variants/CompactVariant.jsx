@@ -1,9 +1,15 @@
+// src/components/CompactVariant.jsx
 import { ProgressBar } from "../ProgressBar";
 import { DeckActions } from "../DeckActions";
 import { DeckBadges } from "../DeckBadges";
 import { DeckMenu } from "../../../DeckMenu/components/DeckMenu";
 
-export default function CompactVariant({ deck, activeTheme, logic }) {
+export default function CompactVariant({
+  deck,
+  activeTheme,
+  logic,
+  onOpenPlans,
+}) {
   const {
     handleAction,
     streak,
@@ -18,7 +24,6 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
 
   return (
     <div className="relative">
-      {/* Top Row: Name on the left, Badges & Menu on the right */}
       <div className="flex flex-row justify-between items-center mb-2 gap-4">
         <div className="min-w-0 flex-grow">
           <span
@@ -57,6 +62,7 @@ export default function CompactVariant({ deck, activeTheme, logic }) {
           large={false}
           due={counts.due}
           isCharacterMode={isCharacterMode}
+          onOpenPlans={onOpenPlans}
         />
       </div>
     </div>
